@@ -3,61 +3,145 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>[임상지원간호팀] 근무표</title>
+    <title>[임상지원간호팀] 통합 근무표</title>
     <link rel="icon" type="image/x-icon" href="https://schedule-work.github.io/image/nurse.ico">
     
-    <!-- Tailwind CSS 및 트렌디 폰트(Bebas Neue, Inter) 적용 -->
+    <!-- Tailwind CSS 및 폰트 불러오기 (Bebas Neue, Inter) -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'media',
-        }
-    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;600;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --accent-color: #ef4444; /* 네오 브루탈리즘 레포트 포인트 컬러 */
+            --bg-color: #f4f4f5;
+            --text-color: #18181b;
+            --accent-color: #ef4444; /* 사진 속 빨간 포인트 컬러 */
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-        }
-
-        .font-impact {
-            font-family: 'Bebas Neue', cursive, sans-serif;
-            letter-spacing: 1px;
-        }
-
-        /* 1. 메뉴 접기/펼치기 애니메이션 */
-        #nav-container {
-            max-height: 500px;
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
             overflow: hidden;
-            transform-origin: top;
-            opacity: 1;
+        }
+
+        /* 상단 네비게이션 바 */
+        header {
+            display: flex;
+            justify-content: space-between;
+            padding: 1.5rem 2.5rem;
+            font-size: 0.875rem;
+            z-index: 20;
+        }
+
+        .logo-placeholder {
+            font-weight: 600;
+            letter-spacing: 2px;
+        }
+
+        /* 버튼 스타일 (좌측 하단) */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            cursor: pointer;
+            border: 1px solid var(--text-color);
+            transition: all 0.3s ease;
         }
         
-        #nav-container.collapsed {
-            max-height: 0 !important;
-            padding-top: 0 !important;
-            padding-bottom: 0 !important;
-            border-bottom-width: 0 !important;
-            margin: 0 !important;
-            opacity: 0 !important;
+        .btn-dark {
+            background-color: var(--text-color);
+            color: #fff;
         }
 
-        /* 2. 하단 무한 스크롤 (Marquee) 애니메이션 */
+        .btn-dark:hover {
+            background-color: #3f3f46;
+            border-color: #3f3f46;
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            color: var(--text-color);
+        }
+
+        .btn-outline:hover {
+            background-color: #e4e4e7;
+        }
+
+        /* 우측 카테고리 메뉴 (세로형 리스트) */
+        .right-menu-btn {
+            font-size: 0.95rem;
+            color: #a1a1aa;
+            cursor: pointer;
+            transition: color 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 0.5rem;
+            background: transparent;
+            border: none;
+            width: 100%;
+            padding: 0.5rem 0;
+        }
+
+        @media (min-width: 1024px) {
+            .right-menu-btn {
+                justify-content: flex-end; /* 데스크탑에서는 우측 정렬 */
+            }
+        }
+
+        .right-menu-btn:hover, .right-menu-btn[data-active="true"] {
+            color: var(--text-color);
+            font-weight: 600;
+        }
+
+        /* 활성화된 메뉴 옆의 빨간 점 */
+        .right-menu-btn[data-active="true"]::after {
+            content: '';
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            background-color: var(--accent-color);
+            border-radius: 50%;
+        }
+
+        /* 하단 무한 스크롤 텍스트 (Marquee) */
         .marquee-container {
+            background-color: var(--text-color);
+            color: #fff;
+            padding: 1rem 0;
             overflow: hidden;
             white-space: nowrap;
+            position: relative;
+            z-index: 10;
         }
 
         .marquee-content {
             display: inline-block;
-            animation: marquee 25s linear infinite;
+            animation: marquee 20s linear infinite;
+            font-size: 1rem;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        .marquee-content span {
+            margin-right: 3rem;
+        }
+
+        .marquee-content span.highlight {
+            color: var(--accent-color);
         }
 
         @keyframes marquee {
@@ -66,107 +150,82 @@
         }
     </style>
 </head>
+<body>
 
-<body class="h-dvh flex flex-col bg-zinc-100 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 overflow-hidden transition-colors duration-200">
-
-    <!-- 상단 헤더 (네오 브루탈리즘 에디토리얼 타이틀) -->
-    <header class="bg-white dark:bg-zinc-900 border-b-2 border-zinc-900 dark:border-zinc-700 px-5 py-3 flex justify-between items-center shrink-0 z-20 relative shadow-sm">
-        <div class="flex items-center gap-4">
-            <span class="font-impact text-xl sm:text-2xl tracking-widest px-2.5 py-0.5 bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 uppercase">
-                KUMC
-            </span>
-            <div class="flex flex-col">
-                <div class="flex items-baseline gap-2">
-                    <span class="font-impact text-2xl sm:text-3xl text-zinc-900 dark:text-zinc-100 leading-none">
-                        DUTY SCHEDULE
-                    </span>
-                    <span class="text-xs font-extrabold text-red-500 dark:text-red-400 tracking-wider">
-                        [임상지원간호팀 통합근무표]
-                    </span>
-                </div>
-                <!-- 안내 문구 -->
-                <div class="hidden sm:flex items-center text-[11px] text-zinc-500 dark:text-zinc-400 font-medium mt-0.5">
-                    <span class="inline-block w-1.5 h-1.5 rounded-full bg-red-500 mr-1.5 animate-pulse"></span>
-                    <span>시트 로딩 시 약간의 대기 시간이 발생할 수 있습니다.</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- 메뉴 접기 버튼 (모던 아웃라인 토글) -->
-        <div class="flex items-center space-x-2">
-            <button id="toggle-btn" onclick="toggleNav()" class="flex items-center px-3.5 py-1.5 bg-zinc-900 dark:bg-zinc-100 hover:bg-zinc-800 dark:hover:bg-zinc-200 text-white dark:text-zinc-900 font-extrabold text-xs tracking-wider uppercase transition shadow-sm border border-zinc-900 dark:border-zinc-100">
-                <svg id="toggle-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="mr-1.5 transition-transform duration-300">
-                    <line x1="3" y1="12" x2="21" y2="12"></line>
-                    <line x1="3" y1="6" x2="21" y2="6"></line>
-                    <line x1="3" y1="18" x2="21" y2="18"></line>
-                </svg>
-                <span id="toggle-text">메뉴 접기</span>
-            </button>
-        </div>
+    <!-- 상단 바 (사진과 동일한 에디토리얼 무드) -->
+    <header>
+        <div class="logo-placeholder">||||||||||||||</div>
+        <div class="text-gray-500">file:///KUMC/schedule/index.html</div>
     </header>
 
-    <!-- 상단 네비게이션 (대분류 및 소분류 시트 목록) -->
-    <nav id="nav-container" class="bg-zinc-50 dark:bg-zinc-900/80 border-b border-zinc-300 dark:border-zinc-800 px-5 py-3.5 shrink-0 z-10">
-        <!-- 대분류 그룹 버튼 -->
-        <div class="flex gap-2 mb-2.5">
-            <button id="btn-group1" class="group-btn px-5 py-2 text-xs font-black uppercase tracking-wider transition-all border-2 border-zinc-900 dark:border-zinc-100 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 hover:bg-zinc-900 hover:text-white dark:hover:bg-zinc-100 dark:hover:text-zinc-900 data-[active=true]:bg-zinc-900 data-[active=true]:text-white dark:data-[active=true]:bg-zinc-100 dark:data-[active=true]:text-zinc-900 shadow-[2px_2px_0px_0px_rgba(24,24,27,1)] dark:shadow-[2px_2px_0px_0px_rgba(255,255,255,1)]" onclick="toggleGroup('group1', this)">
-                진료지원
-            </button>
-            <button id="btn-group2" class="group-btn px-5 py-2 text-xs font-black uppercase tracking-wider transition-all border-2 border-zinc-900 dark:border-zinc-100 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 hover:bg-zinc-900 hover:text-white dark:hover:bg-zinc-100 dark:hover:text-zinc-900 data-[active=true]:bg-zinc-900 data-[active=true]:text-white dark:data-[active=true]:bg-zinc-100 dark:data-[active=true]:text-zinc-900 shadow-[2px_2px_0px_0px_rgba(24,24,27,1)] dark:shadow-[2px_2px_0px_0px_rgba(255,255,255,1)]" onclick="toggleGroup('group2', this)">
-                전담간호사
-            </button>
-        </div>
+    <!-- 메인 컨텐츠 영역 (좌, 중, 우 3단 레이아웃) -->
+    <main class="flex-1 flex flex-col lg:flex-row relative z-0">
         
-        <!-- 하위 시트 버튼 컨테이너 -->
-        <div id="group1-sub" class="sub-buttons-container flex flex-wrap gap-2 hidden"></div>
-        <div id="group2-sub" class="sub-buttons-container flex flex-wrap gap-2 hidden"></div>
-    </nav>
-
-    <!-- 스프레드시트 본문 (프레임) -->
-    <main class="flex-1 w-full p-2 sm:p-3 min-h-0 flex flex-col relative z-0">
-        <div class="flex-1 bg-white dark:bg-zinc-900 border-2 border-zinc-900 dark:border-zinc-700 h-full relative transition-colors duration-200 overflow-hidden flex flex-col shadow-[4px_4px_0px_0px_rgba(24,24,27,1)] dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,0.2)]">
+        <!-- 좌측 영역: 타이포그래피 및 대분류 버튼 -->
+        <div class="w-full lg:w-[400px] p-8 lg:p-12 flex flex-col justify-center z-10 shrink-0">
+            <div class="text-gray-400 text-xl font-light mb-6 lg:mb-10">2026</div>
             
-            <!-- 로딩 스피너 (미니멀 오버레이) -->
-            <div id="loading-overlay" class="absolute inset-0 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xs flex items-center justify-center z-10 hidden">
-                <div class="bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 px-6 py-3 border border-zinc-800 dark:border-zinc-200 flex items-center space-x-3 shadow-xl">
-                    <svg class="animate-spin h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    <span class="text-xs font-black tracking-widest uppercase">LOADING SCHEDULE DATA...</span>
-                </div>
+            <div>
+                <div class="font-semibold text-sm mb-3">>> Schedule _ <span class="text-red-500">Nursing Team</span></div>
+                <h1 class="font-['Bebas_Neue'] text-6xl lg:text-7xl leading-[0.85] tracking-wide mb-5">
+                    DUTY<br>SCHEDULE
+                </h1>
             </div>
 
-            <!-- 시트 프레임 -->
-            <iframe id="sheet-frame" class="w-full h-full border-0" src=""></iframe>
+            <p class="text-gray-600 text-sm leading-relaxed max-w-[280px]">
+                Korea University Guro Hospital<br>
+                Clinical Support Nursing Team<br>
+                Integrated Work Schedule System.
+            </p>
+
+            <!-- 기존의 상단 탭 버튼들을 사진 속 좌측 하단 버튼으로 대체 -->
+            <div class="flex flex-wrap gap-3 mt-8 lg:mt-12">
+                <button id="btn-group1" class="group-btn btn btn-dark" onclick="toggleGroup('group1', this)">진료지원</button>
+                <button id="btn-group2" class="group-btn btn btn-outline" onclick="toggleGroup('group2', this)">전담간호사</button>
+            </div>
+        </div>
+
+        <!-- 중앙 영역: 구글 시트 (사진의 비디오 위치) -->
+        <div class="flex-1 p-4 lg:p-8 relative flex items-center justify-center z-0">
+            <!-- 로딩 화면 -->
+            <div id="loading-overlay" class="absolute inset-0 bg-[#f4f4f5]/90 backdrop-blur-sm flex items-center justify-center z-20 hidden">
+                <span class="font-['Bebas_Neue'] text-3xl tracking-widest animate-pulse">LOADING DATA...</span>
+            </div>
+            
+            <!-- 구글 시트 프레임 (깔끔한 그림자 처리) -->
+            <div class="w-full h-[65vh] lg:h-full max-h-[80vh] bg-white shadow-2xl overflow-hidden z-10 relative">
+                <iframe id="sheet-frame" class="w-full h-full border-0" src=""></iframe>
+            </div>
+        </div>
+
+        <!-- 우측 영역: 세로형 카테고리 메뉴 (사진의 우측 리스트 위치) -->
+        <div class="w-full lg:w-[280px] p-8 lg:p-12 flex flex-col justify-center z-10 shrink-0 lg:text-right overflow-y-auto">
+            <div id="group1-sub" class="flex flex-col gap-3 hidden"></div>
+            <div id="group2-sub" class="flex flex-col gap-3 hidden"></div>
         </div>
     </main>
 
-    <!-- 하단 흐르는 무한 텍스트 (Marquee) -->
-    <footer class="marquee-container bg-zinc-900 text-zinc-100 dark:bg-zinc-100 dark:text-zinc-900 py-1.5 border-t-2 border-zinc-900 dark:border-zinc-100 shrink-0 text-xs font-black tracking-widest uppercase">
+    <!-- 하단 흐르는 텍스트 (Marquee) -->
+    <footer class="marquee-container shrink-0">
         <div class="marquee-content">
-            <span class="mx-4">CLINICAL SUPPORT NURSING TEAM</span>
-            <span class="mx-4 text-red-500">•</span>
-            <span class="mx-4">INTEGRATED WORK SCHEDULE</span>
-            <span class="mx-4 text-red-500">•</span>
-            <span class="mx-4">KOREA UNIVERSITY GURO HOSPITAL</span>
-            <span class="mx-4 text-red-500">•</span>
-            <span class="mx-4">REALTIME DATA SYNC</span>
-            <span class="mx-4 text-red-500">•</span>
-            <!-- 루프 반복 -->
-            <span class="mx-4">CLINICAL SUPPORT NURSING TEAM</span>
-            <span class="mx-4 text-red-500">•</span>
-            <span class="mx-4">INTEGRATED WORK SCHEDULE</span>
-            <span class="mx-4 text-red-500">•</span>
-            <span class="mx-4">KOREA UNIVERSITY GURO HOSPITAL</span>
-            <span class="mx-4 text-red-500">•</span>
-            <span class="mx-4">REALTIME DATA SYNC</span>
-            <span class="mx-4 text-red-500">•</span>
+            <span>Clinical Support</span>
+            <span class="highlight">Nursing Team</span>
+            <span>Duty Schedule</span>
+            <span>Korea University</span>
+            <span class="highlight">Guro Hospital</span>
+            <span>Integrated System</span>
+            <!-- 자연스러운 루프를 위해 동일 텍스트 반복 -->
+            <span>Clinical Support</span>
+            <span class="highlight">Nursing Team</span>
+            <span>Duty Schedule</span>
+            <span>Korea University</span>
+            <span class="highlight">Guro Hospital</span>
+            <span>Integrated System</span>
         </div>
     </footer>
 
     <script>
-        // --- 기존 API 및 로직 변수 100% 보존 ---
+        // API 설정 유지
         const sheetGroups = {
             group1: {
                 name: "진료지원",
@@ -180,13 +239,14 @@
             }
         };
 
+        // 그룹(대분류) 선택 함수
         function toggleGroup(groupKey, buttonEl) {
-            document.querySelectorAll('.sub-buttons-container').forEach(el => el.classList.add('hidden'));
+            // 우측 메뉴 초기화
+            document.getElementById('group1-sub').classList.add('hidden');
+            document.getElementById('group2-sub').classList.add('hidden');
+            
             const container = document.getElementById(`${groupKey}-sub`);
             container.classList.remove('hidden');
-
-            document.querySelectorAll(".group-btn").forEach(btn => btn.dataset.active = "false");
-            buttonEl.dataset.active = "true";
 
             if (container.childElementCount > 0) return;
 
@@ -203,25 +263,27 @@
                         const btn = document.createElement("button");
                         btn.textContent = name;
                         
-                        // 하위 서브 버튼 스타일을 새 네오 브루탈리즘 테마에 맞게 교체
-                        btn.className = "sub-btn px-3 py-1.5 text-xs font-bold transition-all border border-zinc-400 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:border-zinc-900 dark:hover:border-zinc-100 data-[active=true]:bg-red-500 data-[active=true]:text-white data-[active=true]:border-red-500 dark:data-[active=true]:bg-red-500 dark:data-[active=true]:text-white font-mono";
+                        // 우측 세로형 리스트(right-menu-btn) 클래스 적용
+                        btn.className = "right-menu-btn sub-btn";
                         btn.dataset.active = "false";
                         
                         btn.onclick = () => {
                             document.getElementById("sheet-frame").src = `${pubhtmlPrefix}?gid=${gid}&widget=true&headers=false`;
                             
+                            // 모든 서브버튼 비활성화 후 클릭한 버튼만 활성화 (빨간 점 표출)
                             document.querySelectorAll(".sub-btn").forEach(b => b.dataset.active = "false");
                             btn.dataset.active = "true";
                         };
                         container.appendChild(btn);
 
+                        // 첫 번째 시트 자동 클릭
                         if (groupKey === 'group1' && index === 0) {
                             btn.click();
                         }
                     });
                 })
                 .catch(err => {
-                    container.innerHTML = "<p class='text-red-500 text-xs font-bold py-1 px-3 bg-red-50 dark:bg-red-950/50 border border-red-300'>시트 로딩 실패. 새로고침을 시도해주세요.</p>";
+                    container.innerHTML = "<p class='text-red-500 text-sm font-medium py-2'>시트 로딩 실패. 새로고침을 시도해주세요.</p>";
                     console.error(err);
                 })
                 .finally(() => {
@@ -229,29 +291,14 @@
                 });
         }
 
-        function toggleNav() {
-            const nav = document.getElementById("nav-container");
-            const toggleText = document.getElementById("toggle-text");
-            const toggleIcon = document.getElementById("toggle-icon");
-            
-            nav.classList.toggle("collapsed");
-            
-            if (nav.classList.contains("collapsed")) {
-                toggleText.textContent = "메뉴 펼치기";
-                toggleIcon.style.transform = "rotate(180deg)";
-            } else {
-                toggleText.textContent = "메뉴 접기";
-                toggleIcon.style.transform = "rotate(0deg)";
-            }
-        }
-
+        // 초기화 및 URL 파라미터 로직 유지
         document.addEventListener("DOMContentLoaded", () => {
             const urlParams = new URLSearchParams(window.location.search);
             const groupKey = urlParams.get('group');
             const sheetName = urlParams.get('sheet');
 
             if (!(groupKey && sheetName)) {
-                document.getElementById("btn-group2")?.click();
+                // 초기 실행 시 '진료지원' 데이터 로드
                 document.getElementById("btn-group1")?.click(); 
                 
                 fetch(sheetGroups.group1.api)
@@ -264,9 +311,6 @@
                         }
                     });
             } else {
-                document.getElementById("btn-group1")?.click();
-                document.getElementById("btn-group2")?.click();
-                
                 const targetGroupBtn = document.getElementById(`btn-${groupKey}`);
                 if(targetGroupBtn) targetGroupBtn.click();
 
