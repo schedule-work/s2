@@ -9,56 +9,57 @@
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- 고딕과 깔끔한 산세리프 조합 (가독성 최적화) -->
+    <!-- 포트폴리오 감성의 폰트와 고딕 조합 -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --bg-canvas: #f1f3f5;
+            --canvas: #f8fafc;
             --surface: #ffffff;
-            --text-main: #1f2937;
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
             --accent: #2563eb;
-            --border-color: #e5e7eb;
+            --border-line: #cbd5e1;
         }
 
         body {
             font-family: 'Inter', sans-serif;
-            background-color: var(--bg-canvas);
-            color: var(--text-main);
+            background-color: var(--canvas);
+            color: var(--text-primary);
             height: 100vh;
             display: flex;
             flex-direction: column;
             overflow: hidden;
         }
 
-        .font-mono-code {
+        .font-mono-tag {
             font-family: 'JetBrains Mono', monospace;
         }
 
-        /* 포트폴리오 특유의 정교한 프레임 선 */
-        .portfolio-border {
-            border: 1px solid var(--border-color);
+        /* 포트폴리오 특유의 정교한 아키텍처 라인 */
+        .portfolio-frame {
+            border-bottom: 2px solid var(--text-primary);
         }
 
-        /* 대분류 버튼 (포트폴리오 탭 감성 + 업무용 직관성) */
+        /* 대분류 탭 (포트폴리오 블록 스타일) */
         .portfolio-tab {
-            transition: all 0.2s ease;
             position: relative;
+            transition: all 0.2s ease;
         }
-        
+
         .portfolio-tab[data-active="true"] {
-            background-color: var(--text-main);
+            background-color: var(--text-primary);
             color: #ffffff;
             font-weight: 600;
         }
 
         .portfolio-tab[data-active="false"]:hover {
-            background-color: #e5e7eb;
+            background-color: #e2e8f0;
         }
 
-        /* 소분류 뱃지 (업무용 게시판 필터 스타일) */
+        /* 소분류 뱃지 (업무용 필터 스타일) */
         .sub-scroll {
             display: flex;
             overflow-x: auto;
@@ -71,34 +72,34 @@
         }
 
         .sub-badge {
-            padding: 0.35rem 0.85rem;
+            padding: 0.4rem 0.9rem;
             font-size: 0.8rem;
             font-weight: 500;
             background-color: var(--surface);
-            border: 1px solid var(--border-color);
-            color: #4b5563;
+            border: 1px solid var(--border-line);
+            color: var(--text-secondary);
             white-space: nowrap;
             transition: all 0.2s;
             cursor: pointer;
         }
 
         .sub-badge:hover {
-            border-color: #9ca3af;
-            color: #111827;
+            border-color: var(--text-primary);
+            color: var(--text-primary);
         }
 
         .sub-badge[data-active="true"] {
             background-color: #eff6ff;
-            border-color: #93c5fd;
-            color: #1d4ed8;
+            border-color: var(--accent);
+            color: var(--accent);
             font-weight: 600;
         }
 
-        /* 로딩 애니메이션 */
+        /* 깔끔한 로딩 스피너 */
         .spinner {
-            width: 28px;
-            height: 28px;
-            border: 3px solid #e5e7eb;
+            width: 32px;
+            height: 32px;
+            border: 3px solid #e2e8f0;
             border-top: 3px solid var(--accent);
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
@@ -112,42 +113,47 @@
 </head>
 <body>
 
-    <!-- 1. 상단 타이틀 바 (포트폴리오 매거진 헤드라인 스타일) -->
-    <header class="bg-white portfolio-border border-t-0 border-x-0 px-6 py-3.5 flex justify-between items-center shrink-0">
+    <!-- 1. 포트폴리오 구조 헤더 (감각적인 메인 타이틀 바) -->
+    <header class="portfolio-frame bg-white px-6 py-4 flex flex-col sm:flex-row justify-between items-start sm:items-center shrink-0">
         <div class="flex items-center gap-3">
-            <span class="w-2.5 h-2.5 bg-blue-600 rounded-full"></span>
-            <h1 class="font-bold text-base tracking-tight">KUMC 임상지원간호팀 통합 근무표</h1>
+            <span class="w-3 h-3 bg-blue-600"></span>
+            <div>
+                <h1 class="font-bold text-base tracking-tight uppercase">KUMC Clinical Support Nursing</h1>
+                <p class="text-xs text-gray-500 font-mono-tag tracking-wider mt-0.5">INTEGRATED DUTY SCHEDULE SYSTEM</p>
+            </div>
         </div>
-        <div class="text-xs font-mono-code text-gray-400 tracking-wider">
-            SYSTEM // 2026.V1
+        <div class="hidden md:flex items-center gap-4 text-xs font-mono-tag text-gray-400 mt-2 sm:mt-0">
+            <span>LOC: GURO HOSPITAL</span>
+            <span>//</span>
+            <span>STATUS: ACTIVE</span>
         </div>
     </header>
 
-    <!-- 2. 컨트롤 네비게이션 영역 (포트폴리오 그리드 레이아웃 감성) -->
-    <nav class="bg-white portfolio-border border-t-0 border-x-0 px-6 py-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shrink-0">
-        <!-- 대분류 선택 -->
-        <div class="flex gap-1.5 p-1 bg-gray-100 rounded-lg">
-            <button id="btn-group1" class="portfolio-tab px-4 py-1.5 text-xs font-medium rounded-md" onclick="toggleGroup('group1', this)">
+    <!-- 2. 컨트롤 네비게이션 영역 -->
+    <nav class="bg-white border-b border-gray-300 px-6 py-3 flex flex-col md:flex-row items-start md:items-center justify-between gap-3 shrink-0">
+        <!-- 대분류 선택 (포트폴리오 세그먼트 버튼) -->
+        <div class="flex gap-1 bg-gray-100 p-1 rounded">
+            <button id="btn-group1" class="portfolio-tab px-4 py-1.5 text-xs font-medium rounded" onclick="toggleGroup('group1', this)">
                 진료지원 파트
             </button>
-            <button id="btn-group2" class="portfolio-tab px-4 py-1.5 text-xs font-medium rounded-md" onclick="toggleGroup('group2', this)">
+            <button id="btn-group2" class="portfolio-tab px-4 py-1.5 text-xs font-medium rounded" onclick="toggleGroup('group2', this)">
                 전담간호사 파트
             </button>
         </div>
 
-        <!-- 소분류 선택 (게시판 필터 뱃지) -->
-        <div class="flex-1 w-full sm:w-auto sm:ml-6 overflow-hidden">
+        <!-- 소분류 선택 (업무용 가독성 뱃지) -->
+        <div class="flex-1 w-full md:w-auto md:ml-6 overflow-hidden">
             <div id="group1-sub" class="sub-scroll hidden"></div>
             <div id="group2-sub" class="sub-scroll hidden"></div>
         </div>
     </nav>
 
-    <!-- 3. 메인 콘텐츠 (업무용 시트 100% 풀스크린 배치) -->
+    <!-- 3. 메인 콘텐츠 (구글 시트 100% 풀스크린 배치) -->
     <main class="flex-1 w-full relative z-0 bg-white">
         <!-- 로딩 화면 -->
-        <div id="loading-overlay" class="absolute inset-0 bg-white/90 backdrop-blur-[2px] flex flex-col items-center justify-center z-20 hidden">
+        <div id="loading-overlay" class="absolute inset-0 bg-white/90 backdrop-blur-sm flex flex-col items-center justify-center z-20 hidden">
             <div class="spinner mb-3"></div>
-            <div class="text-xs font-medium text-gray-500 tracking-wider uppercase">Loading Schedule...</div>
+            <div class="text-xs font-mono-tag text-gray-500 tracking-widest uppercase">Loading Sheet Data...</div>
         </div>
         
         <!-- 구글 시트 프레임 -->
@@ -194,7 +200,7 @@
                         const btn = document.createElement("button");
                         btn.textContent = name;
                         
-                        btn.className = "sub-badge rounded-md";
+                        btn.className = "sub-badge rounded";
                         btn.dataset.active = "false";
                         
                         btn.onclick = () => {
