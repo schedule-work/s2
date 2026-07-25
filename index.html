@@ -3,166 +3,203 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>임상지원간호팀 > 근무표</title>
-    <link rel="icon" type="image/x-icon" href="https://schedule-work.github.io/image/nurse.ico">
+    <title>KUMC Kinetic Schedule</title>
     
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
+    <!-- 키네틱 웹 디자인용 폰트: Syncopate(와이드 타이틀), Space Grotesk(본문/메뉴) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Syncopate:wght@700&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --paper-bg: #fdfcf7; 
-            --ink-black: #111111;
+            /* 키네틱/사이버틱한 네온 포인트 컬러 */
+            --neon-accent: #ccff00; /* 애시드 그린 */
+            --bg-dark: #09090b;
         }
 
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--paper-bg);
-            color: var(--ink-black);
+            font-family: 'Space Grotesk', sans-serif;
+            background-color: var(--bg-dark);
+            color: #ffffff;
             height: 100vh;
             display: flex;
             flex-direction: column;
             overflow: hidden;
         }
 
-        .font-editorial {
-            font-family: 'Playfair Display', serif;
+        .font-kinetic {
+            font-family: 'Syncopate', sans-serif;
         }
 
-        .border-editorial {
-            border-color: var(--ink-black);
+        /* 1. 끊임없이 교차하는 키네틱 마키 (Marquee) 헤더 */
+        .kinetic-ticker {
+            background-color: var(--neon-accent);
+            color: var(--bg-dark);
+            overflow: hidden;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            height: 32px;
+            text-transform: uppercase;
+            font-weight: 700;
+            font-size: 0.75rem;
+            letter-spacing: 0.1em;
+        }
+        
+        .ticker-track {
+            display: inline-block;
+            animation: ticker 15s linear infinite;
         }
 
-        .main-tab {
-            transition: all 0.2s ease;
+        @keyframes ticker {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* 2. 크리에이티브 버튼 인터랙션 */
+        .nav-btn {
             position: relative;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        .main-tab[data-active="true"] {
-            background-color: var(--ink-black);
-            color: var(--paper-bg);
+        
+        /* 호버 시 네온 컬러가 차오르는 효과 */
+        .nav-btn::before {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--neon-accent);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: -1;
         }
-        .main-tab[data-active="false"]:hover {
-            background-color: #f0eee1;
+        
+        .nav-btn:hover::before,
+        .nav-btn[data-active="true"]::before {
+            top: 0;
         }
 
-        .sub-menu-container {
+        .nav-btn:hover,
+        .nav-btn[data-active="true"] {
+            color: var(--bg-dark);
+            font-weight: 700;
+            border-color: var(--neon-accent);
+        }
+
+        /* 3. 소분류 탭 (초소형 디자인으로 공간 확보) */
+        .sub-scroll-container {
             display: flex;
             overflow-x: auto;
             align-items: center;
-            -ms-overflow-style: none;  
-            scrollbar-width: none;  
+            scrollbar-width: none; /* Firefox */
         }
-        .sub-menu-container::-webkit-scrollbar {
-            display: none; 
+        .sub-scroll-container::-webkit-scrollbar {
+            display: none; /* Chrome */
         }
 
-        .sub-btn {
+        .sub-tab {
             white-space: nowrap;
-            position: relative;
-            padding: 0.25rem 0;
             transition: color 0.2s;
+            opacity: 0.6;
         }
-        .sub-btn[data-active="true"] {
-            font-weight: 600;
+        .sub-tab:hover {
+            opacity: 1;
         }
-        .sub-btn[data-active="true"]::after {
+        .sub-tab[data-active="true"] {
+            opacity: 1;
+            color: var(--neon-accent);
+            position: relative;
+        }
+        .sub-tab[data-active="true"]::after {
             content: '';
             position: absolute;
-            bottom: -2px;
+            bottom: -4px;
             left: 0;
             width: 100%;
-            height: 1px;
-            background-color: var(--ink-black);
+            height: 2px;
+            background-color: var(--neon-accent);
         }
 
-        .marquee-container {
-            background-color: var(--ink-black);
-            color: var(--paper-bg);
-            overflow: hidden;
-            white-space: nowrap;
+        /* 4. 글리치/키네틱 로딩 효과 */
+        .glitch-text {
+            animation: glitch 1s linear infinite;
         }
-        .marquee-content {
-            display: inline-block;
-            animation: marquee 30s linear infinite;
-        }
-        @keyframes marquee {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
+        @keyframes glitch {
+            2%, 64% { transform: translate(2px, 0) skew(0deg); }
+            4%, 60% { transform: translate(-2px, 0) skew(0deg); }
+            62% { transform: translate(0, 0) skew(5deg); }
         }
     </style>
 </head>
 <body>
 
-    <header class="border-b border-editorial flex flex-col sm:flex-row justify-between items-center sm:items-end px-6 py-4 shrink-0">
-        <div class="text-center sm:text-left mb-2 sm:mb-0">
-            <h1 class="font-editorial text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight uppercase leading-none">
-                Shift Schedule
-            </h1>
-            <p class="text-[10px] sm:text-xs tracking-[0.2em] uppercase mt-2 text-gray-600 font-medium">
-                Korea University Guro Hospital • Department of Nursing Service
-            </p>
+    <!-- 1. 키네틱 티커 (가장 위에서 끊임없이 흐르는 전광판) -->
+    <div class="kinetic-ticker shrink-0">
+        <div class="ticker-track">
+            <span class="mx-4">KOREA UNIVERSITY GURO HOSPITAL</span>
+            <span class="mx-2">•</span>
+            <span class="mx-4 font-kinetic">CLINICAL SUPPORT NURSING</span>
+            <span class="mx-2">•</span>
+            <span class="mx-4">INTEGRATED DUTY SCHEDULE</span>
+            <span class="mx-2">•</span>
+            <span class="mx-4 font-kinetic">REAL-TIME SYNC</span>
+            <span class="mx-2">•</span>
+            <!-- 반복 -->
+            <span class="mx-4">KOREA UNIVERSITY GURO HOSPITAL</span>
+            <span class="mx-2">•</span>
+            <span class="mx-4 font-kinetic">CLINICAL SUPPORT NURSING</span>
+            <span class="mx-2">•</span>
+            <span class="mx-4">INTEGRATED DUTY SCHEDULE</span>
+            <span class="mx-2">•</span>
+            <span class="mx-4 font-kinetic">REAL-TIME SYNC</span>
+            <span class="mx-2">•</span>
         </div>
-        <div class="text-center sm:text-right flex flex-col justify-end">
-            <p class="text-[10px] font-medium tracking-widest uppercase border-b border-editorial pb-1 mb-1">
-                임상지원간호팀
-            </p>
-            <p class="text-[10px] text-gray-500 tracking-wider">
-                VOL. 2026
-            </p>
-        </div>
-    </header>
+    </div>
 
-    <nav class="border-b border-editorial flex flex-col md:flex-row shrink-0 bg-white">
-        <div class="flex border-b md:border-b-0 md:border-r border-editorial shrink-0">
-            <button id="btn-group1" class="main-tab px-6 py-3 text-sm font-semibold tracking-wider" onclick="toggleGroup('group1', this)">
+    <!-- 2. 컨트롤 패널 (최소한의 높이로 압축) -->
+    <header class="flex flex-col sm:flex-row items-center justify-between px-4 py-2 border-b border-zinc-800 bg-zinc-950/80 backdrop-blur-md shrink-0 z-20">
+        
+        <!-- 대분류 버튼 (크리에이티브 호버 효과) -->
+        <div class="flex gap-2 w-full sm:w-auto mb-2 sm:mb-0">
+            <button id="btn-group1" class="nav-btn px-4 py-1.5 border border-zinc-700 text-xs font-bold uppercase tracking-wider text-zinc-300 w-1/2 sm:w-auto text-center" onclick="toggleGroup('group1', this)">
                 진료지원
             </button>
-            <button id="btn-group2" class="main-tab px-6 py-3 text-sm font-semibold tracking-wider border-l border-editorial" onclick="toggleGroup('group2', this)">
+            <button id="btn-group2" class="nav-btn px-4 py-1.5 border border-zinc-700 text-xs font-bold uppercase tracking-wider text-zinc-300 w-1/2 sm:w-auto text-center" onclick="toggleGroup('group2', this)">
                 전담간호사
             </button>
         </div>
-        
-        <div class="flex-1 flex items-center px-6 py-2 overflow-hidden bg-[#faf9f5]">
-            <div id="group1-sub" class="sub-menu-container gap-6 hidden w-full"></div>
-            <div id="group2-sub" class="sub-menu-container gap-6 hidden w-full"></div>
-        </div>
-    </nav>
 
-    <main class="flex-1 w-full relative z-0 bg-white">
-        <div id="loading-overlay" class="absolute inset-0 bg-white/80 backdrop-blur-sm flex items-center justify-center z-20 hidden">
-            <div class="font-editorial text-2xl italic tracking-widest animate-pulse border-b border-editorial pb-2">
-                Loading Data...
+        <!-- 소분류 메뉴 (공간 절약형 가로 스크롤) -->
+        <div class="flex-1 overflow-hidden sm:ml-6 flex items-center h-8">
+            <div id="group1-sub" class="sub-scroll-container gap-6 hidden w-full px-2"></div>
+            <div id="group2-sub" class="sub-scroll-container gap-6 hidden w-full px-2"></div>
+        </div>
+        
+    </header>
+
+    <!-- 3. 메인 콘텐츠 (화면 100% 꽉 채우기) -->
+    <main class="flex-1 w-full relative z-0 bg-zinc-900">
+        <!-- 키네틱 로딩 화면 -->
+        <div id="loading-overlay" class="absolute inset-0 bg-zinc-950/90 flex flex-col items-center justify-center z-20 hidden">
+            <div class="font-kinetic text-3xl md:text-5xl text-[var(--neon-accent)] glitch-text tracking-tighter mb-2">
+                FETCHING DATA
+            </div>
+            <div class="text-xs text-zinc-400 tracking-[0.3em] uppercase animate-pulse">
+                Please stand by...
             </div>
         </div>
         
+        <!-- 시트 프레임 (상하좌우 여백 없이 100%) -->
         <iframe id="sheet-frame" class="absolute inset-0 w-full h-full border-0" src=""></iframe>
     </main>
 
-    <footer class="marquee-container py-1.5 shrink-0 text-[10px] tracking-[0.2em] uppercase font-light">
-        <div class="marquee-content">
-            <span class="mx-6">KOREA UNIVERSITY GURO HOSPITAL</span>
-            <span class="mx-6 text-gray-500">|</span>
-            <span class="mx-6">KUMC</span>
-            <span class="mx-6 text-gray-500">|</span>
-            <span class="mx-6">Department of Nursing Service</span>
-            <span class="mx-6 text-gray-500">|</span>
-            <span class="mx-6">Shift Schedule</span>
-            <span class="mx-6 text-gray-500">|</span>
-            <span class="mx-6">KOREA UNIVERSITY GURO HOSPITAL</span>
-            <span class="mx-6 text-gray-500">|</span>
-            <span class="mx-6">KUMC</span>
-            <span class="mx-6 text-gray-500">|</span>
-            <span class="mx-6">Department of Nursing Service</span>
-            <span class="mx-6 text-gray-500">|</span>
-            <span class="mx-6">Shift Schedule</span>
-            <span class="mx-6 text-gray-500">|</span>
-        </div>
-    </footer>
-
     <script>
+        // API 설정 유지
         const sheetGroups = {
             group1: {
                 name: "진료지원",
@@ -178,15 +215,12 @@
 
         function toggleGroup(groupKey, buttonEl) {
             document.getElementById('group1-sub').classList.add('hidden');
-            document.getElementById('group1-sub').classList.remove('flex');
             document.getElementById('group2-sub').classList.add('hidden');
-            document.getElementById('group2-sub').classList.remove('flex');
             
             const container = document.getElementById(`${groupKey}-sub`);
             container.classList.remove('hidden');
-            container.classList.add('flex');
 
-            document.querySelectorAll(".main-tab").forEach(btn => btn.dataset.active = "false");
+            document.querySelectorAll(".nav-btn").forEach(btn => btn.dataset.active = "false");
             buttonEl.dataset.active = "true";
 
             if (container.childElementCount > 0) return;
@@ -204,20 +238,15 @@
                         const btn = document.createElement("button");
                         btn.textContent = name;
                         
-                        btn.className = "sub-btn text-sm text-gray-600 hover:text-black";
+                        // 사이버틱/키네틱 감성의 소분류 텍스트 버튼
+                        btn.className = "sub-tab text-[13px] font-semibold tracking-wide py-1 uppercase";
                         btn.dataset.active = "false";
                         
                         btn.onclick = () => {
                             document.getElementById("sheet-frame").src = `${pubhtmlPrefix}?gid=${gid}&widget=true&headers=false`;
                             
-                            document.querySelectorAll(".sub-btn").forEach(b => {
-                                b.dataset.active = "false";
-                                b.classList.remove("text-black");
-                                b.classList.add("text-gray-600");
-                            });
+                            document.querySelectorAll(".sub-tab").forEach(b => b.dataset.active = "false");
                             btn.dataset.active = "true";
-                            btn.classList.remove("text-gray-600");
-                            btn.classList.add("text-black");
                         };
                         container.appendChild(btn);
 
@@ -227,7 +256,7 @@
                     });
                 })
                 .catch(err => {
-                    container.innerHTML = "<p class='text-red-500 text-xs font-medium'>데이터를 불러오지 못했습니다.</p>";
+                    container.innerHTML = "<p class='text-[#ccff00] text-xs font-bold'>ERROR LOADING DATA</p>";
                     console.error(err);
                 })
                 .finally(() => {
@@ -235,6 +264,7 @@
                 });
         }
 
+        // 초기화 로직
         document.addEventListener("DOMContentLoaded", () => {
             const urlParams = new URLSearchParams(window.location.search);
             const groupKey = urlParams.get('group');
@@ -270,14 +300,8 @@
                                     const buttons = subContainer.getElementsByTagName('button');
                                     for(let btn of buttons) {
                                         if(btn.textContent === sheetName) {
-                                            document.querySelectorAll(".sub-btn").forEach(b => {
-                                                b.dataset.active = "false";
-                                                b.classList.remove("text-black");
-                                                b.classList.add("text-gray-600");
-                                            });
+                                            document.querySelectorAll(".sub-tab").forEach(b => b.dataset.active = "false");
                                             btn.dataset.active = "true";
-                                            btn.classList.remove("text-gray-600");
-                                            btn.classList.add("text-black");
                                             break;
                                         }
                                     }
