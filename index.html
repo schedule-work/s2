@@ -6,70 +6,111 @@
     <title>[임상지원간호팀] 근무표</title>
     <link rel="icon" type="image/x-icon" href="https://schedule-work.github.io/image/nurse.ico">
     
-    <!-- 2번 코드의 Tailwind CSS 및 폰트 적용 -->
+    <!-- Tailwind CSS 및 폰트 적용 -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             darkMode: 'media', // 시스템 설정에 따라 다크/라이트 모드 자동 전환
         }
     </script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            font-family: 'Inter', 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
         }
         
-        /* 메뉴 접기/펼치기 애니메이션을 위한 클래스 */
+        /* 1. 메뉴 접기/펼치기 공간 제거 애니메이션 */
         #nav-container {
-            transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+            max-height: 500px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             overflow: hidden;
+            transform-origin: top;
+            opacity: 1;
         }
+        
         #nav-container.collapsed {
-            max-height: 0;
-            opacity: 0;
-            margin-bottom: 0;
-            padding-top: 0;
-            padding-bottom: 0;
-            border-bottom: none;
+            max-height: 0 !important;
+            padding-top: 0 !important;
+            padding-bottom: 0 !important;
+            border-bottom-width: 0 !important;
+            margin: 0 !important;
+            opacity: 0 !important;
+        }
+
+        /* 3. 타이틀 고급 애니메이션 (Shine Effect) */
+        @keyframes subtle-shine {
+            0% { background-position: 200% center; }
+            100% { background-position: -200% center; }
+        }
+
+        .premium-title {
+            /* 라이트모드 텍스트 그라데이션 */
+            background: linear-gradient(110deg, #0f172a 30%, #3b82f6 50%, #0f172a 70%);
+            background-size: 200% auto;
+            color: transparent;
+            -webkit-background-clip: text;
+            background-clip: text;
+            animation: subtle-shine 5s linear infinite;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .premium-title {
+                /* 다크모드 텍스트 그라데이션 */
+                background: linear-gradient(110deg, #f8fafc 30%, #60a5fa 50%, #f8fafc 70%);
+                background-size: 200% auto;
+                -webkit-background-clip: text;
+                background-clip: text;
+            }
         }
     </style>
 </head>
 
 <body class="h-dvh flex flex-col bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200 overflow-hidden transition-colors duration-200">
 
-    <!-- 2번 코드 스타일의 상단 헤더 -->
-    <header class="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 px-4 py-3 flex justify-between items-center shrink-0 shadow-sm transition-colors duration-200 z-20 relative">
-        <div class="flex flex-col">
-            <span class="text-lg font-bold text-slate-900 dark:text-white tracking-tight">[임상지원간호팀] 통합 근무표</span>
-            <div class="flex items-center text-[11px] sm:text-xs text-blue-600 dark:text-blue-400 mt-1 font-medium">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 mr-1" viewBox="0 0 24 24" fill="currentColor">
+    <!-- 상단 헤더 (타이틀 애니메이션 및 배지 적용) -->
+    <header class="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 px-5 py-3.5 flex justify-between items-center shrink-0 shadow-sm transition-colors duration-200 z-20 relative">
+        <div class="flex flex-col justify-center">
+            <!-- 고급화된 타이틀 영역 -->
+            <div class="flex items-center gap-2.5 mb-1.5">
+                <span class="px-2.5 py-0.5 rounded text-[11px] font-bold tracking-widest bg-blue-50 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400 border border-blue-100 dark:border-blue-800/50 shadow-sm">
+                    임상지원간호팀
+                </span>
+                <span class="text-xl sm:text-2xl font-extrabold premium-title tracking-tight">
+                    통합 근무표
+                </span>
+            </div>
+            
+            <!-- 안내 문구 -->
+            <div class="flex items-center text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 font-medium">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 mr-1 text-blue-500" viewBox="0 0 24 24" fill="currentColor">
                     <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 0 1 .67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 1 1-.671-1.34l.041-.022ZM12 9a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z" clip-rule="evenodd" />
                 </svg>
                 <span>시트 로딩에 다소 시간이 걸릴 수 있습니다. 잠시만 기다려 주세요.</span>
             </div>
         </div>
 
+        <!-- 메뉴 접기 버튼 -->
         <div class="flex items-center space-x-2">
-            <button onclick="toggleNav()" class="flex items-center px-3 py-2 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 rounded-lg text-xs font-bold transition shadow-sm border border-slate-200 dark:border-slate-600" title="메뉴 숨기기/보이기">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1">
+            <button id="toggle-btn" onclick="toggleNav()" class="flex items-center px-3 py-2 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 rounded-lg text-xs font-bold transition shadow-sm border border-slate-200 dark:border-slate-600">
+                <svg id="toggle-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1 transition-transform duration-300">
                     <line x1="3" y1="12" x2="21" y2="12"></line>
                     <line x1="3" y1="6" x2="21" y2="6"></line>
                     <line x1="3" y1="18" x2="21" y2="18"></line>
                 </svg>
-                메뉴 접기
+                <span id="toggle-text">메뉴 접기</span>
             </button>
         </div>
     </header>
 
     <!-- 상단 네비게이션 (대분류 및 소분류 시트 목록) -->
-    <nav id="nav-container" class="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 px-4 py-4 shrink-0 transition-colors duration-200 z-10" style="max-height: 500px;">
+    <nav id="nav-container" class="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 px-5 py-4 shrink-0 z-10">
         <!-- 대분류 그룹 버튼 -->
         <div class="flex gap-2 mb-3">
-            <button id="btn-group1" class="group-btn px-5 py-2.5 rounded-xl text-sm font-bold transition-all border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-600 data-[active=true]:bg-slate-800 data-[active=true]:text-white data-[active=true]:border-slate-800 dark:data-[active=true]:bg-slate-200 dark:data-[active=true]:text-slate-900" onclick="toggleGroup('group1', this)">
+            <button id="btn-group1" class="group-btn px-5 py-2.5 rounded-xl text-sm font-bold transition-all border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-600 data-[active=true]:bg-slate-800 data-[active=true]:text-white data-[active=true]:border-slate-800 dark:data-[active=true]:bg-slate-200 dark:data-[active=true]:text-slate-900 shadow-sm" onclick="toggleGroup('group1', this)">
                 진료지원
             </button>
-            <button id="btn-group2" class="group-btn px-5 py-2.5 rounded-xl text-sm font-bold transition-all border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-600 data-[active=true]:bg-slate-800 data-[active=true]:text-white data-[active=true]:border-slate-800 dark:data-[active=true]:bg-slate-200 dark:data-[active=true]:text-slate-900" onclick="toggleGroup('group2', this)">
+            <button id="btn-group2" class="group-btn px-5 py-2.5 rounded-xl text-sm font-bold transition-all border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-600 data-[active=true]:bg-slate-800 data-[active=true]:text-white data-[active=true]:border-slate-800 dark:data-[active=true]:bg-slate-200 dark:data-[active=true]:text-slate-900 shadow-sm" onclick="toggleGroup('group2', this)">
                 전담간호사
             </button>
         </div>
@@ -79,11 +120,11 @@
         <div id="group2-sub" class="sub-buttons-container flex flex-wrap gap-2 hidden"></div>
     </nav>
 
-    <!-- 스프레드시트 본문 (2번 코드의 달력 영역 스타일 적용) -->
+    <!-- 스프레드시트 본문 -->
     <main class="flex-1 w-full p-3 sm:p-4 min-h-0 flex flex-col relative z-0">
         <div class="flex-1 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 p-1 sm:p-2 h-full relative transition-colors duration-200 overflow-hidden flex flex-col">
             
-            <!-- 로딩 스피너 (2번 코드 디자인) -->
+            <!-- 로딩 스피너 -->
             <div id="loading-overlay" class="absolute inset-0 bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm flex items-center justify-center z-10 hidden">
                 <div class="bg-white dark:bg-slate-800 px-6 py-4 rounded-xl shadow-xl border border-slate-100 dark:border-slate-700 flex items-center space-x-3">
                     <svg class="animate-spin h-6 w-6 text-blue-700 dark:text-blue-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -100,7 +141,7 @@
     </main>
 
     <script>
-        // --- 기능 로직 1번 코드와 동일하게 유지 ---
+        // --- API 및 로직 변수는 기존과 완벽히 동일 ---
         const sheetGroups = {
             group1: {
                 name: "진료지원",
@@ -115,16 +156,14 @@
         };
 
         function toggleGroup(groupKey, buttonEl) {
-            // 모든 하위 컨테이너 숨기기
             document.querySelectorAll('.sub-buttons-container').forEach(el => el.classList.add('hidden'));
             const container = document.getElementById(`${groupKey}-sub`);
             container.classList.remove('hidden');
 
-            // 그룹 버튼 Active 상태 디자인 변경 (Tailwind data 속성 활용)
             document.querySelectorAll(".group-btn").forEach(btn => btn.dataset.active = "false");
             buttonEl.dataset.active = "true";
 
-            if (container.childElementCount > 0) return; // 이미 불러온 경우 스킵
+            if (container.childElementCount > 0) return;
 
             const loadingOverlay = document.getElementById("loading-overlay");
             loadingOverlay.classList.remove("hidden");
@@ -139,20 +178,17 @@
                         const btn = document.createElement("button");
                         btn.textContent = name;
                         
-                        // 서브 버튼(시트명) 디자인 클래스 적용
                         btn.className = "sub-btn px-4 py-2 rounded-xl text-[13px] sm:text-sm font-medium transition-all bg-slate-100 dark:bg-slate-700/60 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600 data-[active=true]:bg-blue-600 data-[active=true]:text-white data-[active=true]:shadow-md dark:data-[active=true]:bg-blue-500";
                         btn.dataset.active = "false";
                         
                         btn.onclick = () => {
                             document.getElementById("sheet-frame").src = `${pubhtmlPrefix}?gid=${gid}&widget=true&headers=false`;
                             
-                            // 서브 버튼 active 전환
                             document.querySelectorAll(".sub-btn").forEach(b => b.dataset.active = "false");
                             btn.dataset.active = "true";
                         };
                         container.appendChild(btn);
 
-                        // 첫 번째 버튼 자동 클릭
                         if (groupKey === 'group1' && index === 0) {
                             btn.click();
                         }
@@ -167,10 +203,21 @@
                 });
         }
 
-        // 네비게이션 접기/펼치기
+        // 1번 요청: 메뉴 접기/펼치기 및 버튼 텍스트 동적 변경
         function toggleNav() {
             const nav = document.getElementById("nav-container");
+            const toggleText = document.getElementById("toggle-text");
+            const toggleIcon = document.getElementById("toggle-icon");
+            
             nav.classList.toggle("collapsed");
+            
+            if (nav.classList.contains("collapsed")) {
+                toggleText.textContent = "메뉴 펼치기";
+                toggleIcon.style.transform = "rotate(180deg)"; // 아이콘 회전 효과
+            } else {
+                toggleText.textContent = "메뉴 접기";
+                toggleIcon.style.transform = "rotate(0deg)";
+            }
         }
 
         document.addEventListener("DOMContentLoaded", () => {
@@ -178,11 +225,9 @@
             const groupKey = urlParams.get('group');
             const sheetName = urlParams.get('sheet');
 
-            // ▶ URL 파라미터 없을 때만 진료지원 첫 시트 자동 로드
             if (!(groupKey && sheetName)) {
-                // UI를 위해 버튼 먼저 렌더링하도록 클릭 트리거
                 document.getElementById("btn-group2")?.click();
-                document.getElementById("btn-group1")?.click(); // group1을 최종 활성화
+                document.getElementById("btn-group1")?.click(); 
                 
                 fetch(sheetGroups.group1.api)
                     .then(res => res.json())
@@ -194,11 +239,9 @@
                         }
                     });
             } else {
-                // ▶ URL 파라미터로 들어왔을 경우
                 document.getElementById("btn-group1")?.click();
                 document.getElementById("btn-group2")?.click();
                 
-                // 해당 그룹을 찾아 클릭
                 const targetGroupBtn = document.getElementById(`btn-${groupKey}`);
                 if(targetGroupBtn) targetGroupBtn.click();
 
@@ -211,7 +254,6 @@
                                 document.getElementById("sheet-frame").src =
                                     `${sheetGroups[groupKey].pubhtmlPrefix}?gid=${match.gid}&widget=true&headers=false`;
                                 
-                                // 로딩 딜레이 후 활성화 스타일 부여
                                 setTimeout(() => {
                                     const subContainer = document.getElementById(`${groupKey}-sub`);
                                     const buttons = subContainer.getElementsByTagName('button');
