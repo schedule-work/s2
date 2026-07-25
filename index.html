@@ -1,347 +1,233 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <title>[임상지원간호팀] 근무표</title>
-  <link rel="icon" type="image/x-icon" href="https://schedule-work.github.io/image/nurse.ico">
-  <style>
-    /* --------------------------------------
-       전체 테마 설정 (심플 & 모던)
-    -------------------------------------- */
-    :root {
-      --primary-color: #3b82f6;       /* 메인 포인트 컬러 (블루) */
-      --primary-hover: #2563eb;       /* 버튼 호버 컬러 */
-      --bg-color: #f3f4f6;            /* 전체 배경색 */
-      --nav-bg: #ffffff;              /* 상단 메뉴 배경색 */
-      --text-main: #1f2937;           /* 기본 글자색 */
-      --text-muted: #6b7280;          /* 보조 글자색 */
-      --border-color: #e5e7eb;        /* 테두리 선 색상 */
-    }
-
-    body {
-      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-      background-color: var(--bg-color);
-      color: var(--text-main);
-      margin: 0;
-      display: flex;
-      flex-direction: column;         /* 위아래 수직 배치 */
-      height: 100vh;                  /* 화면 전체 높이 사용 */
-      overflow: hidden;               /* 페이지 전체 스크롤 방지 */
-    }
-
-    /* --------------------------------------
-       상단 헤더 영역 (제목 & 알림 & 토글)
-    -------------------------------------- */
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background-color: var(--nav-bg);
-      padding: 12px 24px;
-      border-bottom: 1px solid var(--border-color);
-      z-index: 20;
-    }
-
-    .header-left {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
-
-    .header h1 {
-      margin: 0;
-      font-size: 20px;
-      font-weight: 700;
-      color: var(--text-main);
-      letter-spacing: -0.5px;
-    }
-
-    .notice {
-      color: var(--text-muted);
-      font-size: 13px;
-      background: #f9fafb;
-      padding: 6px 12px;
-      border-radius: 6px;
-      border: 1px solid var(--border-color);
-    }
-
-    .toggle-button {
-      background: none;
-      border: 1px solid var(--border-color);
-      border-radius: 6px;
-      color: var(--text-muted);
-      cursor: pointer;
-      padding: 6px 12px;
-      font-size: 13px;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      transition: all 0.2s;
-    }
-
-    .toggle-button:hover {
-      background-color: #f3f4f6;
-      color: var(--text-main);
-    }
-
-    /* --------------------------------------
-       상단 메뉴 영역 (진료지원 / 전담간호사 탭)
-    -------------------------------------- */
-    .top-nav {
-      background-color: var(--nav-bg);
-      border-bottom: 1px solid var(--border-color);
-      padding: 16px 24px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      overflow: hidden;
-    }
-
-    /* 토글로 메뉴가 접혔을 때 */
-    .top-nav.collapsed {
-      padding-top: 0;
-      padding-bottom: 0;
-      max-height: 0;
-      border-bottom: none;
-      opacity: 0;
-    }
-
-    .section {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
-
-    /* 메인 그룹 라벨 (진료지원, 전담간호사) */
-    .group-btn {
-      background: #f8fafc;
-      border: 1px solid var(--border-color);
-      border-radius: 6px;
-      padding: 6px 12px;
-      font-size: 14px;
-      font-weight: 700;
-      color: #334155;
-      min-width: 90px;
-      text-align: center;
-      cursor: default; /* 클릭 기능은 내부적으로 동작하나 시각적으로는 라벨처럼 표현 */
-    }
-
-    /* 개별 시트 버튼 (서브 버튼)들 */
-    .sub-buttons {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .sub-buttons button {
-      background-color: transparent;
-      color: var(--text-muted);
-      border: 1px solid transparent;
-      border-radius: 20px; /* 둥근 알약 모양 */
-      padding: 6px 14px;
-      font-size: 14px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .sub-buttons button:hover {
-      background-color: #f1f5f9;
-      color: var(--text-main);
-    }
-
-    /* 선택된 활성 탭 스타일 */
-    .sub-buttons button.active {
-      background-color: var(--primary-color);
-      color: #ffffff;
-      font-weight: 600;
-      box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2);
-    }
-
-    /* --------------------------------------
-       스프레드시트 본문 영역
-    -------------------------------------- */
-    .content {
-      flex-grow: 1;
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .iframe-wrapper {
-      flex-grow: 1;
-      background: #ffffff;
-      border: 1px solid var(--border-color);
-      border-radius: 10px;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-      overflow: hidden;
-      display: flex;
-    }
-
-    iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>[임상지원간호팀] 근무표</title>
+    <link rel="icon" type="image/x-icon" href="https://schedule-work.github.io/image/nurse.ico">
+    
+    <!-- 2번 코드의 Tailwind CSS 및 폰트 적용 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'media', // 시스템 설정에 따라 다크/라이트 모드 자동 전환
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        }
+        
+        /* 메뉴 접기/펼치기 애니메이션을 위한 클래스 */
+        #nav-container {
+            transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+            overflow: hidden;
+        }
+        #nav-container.collapsed {
+            max-height: 0;
+            opacity: 0;
+            margin-bottom: 0;
+            padding-top: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+    </style>
 </head>
-<body>
-  
-  <!-- 상단 헤더 -->
-  <header class="header">
-    <div class="header-left">
-      <h1>[임상지원간호팀] 통합 근무표</h1>
-      <span class="notice">※ 시트 로딩에 다소 시간이 걸릴 수 있습니다. 잠시만 기다려 주세요.</span>
-    </div>
-    <button class="toggle-button" onclick="toggleNav()" title="메뉴 숨기기/보이기">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <line x1="3" y1="12" x2="21" y2="12"></line>
-        <line x1="3" y1="6" x2="21" y2="6"></line>
-        <line x1="3" y1="18" x2="21" y2="18"></line>
-      </svg>
-      메뉴 토글
-    </button>
-  </header>
 
-  <!-- 상단 네비게이션 메뉴 (기존 사이드바 역할) -->
-  <nav class="top-nav" id="top-nav">
-    <div class="section">
-      <button id="btn-group1" class="group-btn" onclick="toggleGroup('group1', this)">진료지원</button>
-      <div id="group1-sub" class="sub-buttons"></div>
-    </div>
-    <div class="section">
-      <button id="btn-group2" class="group-btn" onclick="toggleGroup('group2', this)">전담간호사</button>
-      <div id="group2-sub" class="sub-buttons"></div>
-    </div>
-  </nav>
+<body class="h-dvh flex flex-col bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200 overflow-hidden transition-colors duration-200">
 
-  <!-- 시트 출력 본문 -->
-  <main class="content">
-    <div class="iframe-wrapper">
-      <iframe id="sheet-frame" src=""></iframe>
-    </div>
-  </main>
+    <!-- 2번 코드 스타일의 상단 헤더 -->
+    <header class="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 px-4 py-3 flex justify-between items-center shrink-0 shadow-sm transition-colors duration-200 z-20 relative">
+        <div class="flex flex-col">
+            <span class="text-lg font-bold text-slate-900 dark:text-white tracking-tight">[임상지원간호팀] 통합 근무표</span>
+            <div class="flex items-center text-[11px] sm:text-xs text-blue-600 dark:text-blue-400 mt-1 font-medium">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 mr-1" viewBox="0 0 24 24" fill="currentColor">
+                    <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 0 1 .67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 1 1-.671-1.34l.041-.022ZM12 9a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z" clip-rule="evenodd" />
+                </svg>
+                <span>시트 로딩에 다소 시간이 걸릴 수 있습니다. 잠시만 기다려 주세요.</span>
+            </div>
+        </div>
 
-  <script>
-    // --- 설정 변수는 기존과 100% 동일하게 유지 ---
-    const sheetGroups = {
-      group1: {
-        name: "진료지원",
-        pubhtmlPrefix: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRyaIg5AxN1I8wD2Jrjr1o952ObrO_sHA3vL_Z1403dZLx9u9ooqmlLyuv5fQmeN6HnMmFdIRgCfi7_/pubhtml",
-        api: "https://script.google.com/macros/s/AKfycbz_FRqb7fbZwxNg_eWIXjDL15tW8iZGllcs7y6-qzZev7YtFHgRNJUSgm9n7352AZXJYw/exec"
-      },
-      group2: {
-        name: "전담간호사",
-        pubhtmlPrefix: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSWjnyzr3Qa-UuQ9fRf3lwiRm4vVA7jLOPtJiYe9TU1C-n4dyHcqVk967ahJJWpG_SUbsXwfdBC8Rh-/pubhtml",
-        api: "https://script.google.com/macros/s/AKfycbzBpLXtYgjmbzRp74KMrdb2_tZTJYkAQn_aMRQ2AQau3IoofRKA42tzEKpOGn4Hhftmew/exec"
-      }
-    };
+        <div class="flex items-center space-x-2">
+            <button onclick="toggleNav()" class="flex items-center px-3 py-2 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 rounded-lg text-xs font-bold transition shadow-sm border border-slate-200 dark:border-slate-600" title="메뉴 숨기기/보이기">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1">
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+                메뉴 접기
+            </button>
+        </div>
+    </header>
 
-    let firstLoaded = {};
+    <!-- 상단 네비게이션 (대분류 및 소분류 시트 목록) -->
+    <nav id="nav-container" class="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 px-4 py-4 shrink-0 transition-colors duration-200 z-10" style="max-height: 500px;">
+        <!-- 대분류 그룹 버튼 -->
+        <div class="flex gap-2 mb-3">
+            <button id="btn-group1" class="group-btn px-5 py-2.5 rounded-xl text-sm font-bold transition-all border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-600 data-[active=true]:bg-slate-800 data-[active=true]:text-white data-[active=true]:border-slate-800 dark:data-[active=true]:bg-slate-200 dark:data-[active=true]:text-slate-900" onclick="toggleGroup('group1', this)">
+                진료지원
+            </button>
+            <button id="btn-group2" class="group-btn px-5 py-2.5 rounded-xl text-sm font-bold transition-all border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-600 data-[active=true]:bg-slate-800 data-[active=true]:text-white data-[active=true]:border-slate-800 dark:data-[active=true]:bg-slate-200 dark:data-[active=true]:text-slate-900" onclick="toggleGroup('group2', this)">
+                전담간호사
+            </button>
+        </div>
+        
+        <!-- 하위 시트 버튼 컨테이너 -->
+        <div id="group1-sub" class="sub-buttons-container flex flex-wrap gap-2 hidden"></div>
+        <div id="group2-sub" class="sub-buttons-container flex flex-wrap gap-2 hidden"></div>
+    </nav>
 
-    function toggleGroup(groupKey, buttonEl) {
-      const container = document.getElementById(`${groupKey}-sub`);
+    <!-- 스프레드시트 본문 (2번 코드의 달력 영역 스타일 적용) -->
+    <main class="flex-1 w-full p-3 sm:p-4 min-h-0 flex flex-col relative z-0">
+        <div class="flex-1 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 p-1 sm:p-2 h-full relative transition-colors duration-200 overflow-hidden flex flex-col">
+            
+            <!-- 로딩 스피너 (2번 코드 디자인) -->
+            <div id="loading-overlay" class="absolute inset-0 bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm flex items-center justify-center z-10 hidden">
+                <div class="bg-white dark:bg-slate-800 px-6 py-4 rounded-xl shadow-xl border border-slate-100 dark:border-slate-700 flex items-center space-x-3">
+                    <svg class="animate-spin h-6 w-6 text-blue-700 dark:text-blue-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <span class="text-sm font-bold text-blue-700 dark:text-blue-400">시트 목록 불러오는 중...</span>
+                </div>
+            </div>
 
-      // 클래스명 탐색 대상만 .sidebar에서 .top-nav로 변경
-      document.querySelectorAll(".top-nav .section > button").forEach(btn => btn.classList.remove("active"));
-      buttonEl.classList.add("active");
+            <!-- 시트 프레임 -->
+            <iframe id="sheet-frame" class="w-full h-full border-0 rounded-xl" src=""></iframe>
+        </div>
+    </main>
 
-      if (container.childElementCount > 0) return;
-
-      const { api, pubhtmlPrefix } = sheetGroups[groupKey];
-
-      fetch(api)
-        .then(res => res.json())
-        .then(sheets => {
-          container.innerHTML = '';
-          sheets.forEach(({ name, gid }, index) => {
-            const btn = document.createElement("button");
-            btn.textContent = name;
-            btn.onclick = () => {
-              document.getElementById("sheet-frame").src = `${pubhtmlPrefix}?gid=${gid}&widget=true&headers=false`;
-              document.querySelectorAll(".sub-buttons button").forEach(b => b.classList.remove("active"));
-              btn.classList.add("active");
-            };
-            container.appendChild(btn);
-
-            if (groupKey === 'group1' && index === 0) {
-              btn.click();
+    <script>
+        // --- 기능 로직 1번 코드와 동일하게 유지 ---
+        const sheetGroups = {
+            group1: {
+                name: "진료지원",
+                pubhtmlPrefix: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRyaIg5AxN1I8wD2Jrjr1o952ObrO_sHA3vL_Z1403dZLx9u9ooqmlLyuv5fQmeN6HnMmFdIRgCfi7_/pubhtml",
+                api: "https://script.google.com/macros/s/AKfycbz_FRqb7fbZwxNg_eWIXjDL15tW8iZGllcs7y6-qzZev7YtFHgRNJUSgm9n7352AZXJYw/exec"
+            },
+            group2: {
+                name: "전담간호사",
+                pubhtmlPrefix: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSWjnyzr3Qa-UuQ9fRf3lwiRm4vVA7jLOPtJiYe9TU1C-n4dyHcqVk967ahJJWpG_SUbsXwfdBC8Rh-/pubhtml",
+                api: "https://script.google.com/macros/s/AKfycbzBpLXtYgjmbzRp74KMrdb2_tZTJYkAQn_aMRQ2AQau3IoofRKA42tzEKpOGn4Hhftmew/exec"
             }
-          });
-        })
-        .catch(err => {
-          container.innerHTML = "<p style='color:#ef4444; font-size:13px;'>시트 로딩 실패</p>";
-          console.error(err);
-        });
-    }
+        };
 
-    // 사이드바 대신 상단 메뉴를 접고 펴는 함수로 역할 유지
-    function toggleNav() {
-      const nav = document.getElementById("top-nav");
-      // 메뉴 높이를 고정하여 애니메이션이 자연스럽게 적용되게 처리
-      if (!nav.style.maxHeight || nav.style.maxHeight !== '0px') {
-        nav.style.maxHeight = '0px';
-        nav.classList.add("collapsed");
-      } else {
-        nav.style.maxHeight = '500px'; 
-        nav.classList.remove("collapsed");
-      }
-    }
+        function toggleGroup(groupKey, buttonEl) {
+            // 모든 하위 컨테이너 숨기기
+            document.querySelectorAll('.sub-buttons-container').forEach(el => el.classList.add('hidden'));
+            const container = document.getElementById(`${groupKey}-sub`);
+            container.classList.remove('hidden');
 
-    // --- URL 파라미터 확인 및 로딩 로직 (기존 코드 완벽 동일) ---
-    document.addEventListener("DOMContentLoaded", () => {
-      const urlParams = new URLSearchParams(window.location.search);
-      const groupKey = urlParams.get('group');
-      const sheetName = urlParams.get('sheet');
+            // 그룹 버튼 Active 상태 디자인 변경 (Tailwind data 속성 활용)
+            document.querySelectorAll(".group-btn").forEach(btn => btn.dataset.active = "false");
+            buttonEl.dataset.active = "true";
 
-      // ▶ URL 파라미터 없을 때만 진료지원 첫 시트 자동 로드
-      if (!(groupKey && sheetName)) {
-        fetch(sheetGroups.group1.api)
-          .then(res => res.json())
-          .then(sheets => {
-            const first = sheets[0];
-            if (first) {
-              document.getElementById("sheet-frame").src =
-                `${sheetGroups.group1.pubhtmlPrefix}?gid=${first.gid}&widget=true&headers=false`;
-            }
-          });
-      }
+            if (container.childElementCount > 0) return; // 이미 불러온 경우 스킵
 
-      // 탭 렌더링은 항상 수행
-      document.getElementById("btn-group1")?.click();
-      document.getElementById("btn-group2")?.click();
+            const loadingOverlay = document.getElementById("loading-overlay");
+            loadingOverlay.classList.remove("hidden");
 
-      // ▶ URL 파라미터로 들어왔을 경우 해당 시트 열기
-      if (groupKey && sheetGroups[groupKey]) {
-        fetch(sheetGroups[groupKey].api)
-          .then(res => res.json())
-          .then(sheets => {
-            const match = sheets.find(s => s.name === sheetName);
-            if (match) {
-              document.getElementById("sheet-frame").src =
-                `${sheetGroups[groupKey].pubhtmlPrefix}?gid=${match.gid}&widget=true&headers=false`;
+            const { api, pubhtmlPrefix } = sheetGroups[groupKey];
+
+            fetch(api)
+                .then(res => res.json())
+                .then(sheets => {
+                    container.innerHTML = '';
+                    sheets.forEach(({ name, gid }, index) => {
+                        const btn = document.createElement("button");
+                        btn.textContent = name;
+                        
+                        // 서브 버튼(시트명) 디자인 클래스 적용
+                        btn.className = "sub-btn px-4 py-2 rounded-xl text-[13px] sm:text-sm font-medium transition-all bg-slate-100 dark:bg-slate-700/60 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600 data-[active=true]:bg-blue-600 data-[active=true]:text-white data-[active=true]:shadow-md dark:data-[active=true]:bg-blue-500";
+                        btn.dataset.active = "false";
+                        
+                        btn.onclick = () => {
+                            document.getElementById("sheet-frame").src = `${pubhtmlPrefix}?gid=${gid}&widget=true&headers=false`;
+                            
+                            // 서브 버튼 active 전환
+                            document.querySelectorAll(".sub-btn").forEach(b => b.dataset.active = "false");
+                            btn.dataset.active = "true";
+                        };
+                        container.appendChild(btn);
+
+                        // 첫 번째 버튼 자동 클릭
+                        if (groupKey === 'group1' && index === 0) {
+                            btn.click();
+                        }
+                    });
+                })
+                .catch(err => {
+                    container.innerHTML = "<p class='text-red-500 text-sm font-medium py-2 px-4 bg-red-50 dark:bg-red-900/30 rounded-xl border border-red-100 dark:border-red-800'>시트 로딩 실패. 새로고침을 시도해주세요.</p>";
+                    console.error(err);
+                })
+                .finally(() => {
+                    loadingOverlay.classList.add("hidden");
+                });
+        }
+
+        // 네비게이션 접기/펼치기
+        function toggleNav() {
+            const nav = document.getElementById("nav-container");
+            nav.classList.toggle("collapsed");
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const groupKey = urlParams.get('group');
+            const sheetName = urlParams.get('sheet');
+
+            // ▶ URL 파라미터 없을 때만 진료지원 첫 시트 자동 로드
+            if (!(groupKey && sheetName)) {
+                // UI를 위해 버튼 먼저 렌더링하도록 클릭 트리거
+                document.getElementById("btn-group2")?.click();
+                document.getElementById("btn-group1")?.click(); // group1을 최종 활성화
                 
-              // URL로 들어온 버튼 시각적 활성화 동기화 (기능 외적 보조 스크립트)
-              setTimeout(() => {
-                const subContainer = document.getElementById(`${groupKey}-sub`);
-                const buttons = subContainer.getElementsByTagName('button');
-                for(let btn of buttons) {
-                  if(btn.textContent === sheetName) {
-                    document.querySelectorAll(".sub-buttons button").forEach(b => b.classList.remove("active"));
-                    btn.classList.add('active');
-                    break;
-                  }
+                fetch(sheetGroups.group1.api)
+                    .then(res => res.json())
+                    .then(sheets => {
+                        const first = sheets[0];
+                        if (first) {
+                            document.getElementById("sheet-frame").src =
+                                `${sheetGroups.group1.pubhtmlPrefix}?gid=${first.gid}&widget=true&headers=false`;
+                        }
+                    });
+            } else {
+                // ▶ URL 파라미터로 들어왔을 경우
+                document.getElementById("btn-group1")?.click();
+                document.getElementById("btn-group2")?.click();
+                
+                // 해당 그룹을 찾아 클릭
+                const targetGroupBtn = document.getElementById(`btn-${groupKey}`);
+                if(targetGroupBtn) targetGroupBtn.click();
+
+                if (sheetGroups[groupKey]) {
+                    fetch(sheetGroups[groupKey].api)
+                        .then(res => res.json())
+                        .then(sheets => {
+                            const match = sheets.find(s => s.name === sheetName);
+                            if (match) {
+                                document.getElementById("sheet-frame").src =
+                                    `${sheetGroups[groupKey].pubhtmlPrefix}?gid=${match.gid}&widget=true&headers=false`;
+                                
+                                // 로딩 딜레이 후 활성화 스타일 부여
+                                setTimeout(() => {
+                                    const subContainer = document.getElementById(`${groupKey}-sub`);
+                                    const buttons = subContainer.getElementsByTagName('button');
+                                    for(let btn of buttons) {
+                                        if(btn.textContent === sheetName) {
+                                            document.querySelectorAll(".sub-btn").forEach(b => b.dataset.active = "false");
+                                            btn.dataset.active = "true";
+                                            break;
+                                        }
+                                    }
+                                }, 1000);
+                            }
+                        });
                 }
-              }, 800);
             }
-          });
-      }
-      
-      // 초기 메뉴 높이 설정 (접기/펼치기 애니메이션을 위해)
-      document.getElementById("top-nav").style.maxHeight = '500px';
-    });
-  </script>
+        });
+    </script>
 </body>
 </html>
