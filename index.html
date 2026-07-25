@@ -3,147 +3,99 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>[임상지원간호팀] 통합 근무표</title>
+    <title>[임상지원간호팀] 에디토리얼 근무표</title>
     <link rel="icon" type="image/x-icon" href="https://schedule-work.github.io/image/nurse.ico">
     
-    <!-- Tailwind CSS 및 폰트 불러오기 (Bebas Neue, Inter) -->
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- 에디토리얼 감성의 폰트: Playfair Display(세리프) & Inter(산세리프) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --bg-color: #f4f4f5;
-            --text-color: #18181b;
-            --accent-color: #ef4444; /* 사진 속 빨간 포인트 컬러 */
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
+            /* 종이 질감 느낌의 미세한 오프화이트 배경 */
+            --paper-bg: #fdfcf7; 
+            --ink-black: #111111;
         }
 
         body {
             font-family: 'Inter', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
+            background-color: var(--paper-bg);
+            color: var(--ink-black);
             height: 100vh;
             display: flex;
             flex-direction: column;
             overflow: hidden;
         }
 
-        /* 상단 네비게이션 바 */
-        header {
+        .font-editorial {
+            font-family: 'Playfair Display', serif;
+        }
+
+        /* 얇고 정교한 테두리 (에디토리얼 특징) */
+        .border-editorial {
+            border-color: var(--ink-black);
+        }
+
+        /* 메인 메뉴 탭 스타일 */
+        .main-tab {
+            transition: all 0.2s ease;
+            position: relative;
+        }
+        .main-tab[data-active="true"] {
+            background-color: var(--ink-black);
+            color: var(--paper-bg);
+        }
+        .main-tab[data-active="false"]:hover {
+            background-color: #f0eee1;
+        }
+
+        /* 서브 메뉴 (가로 스크롤) 스타일 */
+        .sub-menu-container {
             display: flex;
-            justify-content: space-between;
-            padding: 1.5rem 2.5rem;
-            font-size: 0.875rem;
-            z-index: 20;
-        }
-
-        .logo-placeholder {
-            font-weight: 600;
-            letter-spacing: 2px;
-        }
-
-        /* 버튼 스타일 (좌측 하단) */
-        .btn {
-            padding: 0.75rem 1.5rem;
-            font-size: 0.8rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            cursor: pointer;
-            border: 1px solid var(--text-color);
-            transition: all 0.3s ease;
-        }
-        
-        .btn-dark {
-            background-color: var(--text-color);
-            color: #fff;
-        }
-
-        .btn-dark:hover {
-            background-color: #3f3f46;
-            border-color: #3f3f46;
-        }
-
-        .btn-outline {
-            background-color: transparent;
-            color: var(--text-color);
-        }
-
-        .btn-outline:hover {
-            background-color: #e4e4e7;
-        }
-
-        /* 우측 카테고리 메뉴 (세로형 리스트) */
-        .right-menu-btn {
-            font-size: 0.95rem;
-            color: #a1a1aa;
-            cursor: pointer;
-            transition: color 0.3s;
-            display: flex;
+            overflow-x: auto;
             align-items: center;
-            justify-content: flex-start;
-            gap: 0.5rem;
-            background: transparent;
-            border: none;
-            width: 100%;
-            padding: 0.5rem 0;
+            /* 스크롤바 숨김 */
+            -ms-overflow-style: none;  
+            scrollbar-width: none;  
+        }
+        .sub-menu-container::-webkit-scrollbar {
+            display: none; 
         }
 
-        @media (min-width: 1024px) {
-            .right-menu-btn {
-                justify-content: flex-end; /* 데스크탑에서는 우측 정렬 */
-            }
-        }
-
-        .right-menu-btn:hover, .right-menu-btn[data-active="true"] {
-            color: var(--text-color);
-            font-weight: 600;
-        }
-
-        /* 활성화된 메뉴 옆의 빨간 점 */
-        .right-menu-btn[data-active="true"]::after {
-            content: '';
-            display: inline-block;
-            width: 6px;
-            height: 6px;
-            background-color: var(--accent-color);
-            border-radius: 50%;
-        }
-
-        /* 하단 무한 스크롤 텍스트 (Marquee) */
-        .marquee-container {
-            background-color: var(--text-color);
-            color: #fff;
-            padding: 1rem 0;
-            overflow: hidden;
+        .sub-btn {
             white-space: nowrap;
             position: relative;
-            z-index: 10;
+            padding: 0.25rem 0;
+            transition: color 0.2s;
+        }
+        .sub-btn[data-active="true"] {
+            font-weight: 600;
+        }
+        .sub-btn[data-active="true"]::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background-color: var(--ink-black);
         }
 
+        /* 하단 얇은 Marquee */
+        .marquee-container {
+            background-color: var(--ink-black);
+            color: var(--paper-bg);
+            overflow: hidden;
+            white-space: nowrap;
+        }
         .marquee-content {
             display: inline-block;
-            animation: marquee 20s linear infinite;
-            font-size: 1rem;
-            font-weight: 600;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
+            animation: marquee 30s linear infinite;
         }
-
-        .marquee-content span {
-            margin-right: 3rem;
-        }
-
-        .marquee-content span.highlight {
-            color: var(--accent-color);
-        }
-
         @keyframes marquee {
             0% { transform: translateX(0); }
             100% { transform: translateX(-50%); }
@@ -152,75 +104,79 @@
 </head>
 <body>
 
-    <!-- 상단 바 (사진과 동일한 에디토리얼 무드) -->
-    <header>
-        <div class="logo-placeholder">||||||||||||||</div>
-        <div class="text-gray-500">file:///KUMC/schedule/index.html</div>
+    <!-- 1. 매거진 헤드라인 (Masthead) -->
+    <header class="border-b border-editorial flex flex-col sm:flex-row justify-between items-center sm:items-end px-6 py-4 shrink-0">
+        <div class="text-center sm:text-left mb-2 sm:mb-0">
+            <h1 class="font-editorial text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight uppercase leading-none">
+                Duty Schedule
+            </h1>
+            <p class="text-[10px] sm:text-xs tracking-[0.2em] uppercase mt-2 text-gray-600 font-medium">
+                Korea University Guro Hospital • Clinical Support Nursing
+            </p>
+        </div>
+        <div class="text-center sm:text-right flex flex-col justify-end">
+            <p class="text-[10px] font-medium tracking-widest uppercase border-b border-editorial pb-1 mb-1">
+                Integrated System
+            </p>
+            <p class="text-[10px] text-gray-500 tracking-wider">
+                VOL. 2026
+            </p>
+        </div>
     </header>
 
-    <!-- 메인 컨텐츠 영역 (좌, 중, 우 3단 레이아웃) -->
-    <main class="flex-1 flex flex-col lg:flex-row relative z-0">
+    <!-- 2. 네비게이션 바 (가로형 구조로 공간 최소화) -->
+    <nav class="border-b border-editorial flex flex-col md:flex-row shrink-0 bg-white">
+        <!-- 대분류 메뉴 -->
+        <div class="flex border-b md:border-b-0 md:border-r border-editorial shrink-0">
+            <button id="btn-group1" class="main-tab px-6 py-3 text-sm font-semibold tracking-wider" onclick="toggleGroup('group1', this)">
+                진료지원
+            </button>
+            <button id="btn-group2" class="main-tab px-6 py-3 text-sm font-semibold tracking-wider border-l border-editorial" onclick="toggleGroup('group2', this)">
+                전담간호사
+            </button>
+        </div>
         
-        <!-- 좌측 영역: 타이포그래피 및 대분류 버튼 -->
-        <div class="w-full lg:w-[400px] p-8 lg:p-12 flex flex-col justify-center z-10 shrink-0">
-            <div class="text-gray-400 text-xl font-light mb-6 lg:mb-10">2026</div>
-            
-            <div>
-                <div class="font-semibold text-sm mb-3">>> Schedule _ <span class="text-red-500">Nursing Team</span></div>
-                <h1 class="font-['Bebas_Neue'] text-6xl lg:text-7xl leading-[0.85] tracking-wide mb-5">
-                    DUTY<br>SCHEDULE
-                </h1>
-            </div>
+        <!-- 소분류 메뉴 (가로 스크롤) -->
+        <div class="flex-1 flex items-center px-6 py-2 overflow-hidden bg-[#faf9f5]">
+            <div id="group1-sub" class="sub-menu-container gap-6 hidden w-full"></div>
+            <div id="group2-sub" class="sub-menu-container gap-6 hidden w-full"></div>
+        </div>
+    </nav>
 
-            <p class="text-gray-600 text-sm leading-relaxed max-w-[280px]">
-                Korea University Guro Hospital<br>
-                Clinical Support Nursing Team<br>
-                Integrated Work Schedule System.
-            </p>
-
-            <!-- 기존의 상단 탭 버튼들을 사진 속 좌측 하단 버튼으로 대체 -->
-            <div class="flex flex-wrap gap-3 mt-8 lg:mt-12">
-                <button id="btn-group1" class="group-btn btn btn-dark" onclick="toggleGroup('group1', this)">진료지원</button>
-                <button id="btn-group2" class="group-btn btn btn-outline" onclick="toggleGroup('group2', this)">전담간호사</button>
+    <!-- 3. 메인 콘텐츠 (구글 시트 100% 꽉 채움) -->
+    <!-- 패딩(p)과 마진을 모두 없애고 flex-1로 남은 공간을 모두 차지하게 설정 -->
+    <main class="flex-1 w-full relative z-0 bg-white">
+        <!-- 로딩 화면 -->
+        <div id="loading-overlay" class="absolute inset-0 bg-white/80 backdrop-blur-sm flex items-center justify-center z-20 hidden">
+            <div class="font-editorial text-2xl italic tracking-widest animate-pulse border-b border-editorial pb-2">
+                Loading Data...
             </div>
         </div>
-
-        <!-- 중앙 영역: 구글 시트 (사진의 비디오 위치) -->
-        <div class="flex-1 p-4 lg:p-8 relative flex items-center justify-center z-0">
-            <!-- 로딩 화면 -->
-            <div id="loading-overlay" class="absolute inset-0 bg-[#f4f4f5]/90 backdrop-blur-sm flex items-center justify-center z-20 hidden">
-                <span class="font-['Bebas_Neue'] text-3xl tracking-widest animate-pulse">LOADING DATA...</span>
-            </div>
-            
-            <!-- 구글 시트 프레임 (깔끔한 그림자 처리) -->
-            <div class="w-full h-[65vh] lg:h-full max-h-[80vh] bg-white shadow-2xl overflow-hidden z-10 relative">
-                <iframe id="sheet-frame" class="w-full h-full border-0" src=""></iframe>
-            </div>
-        </div>
-
-        <!-- 우측 영역: 세로형 카테고리 메뉴 (사진의 우측 리스트 위치) -->
-        <div class="w-full lg:w-[280px] p-8 lg:p-12 flex flex-col justify-center z-10 shrink-0 lg:text-right overflow-y-auto">
-            <div id="group1-sub" class="flex flex-col gap-3 hidden"></div>
-            <div id="group2-sub" class="flex flex-col gap-3 hidden"></div>
-        </div>
+        
+        <!-- 시트 프레임 -->
+        <iframe id="sheet-frame" class="absolute inset-0 w-full h-full border-0" src=""></iframe>
     </main>
 
-    <!-- 하단 흐르는 텍스트 (Marquee) -->
-    <footer class="marquee-container shrink-0">
+    <!-- 4. 하단 얇은 에디토리얼 푸터 (Marquee) -->
+    <footer class="marquee-container py-1.5 shrink-0 text-[10px] tracking-[0.2em] uppercase font-light">
         <div class="marquee-content">
-            <span>Clinical Support</span>
-            <span class="highlight">Nursing Team</span>
-            <span>Duty Schedule</span>
-            <span>Korea University</span>
-            <span class="highlight">Guro Hospital</span>
-            <span>Integrated System</span>
-            <!-- 자연스러운 루프를 위해 동일 텍스트 반복 -->
-            <span>Clinical Support</span>
-            <span class="highlight">Nursing Team</span>
-            <span>Duty Schedule</span>
-            <span>Korea University</span>
-            <span class="highlight">Guro Hospital</span>
-            <span>Integrated System</span>
+            <span class="mx-6">Clinical Support Nursing Team</span>
+            <span class="mx-6 text-gray-500">|</span>
+            <span class="mx-6">KUMC</span>
+            <span class="mx-6 text-gray-500">|</span>
+            <span class="mx-6">Official Duty Schedule</span>
+            <span class="mx-6 text-gray-500">|</span>
+            <span class="mx-6">Do not distribute without permission</span>
+            <span class="mx-6 text-gray-500">|</span>
+            <!-- 루프 반복 -->
+            <span class="mx-6">Clinical Support Nursing Team</span>
+            <span class="mx-6 text-gray-500">|</span>
+            <span class="mx-6">KUMC</span>
+            <span class="mx-6 text-gray-500">|</span>
+            <span class="mx-6">Official Duty Schedule</span>
+            <span class="mx-6 text-gray-500">|</span>
+            <span class="mx-6">Do not distribute without permission</span>
+            <span class="mx-6 text-gray-500">|</span>
         </div>
     </footer>
 
@@ -241,12 +197,18 @@
 
         // 그룹(대분류) 선택 함수
         function toggleGroup(groupKey, buttonEl) {
-            // 우측 메뉴 초기화
             document.getElementById('group1-sub').classList.add('hidden');
+            document.getElementById('group1-sub').classList.remove('flex');
             document.getElementById('group2-sub').classList.add('hidden');
+            document.getElementById('group2-sub').classList.remove('flex');
             
             const container = document.getElementById(`${groupKey}-sub`);
             container.classList.remove('hidden');
+            container.classList.add('flex'); // 가로 배열을 위해 flex 추가
+
+            // 메인 탭 활성화 UI 처리
+            document.querySelectorAll(".main-tab").forEach(btn => btn.dataset.active = "false");
+            buttonEl.dataset.active = "true";
 
             if (container.childElementCount > 0) return;
 
@@ -263,16 +225,22 @@
                         const btn = document.createElement("button");
                         btn.textContent = name;
                         
-                        // 우측 세로형 리스트(right-menu-btn) 클래스 적용
-                        btn.className = "right-menu-btn sub-btn";
+                        // 에디토리얼 스타일의 심플한 텍스트 버튼
+                        btn.className = "sub-btn text-sm text-gray-600 hover:text-black";
                         btn.dataset.active = "false";
                         
                         btn.onclick = () => {
                             document.getElementById("sheet-frame").src = `${pubhtmlPrefix}?gid=${gid}&widget=true&headers=false`;
                             
-                            // 모든 서브버튼 비활성화 후 클릭한 버튼만 활성화 (빨간 점 표출)
-                            document.querySelectorAll(".sub-btn").forEach(b => b.dataset.active = "false");
+                            // 모든 서브버튼 비활성화 후 클릭한 버튼만 밑줄 활성화
+                            document.querySelectorAll(".sub-btn").forEach(b => {
+                                b.dataset.active = "false";
+                                b.classList.remove("text-black");
+                                b.classList.add("text-gray-600");
+                            });
                             btn.dataset.active = "true";
+                            btn.classList.remove("text-gray-600");
+                            btn.classList.add("text-black");
                         };
                         container.appendChild(btn);
 
@@ -283,7 +251,7 @@
                     });
                 })
                 .catch(err => {
-                    container.innerHTML = "<p class='text-red-500 text-sm font-medium py-2'>시트 로딩 실패. 새로고침을 시도해주세요.</p>";
+                    container.innerHTML = "<p class='text-red-500 text-xs font-medium'>데이터를 불러오지 못했습니다.</p>";
                     console.error(err);
                 })
                 .finally(() => {
@@ -291,14 +259,13 @@
                 });
         }
 
-        // 초기화 및 URL 파라미터 로직 유지
+        // 초기화 로직
         document.addEventListener("DOMContentLoaded", () => {
             const urlParams = new URLSearchParams(window.location.search);
             const groupKey = urlParams.get('group');
             const sheetName = urlParams.get('sheet');
 
             if (!(groupKey && sheetName)) {
-                // 초기 실행 시 '진료지원' 데이터 로드
                 document.getElementById("btn-group1")?.click(); 
                 
                 fetch(sheetGroups.group1.api)
@@ -328,8 +295,14 @@
                                     const buttons = subContainer.getElementsByTagName('button');
                                     for(let btn of buttons) {
                                         if(btn.textContent === sheetName) {
-                                            document.querySelectorAll(".sub-btn").forEach(b => b.dataset.active = "false");
+                                            document.querySelectorAll(".sub-btn").forEach(b => {
+                                                b.dataset.active = "false";
+                                                b.classList.remove("text-black");
+                                                b.classList.add("text-gray-600");
+                                            });
                                             btn.dataset.active = "true";
+                                            btn.classList.remove("text-gray-600");
+                                            btn.classList.add("text-black");
                                             break;
                                         }
                                     }
