@@ -64,6 +64,170 @@
         .ward-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 8px; }
         .ward-box { border: 1px solid rgba(44,160,44,0.3); background: rgba(44,160,44,0.05); padding: 8px; border-radius: 6px; text-align: center; }
         .ward-box.empty { border: 1px solid #eee; background: #fafafa; color: #999; }
+
+        #schedule-iframe {
+            width: 100%;
+            border: 0;
+            border-radius: 8px;
+        }
+        
+        @media (max-width: 1200px) {
+            header {
+                padding: 0 20px;
+            }
+        
+            nav {
+                gap: 20px;
+            }
+        
+            nav div {
+                font-size: 15px;
+            }
+        
+            .content-wrap {
+                padding: 30px 20px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            header {
+                height: 60px;
+                padding: 0 15px;
+            }
+        
+            .logo-text {
+                font-size: 16px;
+                white-space: nowrap;
+            }
+        
+            .logo-text span {
+                font-size: 18px;
+            }
+        
+            nav {
+                position: absolute;
+                top: 60px;
+                left: 0;
+                right: 0;
+                display: flex;
+                gap: 0;
+                overflow-x: auto;
+                background: #ffffff;
+                border-bottom: 1px solid #eaeaea;
+                padding: 0 5px;
+            }
+        
+            nav div {
+                flex: 0 0 auto;
+                min-width: 82px;
+                padding: 0 10px;
+                line-height: 48px;
+                font-size: 13px;
+                text-align: center;
+                white-space: nowrap;
+            }
+        
+            .page {
+                padding-top: 108px;
+            }
+        
+            body.home-theme .page {
+                padding-top: 0;
+            }
+        
+            .content-wrap {
+                padding: 25px 15px;
+            }
+        
+            .custom-title {
+                font-size: 21px;
+                margin-bottom: 20px;
+            }
+        
+            .home-title {
+                margin-top: 55px;
+                padding: 0 15px;
+            }
+        
+            .home-subtitle {
+                padding: 0 15px;
+                margin-bottom: 30px;
+            }
+        
+            .home-btn-container {
+                display: grid;
+                grid-template-columns: 1fr;
+                gap: 12px;
+                padding: 0 15px 30px;
+            }
+        
+            .home-btn {
+                width: 100%;
+                min-width: 0;
+                height: 135px;
+                border-radius: 14px;
+            }
+        
+            .home-btn span.title {
+                font-size: 1.55rem;
+            }
+        
+            .home-btn span.desc {
+                font-size: 0.95rem;
+            }
+        
+            #insight-container {
+                grid-template-columns: 1fr !important;
+            }
+        
+            .metric-card {
+                min-width: 100%;
+            }
+        
+            table {
+                font-size: 12px;
+            }
+        
+            th,
+            td {
+                padding: 7px 5px;
+            }
+        
+            input,
+            select,
+            button {
+                min-height: 42px;
+            }
+        
+            #dynamic-shift-display {
+                flex-direction: column;
+                align-items: stretch !important;
+                gap: 10px;
+            }
+        
+            #dynamic-shift-display > div {
+                margin-right: 0 !important;
+            }
+        }
+
+        .responsive-form-row {
+            display: flex;
+            gap: 10px;
+        }
+        
+        @media (max-width: 768px) {
+            .responsive-form-row {
+                flex-wrap: wrap;
+            }
+        
+            .responsive-form-row > * {
+                flex: 1 1 140px !important;
+            }
+        
+            .responsive-form-row button {
+                flex: 1 1 100% !important;
+            }
+        }
     </style>
 </head>
 <body class="home-theme">
@@ -174,7 +338,7 @@
                 
                 <div id="admin-login-container" style="max-width: 400px; margin: 50px auto; text-align: center;">
                     <p style="margin-bottom: 10px; font-weight: bold;">관리자 비밀번호를 입력하세요</p>
-                    <input type="password" id="admin-pw" class="form-control" style="margin-bottom: 10px;" placeholder="비밀번호 (admin1234)" onkeypress="if(event.key==='Enter') adminLogin()">
+                    <input type="password" id="admin-pw" class="form-control" style="margin-bottom: 10px;" placeholder="관리자 비밀번호" onkeypress="if(event.key==='Enter') adminLogin()">
                     <button class="btn-primary" style="width: 100%;" onclick="adminLogin()">로그인</button>
                 </div>
 
@@ -257,6 +421,29 @@
 
         const sessionState = { page: 'home', target_date: new Date().toISOString().split('T')[0], admin_logged_in: false };
 
+        function parseLocalDate(dateString) {
+          const parts =
+            String(dateString)
+              .split('T')[0]
+              .split('-')
+              .map(Number);
+        
+          if (
+            parts.length !== 3 ||
+            !parts[0] ||
+            !parts[1] ||
+            !parts[2]
+          ) {
+            return null;
+          }
+        
+          return new Date(
+            parts[0],
+            parts[1] - 1,
+            parts[2]
+          );
+        }
+
         function navigateTo(pageId) {
             sessionState.page = pageId;
             document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
@@ -301,20 +488,83 @@
             });
         };
 
-        async function fetchSheetData(sheetName, isDns = false) {
-            try {
-                const res = await fetch(`${GAS_URL}?action=getData&sheetName=${sheetName}&isDns=${isDns}`);
-                const result = await res.json();
-                if(result.success) return result.data;
-                console.error("데이터 로드 실패:", result.error); return null;
-            } catch (err) { console.error("통신 에러:", err); return null; }
+        async function fetchSheetData(
+          sheetName,
+          isDns = false
+        ) {
+          try {
+            const params = new URLSearchParams({
+              action: 'getData',
+              sheetName: sheetName,
+              isDns: String(isDns)
+            });
+        
+            const res = await fetch(
+              `${GAS_URL}?${params.toString()}`,
+              {
+                method: 'GET',
+                cache: 'no-store'
+              }
+            );
+        
+            const result = await res.json();
+        
+            if (!result.success) {
+              throw new Error(
+                result.error ||
+                '데이터를 불러오지 못했습니다.'
+              );
+            }
+        
+            return result.data;
+        
+          } catch (error) {
+            console.error(
+              '데이터 로드 실패:',
+              error
+            );
+        
+            return null;
+          }
         }
 
         async function postToGAS(payload) {
-            try {
-                const res = await fetch(GAS_URL, { method: "POST", body: JSON.stringify(payload) });
-                return await res.json();
-            } catch(err) { return { success: false, error: "네트워크 통신 오류" }; }
+          try {
+            const res = await fetch(GAS_URL, {
+              method: 'POST',
+              redirect: 'follow',
+              headers: {
+                'Content-Type':
+                  'text/plain;charset=utf-8'
+              },
+              body: JSON.stringify(payload)
+            });
+        
+            const result = await res.json();
+        
+            if (!result.success) {
+              return {
+                success: false,
+                error:
+                  result.error ||
+                  '서버 처리 중 오류가 발생했습니다.'
+              };
+            }
+        
+            return result;
+        
+          } catch (error) {
+            console.error(
+              '서버 통신 오류:',
+              error
+            );
+        
+            return {
+              success: false,
+              error:
+                '네트워크 통신 오류가 발생했습니다.'
+            };
+          }
         }
 
         /* -------------------------------------------------------------
@@ -450,7 +700,7 @@
             const reqDate = document.getElementById('req-date').value;
             if(!reqDate || !currentPlanData.length || !selectedName) return;
             
-            let d = new Date(reqDate), m = d.getMonth()+1, dt = d.getDate();
+            let d = parseLocalDate(reqDate), m = d.getMonth()+1, dt = d.getDate();
             let colIdx = currentHeaders.findIndex(h => {
                 let s = String(h).replace(/\s/g, "");
                 return s.includes(`${m}/${dt}`) || s.includes(`${String(m).padStart(2,'0')}/${String(dt).padStart(2,'0')}`);
@@ -487,7 +737,7 @@
             const [reqName, reqId] = nameField.split(" (").map(s => s.replace(")", ""));
             const targetRow = currentPlanData.find(row => row[2] === reqName && String(row[1]).trim() === reqId);
             
-            let m = new Date(reqDate).getMonth() + 1, d = new Date(reqDate).getDate();
+            let m = parseLocalDate(reqDate).getMonth() + 1, d = parseLocalDate(reqDate).getDate();
             let colIdx = currentHeaders.findIndex(h => {
                 let str = String(h).replace(/\s/g, "");
                 return str.includes(`${m}/${d}`) || str.includes(`${String(m).padStart(2,'0')}/${String(d).padStart(2,'0')}`);
@@ -523,13 +773,45 @@
         ------------------------------------------------------------- */
         let adminReqData = [], adminHeadersData = [], adminSchData = [];
 
-        function adminLogin() {
-            if (document.getElementById('admin-pw').value === "admin1234") {
-                sessionState.admin_logged_in = true;
-                document.getElementById('admin-login-container').style.display = 'none';
-                document.getElementById('admin-dashboard-container').style.display = 'block';
-                loadAdminData();
-            } else alert("비밀번호 불일치");
+        async function adminLogin() {
+          const password =
+            document
+              .getElementById('admin-pw')
+              .value;
+        
+          if (!password) {
+            alert('비밀번호를 입력하세요.');
+            return;
+          }
+        
+          const result = await postToGAS({
+            action: 'adminLogin',
+            password: password
+          });
+        
+          if (!result.success) {
+            alert(
+              result.error ||
+              '비밀번호가 일치하지 않습니다.'
+            );
+            return;
+          }
+        
+          sessionState.admin_logged_in = true;
+        
+          document
+            .getElementById(
+              'admin-login-container'
+            )
+            .style.display = 'none';
+        
+          document
+            .getElementById(
+              'admin-dashboard-container'
+            )
+            .style.display = 'block';
+        
+          await loadAdminData();
         }
 
         function adminLogout() {
@@ -575,7 +857,14 @@
                 let reqTeam = ""; for (let t in teamMapping) if(teamMapping[t].includes(reqWard)) reqTeam = t;
 
                 let validCands = [], colIdx = -1;
-                let d = new Date(reqDate), m = d.getMonth()+1, dt = d.getDate();
+                const d = parseLocalDate(reqDate);
+                
+                if (!d) {
+                  return;
+                }
+                
+                const m = d.getMonth() + 1;
+                const dt = d.getDate();
                 colIdx = sHeaders.findIndex(h => { let s = String(h).replace(/\s/g, ""); return s.includes(`${m}/${dt}`) || s.includes(`${String(m).padStart(2,'0')}/${String(dt).padStart(2,'0')}`); });
 
                 if (colIdx !== -1 && reqTeam) {
@@ -588,12 +877,67 @@
 
                         let sup = n.sup_row !== -1 ? String(adminSchData[n.sup_row][colIdx]).trim().toUpperCase() : "";
                         let isSupMatch = (sup.includes(reqWard.toUpperCase()) || reqWard.toUpperCase().includes(sup));
-                        validCands.push({ label: `${n.name} - ${n.id} (${cleanDuty}m) [${isSupMatch ? "⭐지원일치" : "일반"}]`, isStar: isSupMatch });
+                        let altCount = 0;
+
+                        for (
+                          let c = 5;
+                          c < adminSchData[n.alt_row].length;
+                          c++
+                        ) {
+                          const value =
+                            String(
+                              adminSchData[n.alt_row][c]
+                            ).trim();
+                        
+                          if (value !== '') {
+                            altCount++;
+                          }
+                        }
+                        
+                        validCands.push({
+                          name: n.name,
+                          id: n.id,
+                          duty: cleanDuty + 'm',
+                          isStar: isSupMatch,
+                          altCount: altCount,
+                          label:
+                            `${n.name} - ${n.id} ` +
+                            `(${cleanDuty}m) ` +
+                            `[${isSupMatch
+                              ? '⭐지원일치'
+                              : '일반'}] ` +
+                            `[누적 ${altCount}회]`
+                        });
                     });
                 }
                 
-                validCands.sort((a, b) => b.isStar - a.isStar);
-                let optHtml = validCands.length > 0 ? validCands.map(c => `<option value="${c.label}">${c.label}</option>`).join('') : `<option value="">❌ 대상 없음</option>`;
+                validCands.sort((a, b) => {
+                  if (a.isStar !== b.isStar) {
+                    return Number(b.isStar) -
+                      Number(a.isStar);
+                  }
+                
+                  return a.altCount - b.altCount;
+                });
+                let optHtml =
+                  validCands.length > 0
+                    ? validCands
+                        .map((c) => {
+                          const value = encodeURIComponent(
+                            JSON.stringify({
+                              name: c.name,
+                              id: c.id,
+                              duty: c.duty
+                            })
+                          );
+                
+                          return (
+                            `<option value="${value}">` +
+                            `${c.label}</option>`
+                          );
+                        })
+                        .join('')
+                    : `<option value="">❌ 대상 없음</option>`;
 
                 container.insertAdjacentHTML('beforeend', `
                     <div style="border:1px solid #ddd; padding:15px; margin-bottom:15px; border-radius:8px; background:#fff;">
@@ -611,14 +955,46 @@
         async function submitManualAssign(e, idx, date, name, id, ward) {
             const yn = document.getElementById(`pend-yn-${idx}`).value;
             const cand = document.getElementById(`pend-cand-${idx}`).value;
-            let cName = "", cDuty = "";
+            let cName = "";
+            let cId = "";
+            let cDuty = "";
+            
             if (yn === "Y") {
-                if(!cand || cand.includes("❌")) { alert("간호사를 선택하세요"); return; }
-                cName = cand.split(" -")[0].trim(); cDuty = cand.split("(")[1].split(")")[0].trim();
+              if (!cand) {
+                alert("간호사를 선택하세요.");
+                return;
+              }
+            
+              try {
+                const candidate =
+                  JSON.parse(
+                    decodeURIComponent(cand)
+                  );
+            
+                cName = candidate.name;
+                cId = candidate.id;
+                cDuty = candidate.duty;
+            
+              } catch (error) {
+                alert(
+                  "후보자 정보를 읽을 수 없습니다."
+                );
+                return;
+              }
             }
 
             const btn = e.target; btn.disabled = true; btn.innerText = "⏳";
-            const res = await postToGAS({ action: 'submitManualAssign', reqDate: date, reqName: name, reqId: id, reqWard: ward, subYn: yn, candName: cName, candDuty: cDuty });
+            const res = await postToGAS({
+              action: 'submitManualAssign',
+              reqDate: date,
+              reqName: name,
+              reqId: id,
+              reqWard: ward,
+              subYn: yn,
+              candName: cName,
+              candId: cId,
+              candDuty: cDuty
+            });
             
             if(res.success) { alert("처리 완료!"); loadAdminData(); }
             else { alert("오류: " + res.error); btn.disabled = false; btn.innerText = "배정 저장"; }
