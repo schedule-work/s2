@@ -400,15 +400,86 @@
             trElement.onmouseout = null; // 선택된 행은 마우스 아웃 효과 제거
         }
 
-        // 신청 버튼 클릭 시 (아직 백엔드 로직 미구현 상태)
-        function submitAbsenceRequest() {
+        async function submitAbsenceRequest() {
             const ward = document.getElementById('sel-ward').value;
-            const reqName = document.getElementById('req-name').value;
-            if(!reqName) {
+            const reqDate = document.getElementById('req-date').value;
+            const nameField = document.getElementById('req-name').value;
+            const changedDuty = document.getElementById('req-changed-duty').value;
+            const reqReason = document.getElementById('req-reason').value;
+            // HTML에 사유(비고) ID를 안만들었으므로 하드코딩 처리, 필요시 html에 id="req-note" 추가하세요.
+            const reqSubYn = "Y"; // 대체간호사 신청여부 (임시 기본값)
+
+            if(!nameField) {
                 alert("표에서 결원자(간호사)를 먼저 클릭하여 선택해 주세요.");
                 return;
             }
-            alert(`[기능 테스트 중]\n${ward} 병동 ${reqName} 간호사의 결원 신청 로직을 GAS 서버로 전송할 준비가 되었습니다!`);
+
+            // "홍길동 (12345)" 형식 분리
+            const nameParts = nameField.split(" (");
+            const reqName = nameParts[0];
+            const reqId = nameParts[1].replace(")", "");
+
+            // 계획 근무 데이터(currentPlanData)에서 이 사람의 기존 근무 찾기
+            const targetRow = currentPlanData.find(row => row[2] === reqName && String(row[1]).trim() === reqId);
+            if(!targetRow) {
+                alert("선택한 간호사의 근무 정보를 찾을 수 없습니다."); return;
+            }
+            
+            // 날짜에 해당하는 열(Column) 인덱스 탐색
+            let reqDateObj = new Date(reqDate);
+            let m = reqDateObj.getMonth() + 1;
+            let d = reqDateObj.getDate();
+            let colIdx = currentHeaders.findIndex(h => {
+                let str = String(h).replace(/\s/g, "");
+                return str.includes(`${m}/${d}`) || str.includes(`${String(m).padStart(2,'0')}/${String(d).padStart(2,'0')}`);
+            });
+
+            let reqDuty = colIdx !== -1 ? String(targetRow[colIdx]).trim() : "";
+            if(!reqDuty) {
+                alert("해당 날짜에 기존 근무가 입력되어 있지 않습니다."); return;
+            }
+
+            const payload = {
+                action: 'submitAbsence',
+                ward: ward,
+                reqDate: reqDate,
+                reqName: reqName,
+                reqId: reqId,
+                reqDuty: reqDuty,
+                changedDuty: changedDuty,
+                reqReason: reqReason,
+                reqNote: "", 
+                reqSubYn: reqSubYn
+            };
+
+            const btn = event.target;
+            btn.innerText = "⏳ 배정 로직 실행 중...";
+            btn.disabled = true;
+            
+            try {
+                const response = await fetch(GAS_URL, {
+                    method: "POST",
+                    body: JSON.stringify(payload)
+                });
+                const result = await response.json();
+                
+                if(result.success) {
+                    if(result.updatesMade) {
+                        alert(`🎉 성공! 대체간호사(${result.assignedName}) 자동 배정이 완료되었습니다.`);
+                    } else {
+                        alert("⚠️ 조건에 맞는 대체간호사가 없어 '대기중' 상태로 신청되었습니다.");
+                    }
+                    // 성공 후 화면 새로고침
+                    loadScheduleData();
+                } else {
+                    alert("구글 시트 연동 오류: " + result.error);
+                }
+            } catch(e) {
+                alert("서버 통신 중 오류가 발생했습니다.");
+            } finally {
+                btn.innerText = "💾 위 내용으로 결원 신청 및 자동 배정";
+                btn.disabled = false;
+            }
         }
     </script>
 </body>
