@@ -2,276 +2,236 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>[임상지원간호팀] 통합 근무표</title>
-    <link rel="icon" type="image/x-icon" href="https://schedule-work.github.io/image/nurse.ico">
-    
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- 포트폴리오 감성의 폰트와 고딕 조합 -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>제2차 교대제 : 간호부</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap');
+        
         :root {
-            --canvas: #f8fafc;
-            --surface: #ffffff;
-            --text-primary: #0f172a;
-            --text-secondary: #64748b;
-            --accent: #2563eb;
-            --border-line: #cbd5e1;
+            --primary-color: #8B0029;
+            --text-color: #333333;
+            --bg-color: #ffffff;
         }
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--canvas);
-            color: var(--text-primary);
-            height: 100vh;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+
+        body { background-color: var(--bg-color); color: var(--text-color); }
+
+        /* 네비게이션 바 (PC & Mobile) */
+        header {
             display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-
-        .font-mono-tag {
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        /* 포트폴리오 특유의 정교한 아키텍처 라인 */
-        .portfolio-frame {
-            border-bottom: 2px solid var(--text-primary);
-        }
-
-        /* 대분류 탭 (포트폴리오 블록 스타일) */
-        .portfolio-tab {
-            position: relative;
-            transition: all 0.2s ease;
-        }
-
-        .portfolio-tab[data-active="true"] {
-            background-color: var(--text-primary);
-            color: #ffffff;
-            font-weight: 600;
-        }
-
-        .portfolio-tab[data-active="false"]:hover {
-            background-color: #e2e8f0;
-        }
-
-        /* 소분류 뱃지 (업무용 필터 스타일) */
-        .sub-scroll {
-            display: flex;
-            overflow-x: auto;
+            justify-content: space-between;
             align-items: center;
-            scrollbar-width: none;
-            gap: 0.5rem;
-        }
-        .sub-scroll::-webkit-scrollbar {
-            display: none;
-        }
-
-        .sub-badge {
-            padding: 0.4rem 0.9rem;
-            font-size: 0.8rem;
-            font-weight: 500;
-            background-color: var(--surface);
-            border: 1px solid var(--border-line);
-            color: var(--text-secondary);
-            white-space: nowrap;
-            transition: all 0.2s;
-            cursor: pointer;
+            padding: 0 40px;
+            height: 70px;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-bottom: 1px solid #eaeaea;
+            backdrop-filter: blur(10px);
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 99999;
+            box-shadow: 0 1px 5px rgba(0,0,0,0.05);
         }
 
-        .sub-badge:hover {
-            border-color: var(--text-primary);
-            color: var(--text-primary);
+        .logo-text { font-weight: 800; font-size: 20px; cursor: pointer; }
+        .logo-text span { font-size: 22px; color: var(--primary-color); }
+
+        nav { display: flex; gap: 40px; }
+        nav div { 
+            color: #666666; font-weight: 500; font-size: 17px; 
+            cursor: pointer; transition: color 0.2s ease; line-height: 70px; 
+        }
+        nav div:hover { color: var(--primary-color); }
+        nav div.active { color: var(--primary-color); font-weight: 800; }
+
+        /* 페이지 컨테이너 */
+        .page { display: none; padding-top: 70px; min-height: 100vh; }
+        .page.active { display: block; }
+
+        /* 홈 화면 전용 테마 */
+        body.home-theme {
+            background: radial-gradient(circle, #330000 0%, #1a0000 50%, #000000 100%);
+        }
+        body.home-theme header { display: none; } /* 홈에서는 헤더 숨김 */
+        body.home-theme .page { padding-top: 0; }
+
+        /* 홈 화면 UI */
+        .home-title {
+            color: white; text-align: center; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
+            font-size: clamp(1.8em, 4vw, 2.8em); font-weight: 800; margin-top: 100px;
+        }
+        .home-subtitle {
+            color: rgba(255,255,255,0.7); text-align: center; font-size: clamp(0.8em, 1.2vw, 1em);
+            font-weight: 500; margin-bottom: 5vh;
         }
 
-        .sub-badge[data-active="true"] {
-            background-color: #eff6ff;
-            border-color: var(--accent);
-            color: var(--accent);
-            font-weight: 600;
+        .home-btn-container {
+            display: flex; justify-content: center; gap: 20px; max-width: 1200px; margin: 0 auto; padding: 0 20px;
         }
 
-        /* 깔끔한 로딩 스피너 */
-        .spinner {
-            width: 32px;
-            height: 32px;
-            border: 3px solid #e2e8f0;
-            border-top: 3px solid var(--accent);
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
+        .home-btn {
+            flex: 1; height: 300px; background-color: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px;
+            backdrop-filter: blur(15px); transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            color: white; padding: 25px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+            cursor: pointer; text-decoration: none; text-align: center;
         }
+        .home-btn:hover {
+            transform: translateY(-12px); background-color: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3); box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
+        }
+        .home-btn span.title { font-size: 2.2rem; font-weight: 800; margin-bottom: 10px; }
+        .home-btn span.desc { font-size: 1.05rem; font-weight: 500; color: rgba(255, 255, 255, 0.75); }
+        .home-btn .arrow {
+            margin-top: 35px; padding: 10px 25px; border-radius: 50px; font-size: 0.95rem; font-weight: 800;
+            background-color: #555; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        .home-btn:nth-child(1) .arrow, .home-btn:nth-child(2) .arrow { background-color: #990000; }
+        .home-btn:nth-child(4) .arrow { background-color: #8B0029; }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        /* 서브페이지 공통 UI */
+        .content-wrap { padding: 40px; max-width: 1400px; margin: 0 auto; }
+        .custom-title {
+            border-left: 6px solid var(--primary-color); padding-left: 15px; font-size: 26px;
+            font-weight: 800; color: var(--text-color); margin-bottom: 30px; line-height: 1.2;
         }
+        iframe { width: 100%; border: none; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+
     </style>
 </head>
-<body>
+<body class="home-theme">
 
-    <!-- 1. 포트폴리오 구조 헤더 (감각적인 메인 타이틀 바) -->
-    <header class="portfolio-frame bg-white px-6 py-4 flex flex-col sm:flex-row justify-between items-start sm:items-center shrink-0">
-        <div class="flex items-center gap-3">
-            <span class="w-3 h-3 bg-blue-600"></span>
-            <div>
-                <h1 class="font-bold text-base tracking-tight uppercase">KUMC Clinical Support Nursing</h1>
-                <p class="text-xs text-gray-500 font-mono-tag tracking-wider mt-0.5">INTEGRATED DUTY SCHEDULE SYSTEM</p>
-            </div>
-        </div>
-        <div class="hidden md:flex items-center gap-4 text-xs font-mono-tag text-gray-400 mt-2 sm:mt-0">
-            <span>LOC: GURO HOSPITAL</span>
-            <span>//</span>
-            <span>STATUS: ACTIVE</span>
-        </div>
+    <!-- 상단 네비게이션 (홈에서는 CSS로 숨김 처리됨) -->
+    <header>
+        <div class="logo-text" onclick="navigateTo('home')"><span>✚</span> NURSING SHIFT</div>
+        <nav>
+            <div id="nav-home" onclick="navigateTo('home')">홈</div>
+            <div id="nav-request" onclick="navigateTo('request')">결원입력</div>
+            <div id="nav-schedule" onclick="navigateTo('schedule')">근무표</div>
+            <div id="nav-assign" onclick="navigateTo('assign')">대체 배정</div>
+            <div id="nav-dashboard" onclick="navigateTo('dashboard')">평가지표</div>
+        </nav>
     </header>
 
-    <!-- 2. 컨트롤 네비게이션 영역 -->
-    <nav class="bg-white border-b border-gray-300 px-6 py-3 flex flex-col md:flex-row items-start md:items-center justify-between gap-3 shrink-0">
-        <!-- 대분류 선택 (포트폴리오 세그먼트 버튼) -->
-        <div class="flex gap-1 bg-gray-100 p-1 rounded">
-            <button id="btn-group1" class="portfolio-tab px-4 py-1.5 text-xs font-medium rounded" onclick="toggleGroup('group1', this)">
-                진료지원 파트
-            </button>
-            <button id="btn-group2" class="portfolio-tab px-4 py-1.5 text-xs font-medium rounded" onclick="toggleGroup('group2', this)">
-                전담간호사 파트
-            </button>
+    <main>
+        <!-- 1. 홈 화면 -->
+        <div id="page-home" class="page active">
+            <div class="home-title">제2차 교대제 : 간호부</div>  
+            <div class="home-subtitle">KU MEDICINE GURO HOSPITAL NURSING SHIFT</div>
+            
+            <div class="home-btn-container">
+                <div class="home-btn" onclick="navigateTo('request')">
+                    <span class="title">결원 입력</span>
+                    <span class="desc">(대체간호사 신청)</span>
+                    <div class="arrow">바로가기 →</div>
+                </div>
+                <div class="home-btn" onclick="navigateTo('schedule')">
+                    <span class="title">대체간호사</span>
+                    <span class="desc">근무표</span>
+                    <div class="arrow">바로가기 →</div>
+                </div>
+                <div class="home-btn" onclick="navigateTo('assign')">
+                    <span class="title">대체 배정</span>
+                    <span class="desc">(담당자 전용)</span>
+                    <div class="arrow">바로가기 →</div>
+                </div>
+                <div class="home-btn" onclick="navigateTo('dashboard')">
+                    <span class="title">평가지표</span>
+                    <span class="desc">대시보드</span>
+                    <div class="arrow">바로가기 →</div>
+                </div>
+            </div>
         </div>
 
-        <!-- 소분류 선택 (업무용 가독성 뱃지) -->
-        <div class="flex-1 w-full md:w-auto md:ml-6 overflow-hidden">
-            <div id="group1-sub" class="sub-scroll hidden"></div>
-            <div id="group2-sub" class="sub-scroll hidden"></div>
+        <!-- 2. 결원 입력 화면 -->
+        <div id="page-request" class="page">
+            <div class="content-wrap">
+                <div class="custom-title">결원 입력 (대체간호사 신청)</div>
+                <!-- 여기에 HTML <select>, <input> 태그들로 폼이 들어갑니다 -->
+                <p>데이터 로딩 중...</p>
+            </div>
         </div>
-    </nav>
 
-    <!-- 3. 메인 콘텐츠 (구글 시트 100% 풀스크린 배치) -->
-    <main class="flex-1 w-full relative z-0 bg-white">
-        <!-- 로딩 화면 -->
-        <div id="loading-overlay" class="absolute inset-0 bg-white/90 backdrop-blur-sm flex flex-col items-center justify-center z-20 hidden">
-            <div class="spinner mb-3"></div>
-            <div class="text-xs font-mono-tag text-gray-500 tracking-widest uppercase">Loading Sheet Data...</div>
+        <!-- 3. 근무표 화면 (Iframe 연동) -->
+        <div id="page-schedule" class="page">
+            <div class="content-wrap">
+                <div class="custom-title">대체간호사 전체 근무표</div>
+                <iframe id="schedule-iframe" height="800" src="https://docs.google.com/spreadsheets/d/1tNobsqOTDzIKwAcF0VfUanRTSZCArqIF63n5AxKfDbc/htmlembed?gid=1622990971&single=true&widget=false&chrome=false"></iframe>
+            </div>
         </div>
-        
-        <!-- 구글 시트 프레임 -->
-        <iframe id="sheet-frame" class="absolute inset-0 w-full h-full border-0" src=""></iframe>
+
+        <!-- 4. 배정 화면 -->
+        <div id="page-assign" class="page">
+            <div class="content-wrap">
+                <div class="custom-title">대체간호사 배정 (담당자 전용)</div>
+                <p>관리자 비밀번호 입력 화면 개발 예정</p>
+            </div>
+        </div>
+
+        <!-- 5. 평가지표 화면 -->
+        <div id="page-dashboard" class="page">
+            <div class="content-wrap">
+                <div class="custom-title">제2차 교대제 : 평가지표</div>
+                <p>지표 분석 대시보드 개발 예정</p>
+            </div>
+        </div>
     </main>
 
     <script>
-        // API 설정 유지
-        const sheetGroups = {
-            group1: {
-                name: "진료지원",
-                pubhtmlPrefix: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRyaIg5AxN1I8wD2Jrjr1o952ObrO_sHA3vL_Z1403dZLx9u9ooqmlLyuv5fQmeN6HnMmFdIRgCfi7_/pubhtml",
-                api: "https://script.google.com/macros/s/AKfycbz_FRqb7fbZwxNg_eWIXjDL15tW8iZGllcs7y6-qzZev7YtFHgRNJUSgm9n7352AZXJYw/exec"
-            },
-            group2: {
-                name: "전담간호사",
-                pubhtmlPrefix: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSWjnyzr3Qa-UuQ9fRf3lwiRm4vVA7jLOPtJiYe9TU1C-n4dyHcqVk967ahJJWpG_SUbsXwfdBC8Rh-/pubhtml",
-                api: "https://script.google.com/macros/s/AKfycbzBpLXtYgjmbzRp74KMrdb2_tZTJYkAQn_aMRQ2AQau3IoofRKA42tzEKpOGn4Hhftmew/exec"
-            }
+        // 발급받은 Apps Script 웹 앱 URL을 여기에 넣습니다.
+        const GAS_URL = "여기에_복사한_웹_앱_URL을_붙여넣으세요";
+
+        // 전역 상태 변수 (Streamlit의 st.session_state 역할)
+        const sessionState = {
+            page: 'home',
+            selected_ward: null,
+            admin_logged_in: false,
+            target_date: new Date().toISOString().split('T')[0]
         };
 
-        function toggleGroup(groupKey, buttonEl) {
-            document.getElementById('group1-sub').classList.add('hidden');
-            document.getElementById('group2-sub').classList.add('hidden');
+        // 페이지 이동(라우팅) 함수
+        function navigateTo(pageId) {
+            sessionState.page = pageId;
             
-            const container = document.getElementById(`${groupKey}-sub`);
-            container.classList.remove('hidden');
-
-            document.querySelectorAll(".portfolio-tab").forEach(btn => btn.dataset.active = "false");
-            buttonEl.dataset.active = "true";
-
-            if (container.childElementCount > 0) return;
-
-            const loadingOverlay = document.getElementById("loading-overlay");
-            loadingOverlay.classList.remove("hidden");
-
-            const { api, pubhtmlPrefix } = sheetGroups[groupKey];
-
-            fetch(api)
-                .then(res => res.json())
-                .then(sheets => {
-                    container.innerHTML = '';
-                    sheets.forEach(({ name, gid }, index) => {
-                        const btn = document.createElement("button");
-                        btn.textContent = name;
-                        
-                        btn.className = "sub-badge rounded";
-                        btn.dataset.active = "false";
-                        
-                        btn.onclick = () => {
-                            document.getElementById("sheet-frame").src = `${pubhtmlPrefix}?gid=${gid}&widget=true&headers=false`;
-                            
-                            document.querySelectorAll(".sub-badge").forEach(b => b.dataset.active = "false");
-                            btn.dataset.active = "true";
-                        };
-                        container.appendChild(btn);
-
-                        if (groupKey === 'group1' && index === 0) {
-                            btn.click();
-                        }
-                    });
-                })
-                .catch(err => {
-                    container.innerHTML = "<p class='text-red-500 text-xs font-medium'>데이터 로드 실패</p>";
-                    console.error(err);
-                })
-                .finally(() => {
-                    loadingOverlay.classList.add("hidden");
-                });
+            // 모든 페이지 숨기기
+            document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
+            // 모든 네비게이션 활성화 해제
+            document.querySelectorAll('nav div').forEach(el => el.classList.remove('active'));
+            
+            // 선택한 페이지만 보이기
+            document.getElementById('page-' + pageId).classList.add('active');
+            
+            // 테마 변경 (홈 vs 서브페이지)
+            if (pageId === 'home') {
+                document.body.classList.add('home-theme');
+            } else {
+                document.body.classList.remove('home-theme');
+                const navEl = document.getElementById('nav-' + pageId);
+                if (navEl) navEl.classList.add('active');
+            }
         }
 
-        // 초기화 및 URL 파라미터 로직 유지
-        document.addEventListener("DOMContentLoaded", () => {
-            const urlParams = new URLSearchParams(window.location.search);
-            const groupKey = urlParams.get('group');
-            const sheetName = urlParams.get('sheet');
-
-            if (!(groupKey && sheetName)) {
-                document.getElementById("btn-group1")?.click(); 
-                
-                fetch(sheetGroups.group1.api)
-                    .then(res => res.json())
-                    .then(sheets => {
-                        const first = sheets[0];
-                        if (first) {
-                            document.getElementById("sheet-frame").src =
-                                `${sheetGroups.group1.pubhtmlPrefix}?gid=${first.gid}&widget=true&headers=false`;
-                        }
-                    });
-            } else {
-                const targetGroupBtn = document.getElementById(`btn-${groupKey}`);
-                if(targetGroupBtn) targetGroupBtn.click();
-
-                if (sheetGroups[groupKey]) {
-                    fetch(sheetGroups[groupKey].api)
-                        .then(res => res.json())
-                        .then(sheets => {
-                            const match = sheets.find(s => s.name === sheetName);
-                            if (match) {
-                                document.getElementById("sheet-frame").src =
-                                    `${sheetGroups[groupKey].pubhtmlPrefix}?gid=${match.gid}&widget=true&headers=false`;
-                                
-                                setTimeout(() => {
-                                    const subContainer = document.getElementById(`${groupKey}-sub`);
-                                    const buttons = subContainer.getElementsByTagName('button');
-                                    for(let btn of buttons) {
-                                        if(btn.textContent === sheetName) {
-                                            document.querySelectorAll(".sub-badge").forEach(b => b.dataset.active = "false");
-                                            btn.dataset.active = "true";
-                                            break;
-                                        }
-                                    }
-                                }, 1000);
-                            }
-                        });
+        // 구글 시트에서 데이터 가져오기 예시 함수
+        async function fetchSheetData(sheetName) {
+            try {
+                const response = await fetch(`${GAS_URL}?action=getData&sheetName=${sheetName}`);
+                const result = await response.json();
+                if(result.success) {
+                    console.log(`${sheetName} 데이터 로드 완료:`, result.data);
+                    return result.data;
+                } else {
+                    console.error("오류:", result.error);
                 }
+            } catch (err) {
+                console.error("통신 실패:", err);
             }
-        });
+        }
     </script>
 </body>
 </html>
