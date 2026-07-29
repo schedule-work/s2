@@ -455,15 +455,6 @@
             admin_logged_in: false
         };
 
-        currentPlanData =
-            data
-                .slice(1)
-                .filter(
-                    row =>
-                        normalizeWard(row[0]) ===
-                        normalizeWard(ward)
-                );
-
         function parseLocalDate(dateString) {
             if (
                 dateString === null ||
@@ -830,6 +821,10 @@
             
             reqDateInput.max =
                 maxDate;
+
+            const ward = document.getElementById('sel-ward').value;
+            const year = String(fullYear).slice(-2);
+            const month = String(fullMonth).padStart(2, '0');
 
             if(!ward) { alert("부서를 선택해 주세요."); return; }
 
