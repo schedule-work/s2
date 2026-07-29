@@ -70,6 +70,45 @@
             border: 0;
             border-radius: 8px;
         }
+
+        /* 결원입력 근무표 가독성 */
+        #table-container table {
+            table-layout: auto;
+            white-space: nowrap;
+        }
+
+        #table-container th,
+        #table-container td {
+            white-space: nowrap;
+            word-break: keep-all;
+        }
+
+        #table-container th:first-child,
+        #table-container td:first-child {
+            min-width: 74px;
+            width: 74px;
+            font-size: 13px;
+        }
+
+        #table-container th:nth-child(2),
+        #table-container td:nth-child(2) {
+            min-width: 82px;
+            width: 82px;
+        }
+
+        #table-container th:nth-child(n+3),
+        #table-container td:nth-child(n+3) {
+            min-width: 48px;
+            width: 48px;
+            padding-left: 6px;
+            padding-right: 6px;
+        }
+
+        #admin-history-table th,
+        #admin-history-table td {
+            white-space: nowrap;
+            word-break: keep-all;
+        }
         
         @media (max-width: 1200px) {
             header {
@@ -233,7 +272,7 @@
 <body class="home-theme">
 
     <header>
-        <div class="logo-text" onclick="navigateTo('home')"><span>✚</span> 제2차 교대제 : 간호부</div>
+        <div class="logo-text" onclick="navigateTo('home')"><span>✚</span> NURSING SHIFT</div>
         <nav>
             <div id="nav-home" onclick="navigateTo('home')">홈</div>
             <div id="nav-request" onclick="navigateTo('request')">결원입력</div>
@@ -1072,7 +1111,7 @@
             
                 html += `
                     <th>
-                        ${headerDate.day}일
+                        ${headerDate.day}
                     </th>
                 `;
             }
@@ -1855,31 +1894,122 @@
             else { alert("오류: " + res.error); btn.disabled = false; btn.innerText = "배정 저장"; }
         }
 
-        function renderAdminGrid() {
-            const idxYn = adminHeadersData.findIndex(h => h.includes("대체여부") || h.includes("상태"));
-            const idxName = adminHeadersData.findIndex(h => h.includes("대상자_성명"));
-            const idxId = adminHeadersData.findIndex(h => h.includes("대상자_사번"));
-            const idxDuty = adminHeadersData.findIndex(h => h.includes("대상자_근무"));
 
-            let html = '<table><thead><tr>' + adminHeadersData.map(h => `<th>${h}</th>`).join('') + '</tr></thead><tbody>';
+        function formatAdminDateTime(value) {
+            const text = String(value || '').trim();
+
+            if (!text) {
+                return '';
+            }
+
+            const match = text.match(
+                /^(\d{4})[-/.](\d{1,2})[-/.](\d{1,2})[T\s]+(\d{1,2}):(\d{2})/
+            );
+
+            if (match) {
+                return (
+                    String(Number(match[2])).padStart(2, '0') +
+                    '/' +
+                    String(Number(match[3])).padStart(2, '0') +
+                    ' ' +
+                    String(Number(match[4])).padStart(2, '0') +
+                    ':' +
+                    match[5]
+                );
+            }
+
+            return text;
+        }
+
+        function renderAdminGrid() {
+            const idxYn = adminHeadersData.findIndex(
+                h => h.includes("대체여부") || h.includes("상태")
+            );
+
+            const idxName = adminHeadersData.findIndex(
+                h => h.includes("대상자_성명")
+            );
+
+            const idxId = adminHeadersData.findIndex(
+                h => h.includes("대상자_사번")
+            );
+
+            const idxDuty = adminHeadersData.findIndex(
+                h => h.includes("대상자_근무")
+            );
+
+            const idxAppliedAt = adminHeadersData.findIndex(
+                h => String(h).replace(/\s/g, '').includes('신청일시')
+            );
+
+            let html =
+                '<table><thead><tr>' +
+                adminHeadersData
+                    .map(h => `<th>${escapeHtml(h)}</th>`)
+                    .join('') +
+                '</tr></thead><tbody>';
+
             adminReqData.forEach((row, rIdx) => {
                 html += '<tr>';
+
                 row.forEach((cell, cIdx) => {
-                    let tdBg = [idxYn, idxName, idxId, idxDuty].includes(cIdx) ? '#fffcdc' : '#fff';
-                    const safeCell =
-                        escapeHtml(cell);
-                    
-                    let cHtml =
-                        safeCell;
-                    if(cIdx === idxYn) cHtml = `<select id="ed_${rIdx}_${cIdx}" class="form-control" style="padding:4px;"><option value="Y" ${cell==='Y'?'selected':''}>Y</option><option value="N" ${cell==='N'?'selected':''}>N</option><option value="대기중" ${cell==='대기중'?'selected':''}>대기중</option><option value="승인" ${cell==='승인'?'selected':''}>승인</option><option value="반려" ${cell==='반려'?'selected':''}>반려</option></select>`;
-                    else if(cIdx === idxName || cIdx === idxId) cHtml = `<input type="text" id="ed_${rIdx}_${cIdx}" value="${safeCell}" class="form-control" style="padding:4px;">`;
-                    else if(cIdx === idxDuty) cHtml = `<select id="ed_${rIdx}_${cIdx}" class="form-control" style="padding:4px;"><option value=""></option><option value="D" ${cell==='D'?'selected':''}>D</option><option value="E" ${cell==='E'?'selected':''}>E</option><option value="N" ${cell==='N'?'selected':''}>N</option><option value="Dm" ${cell==='Dm'?'selected':''}>Dm</option><option value="Em" ${cell==='Em'?'selected':''}>Em</option><option value="Nm" ${cell==='Nm'?'selected':''}>Nm</option></select>`;
-                    html += `<td style="background:${tdBg}; min-width: 100px;">${cHtml}</td>`;
+                    const tdBg =
+                        [idxYn, idxName, idxId, idxDuty].includes(cIdx)
+                            ? '#fffcdc'
+                            : '#fff';
+
+                    const safeCell = escapeHtml(cell);
+
+                    let cHtml = safeCell;
+                    let minWidth = '100px';
+
+                    if (cIdx === idxAppliedAt) {
+                        cHtml = escapeHtml(
+                            formatAdminDateTime(cell)
+                        );
+                        minWidth = '105px';
+
+                    } else if (cIdx === idxYn) {
+                        cHtml =
+                            `<select id="ed_${rIdx}_${cIdx}" class="form-control" style="padding:4px;">` +
+                            `<option value="Y" ${cell === 'Y' ? 'selected' : ''}>Y</option>` +
+                            `<option value="N" ${cell === 'N' ? 'selected' : ''}>N</option>` +
+                            `<option value="대기중" ${cell === '대기중' ? 'selected' : ''}>대기중</option>` +
+                            `<option value="승인" ${cell === '승인' ? 'selected' : ''}>승인</option>` +
+                            `<option value="반려" ${cell === '반려' ? 'selected' : ''}>반려</option>` +
+                            `</select>`;
+
+                    } else if (cIdx === idxName || cIdx === idxId) {
+                        cHtml =
+                            `<input type="text" id="ed_${rIdx}_${cIdx}" ` +
+                            `value="${safeCell}" class="form-control" style="padding:4px;">`;
+
+                    } else if (cIdx === idxDuty) {
+                        cHtml =
+                            `<select id="ed_${rIdx}_${cIdx}" class="form-control" style="padding:4px;">` +
+                            `<option value=""></option>` +
+                            `<option value="D" ${cell === 'D' ? 'selected' : ''}>D</option>` +
+                            `<option value="E" ${cell === 'E' ? 'selected' : ''}>E</option>` +
+                            `<option value="N" ${cell === 'N' ? 'selected' : ''}>N</option>` +
+                            `<option value="Dm" ${cell === 'Dm' ? 'selected' : ''}>Dm</option>` +
+                            `<option value="Em" ${cell === 'Em' ? 'selected' : ''}>Em</option>` +
+                            `<option value="Nm" ${cell === 'Nm' ? 'selected' : ''}>Nm</option>` +
+                            `</select>`;
+                    }
+
+                    html +=
+                        `<td style="background:${tdBg}; min-width:${minWidth}; white-space:nowrap;">` +
+                        `${cHtml}</td>`;
                 });
+
                 html += '</tr>';
             });
+
             html += '</tbody></table>';
-            document.getElementById('admin-history-table').innerHTML = html;
+
+            document
+                .getElementById('admin-history-table')
+                .innerHTML = html;
         }
 
         function escapeHtml(value) {
