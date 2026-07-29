@@ -11,103 +11,63 @@
             --primary-color: #8B0029;
             --text-color: #333333;
             --bg-color: #ffffff;
+            --border-color: #eaeaea;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Noto Sans KR', sans-serif;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Noto Sans KR', sans-serif; }
         body { background-color: var(--bg-color); color: var(--text-color); }
+        button, select, input { font-family: inherit; }
 
-        /* 네비게이션 바 (PC & Mobile) */
+        /* 네비게이션 바 */
         header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 40px;
-            height: 70px;
-            background-color: rgba(255, 255, 255, 0.95);
-            border-bottom: 1px solid #eaeaea;
+            display: flex; justify-content: space-between; align-items: center; padding: 0 40px;
+            height: 70px; background-color: rgba(255, 255, 255, 0.95); border-bottom: 1px solid var(--border-color);
+            position: fixed; top: 0; left: 0; right: 0; z-index: 99999; box-shadow: 0 1px 5px rgba(0,0,0,0.05);
             backdrop-filter: blur(10px);
-            position: fixed;
-            top: 0; left: 0; right: 0;
-            z-index: 99999;
-            box-shadow: 0 1px 5px rgba(0,0,0,0.05);
         }
-
         .logo-text { font-weight: 800; font-size: 20px; cursor: pointer; }
         .logo-text span { font-size: 22px; color: var(--primary-color); }
 
         nav { display: flex; gap: 40px; }
-        nav div { 
-            color: #666666; font-weight: 500; font-size: 17px; 
-            cursor: pointer; transition: color 0.2s ease; line-height: 70px; 
-        }
-        nav div:hover { color: var(--primary-color); }
-        nav div.active { color: var(--primary-color); font-weight: 800; }
+        nav div { color: #666; font-weight: 500; font-size: 17px; cursor: pointer; line-height: 70px; transition: 0.2s; }
+        nav div:hover, nav div.active { color: var(--primary-color); font-weight: 800; }
 
         /* 페이지 컨테이너 */
-        .page { display: none; padding-top: 70px; min-height: 100vh; }
+        .page { display: none; padding-top: 70px; min-height: 100vh; padding-bottom: 50px; }
         .page.active { display: block; }
-
-        /* 홈 화면 전용 테마 */
-        body.home-theme {
-            background: radial-gradient(circle, #330000 0%, #1a0000 50%, #000000 100%);
-        }
-        body.home-theme header { display: none; } /* 홈에서는 헤더 숨김 */
-        body.home-theme .page { padding-top: 0; }
-
-        /* 홈 화면 UI */
-        .home-title {
-            color: white; text-align: center; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
-            font-size: clamp(1.8em, 4vw, 2.8em); font-weight: 800; margin-top: 100px;
-        }
-        .home-subtitle {
-            color: rgba(255,255,255,0.7); text-align: center; font-size: clamp(0.8em, 1.2vw, 1em);
-            font-weight: 500; margin-bottom: 5vh;
-        }
-
-        .home-btn-container {
-            display: flex; justify-content: center; gap: 20px; max-width: 1200px; margin: 0 auto; padding: 0 20px;
-        }
-
-        .home-btn {
-            flex: 1; height: 300px; background-color: rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px;
-            backdrop-filter: blur(15px); transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            color: white; padding: 25px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
-            cursor: pointer; text-decoration: none; text-align: center;
-        }
-        .home-btn:hover {
-            transform: translateY(-12px); background-color: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.3); box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
-        }
-        .home-btn span.title { font-size: 2.2rem; font-weight: 800; margin-bottom: 10px; }
-        .home-btn span.desc { font-size: 1.05rem; font-weight: 500; color: rgba(255, 255, 255, 0.75); }
-        .home-btn .arrow {
-            margin-top: 35px; padding: 10px 25px; border-radius: 50px; font-size: 0.95rem; font-weight: 800;
-            background-color: #555; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-        }
-        .home-btn:nth-child(1) .arrow, .home-btn:nth-child(2) .arrow { background-color: #990000; }
-        .home-btn:nth-child(4) .arrow { background-color: #8B0029; }
-
-        /* 서브페이지 공통 UI */
         .content-wrap { padding: 40px; max-width: 1400px; margin: 0 auto; }
-        .custom-title {
-            border-left: 6px solid var(--primary-color); padding-left: 15px; font-size: 26px;
-            font-weight: 800; color: var(--text-color); margin-bottom: 30px; line-height: 1.2;
-        }
-        iframe { width: 100%; border: none; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .custom-title { border-left: 6px solid var(--primary-color); padding-left: 15px; font-size: 26px; font-weight: 800; margin-bottom: 30px; line-height: 1.2; }
 
+        /* 홈 화면 전용 */
+        body.home-theme { background: radial-gradient(circle, #330000 0%, #1a0000 50%, #000000 100%); }
+        body.home-theme header { display: none; }
+        body.home-theme .page { padding-top: 0; }
+        .home-title { color: white; text-align: center; font-size: clamp(1.8em, 4vw, 2.8em); font-weight: 800; margin-top: 100px; }
+        .home-subtitle { color: rgba(255,255,255,0.7); text-align: center; font-size: clamp(0.8em, 1.2vw, 1em); font-weight: 500; margin-bottom: 5vh; }
+        .home-btn-container { display: flex; justify-content: center; gap: 20px; max-width: 1200px; margin: 0 auto; padding: 0 20px; flex-wrap: wrap; }
+        .home-btn { flex: 1; min-width: 250px; height: 300px; background-color: rgba(0, 0, 0, 0.5); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; color: white; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 20px rgba(0,0,0,0.4); }
+        .home-btn:hover { transform: translateY(-12px); background-color: rgba(255, 255, 255, 0.1); }
+        .home-btn span.title { font-size: 2.2rem; font-weight: 800; margin-bottom: 10px; }
+        .home-btn span.desc { font-size: 1.05rem; color: rgba(255, 255, 255, 0.75); }
+
+        /* 테이블 및 UI 요소 */
+        table { width: 100%; border-collapse: collapse; min-width: 800px; font-size: 14px; }
+        th { background: #f8f9fa; border: 1px solid #ddd; padding: 10px; text-align: center; position: sticky; top: 0; }
+        td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+        .form-control { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+        .btn-primary { background: var(--primary-color); color: white; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .btn-primary:disabled { background: #aaa; cursor: not-allowed; }
+        
+        /* 평가지표 전용 스타일 */
+        .metric-card { border: 1px solid #ddd; padding: 20px; border-radius: 8px; text-align: center; background: #fff; flex: 1; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+        .metric-val { font-size: 28px; font-weight: 900; color: var(--primary-color); margin: 10px 0; }
+        .ward-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 8px; }
+        .ward-box { border: 1px solid rgba(44,160,44,0.3); background: rgba(44,160,44,0.05); padding: 8px; border-radius: 6px; text-align: center; }
+        .ward-box.empty { border: 1px solid #eee; background: #fafafa; color: #999; }
     </style>
 </head>
 <body class="home-theme">
 
-    <!-- 상단 네비게이션 (홈에서는 CSS로 숨김 처리됨) -->
     <header>
         <div class="logo-text" onclick="navigateTo('home')"><span>✚</span> NURSING SHIFT</div>
         <nav>
@@ -124,28 +84,11 @@
         <div id="page-home" class="page active">
             <div class="home-title">제2차 교대제 : 간호부</div>  
             <div class="home-subtitle">KU MEDICINE GURO HOSPITAL NURSING SHIFT</div>
-            
             <div class="home-btn-container">
-                <div class="home-btn" onclick="navigateTo('request')">
-                    <span class="title">결원 입력</span>
-                    <span class="desc">(대체간호사 신청)</span>
-                    <div class="arrow">바로가기 →</div>
-                </div>
-                <div class="home-btn" onclick="navigateTo('schedule')">
-                    <span class="title">대체간호사</span>
-                    <span class="desc">근무표</span>
-                    <div class="arrow">바로가기 →</div>
-                </div>
-                <div class="home-btn" onclick="navigateTo('assign')">
-                    <span class="title">대체 배정</span>
-                    <span class="desc">(담당자 전용)</span>
-                    <div class="arrow">바로가기 →</div>
-                </div>
-                <div class="home-btn" onclick="navigateTo('dashboard')">
-                    <span class="title">평가지표</span>
-                    <span class="desc">대시보드</span>
-                    <div class="arrow">바로가기 →</div>
-                </div>
+                <div class="home-btn" onclick="navigateTo('request')"><span class="title">결원 입력</span><span class="desc">(대체간호사 신청)</span></div>
+                <div class="home-btn" onclick="navigateTo('schedule')"><span class="title">대체간호사</span><span class="desc">근무표</span></div>
+                <div class="home-btn" onclick="navigateTo('assign')"><span class="title">대체 배정</span><span class="desc">(담당자 전용)</span></div>
+                <div class="home-btn" onclick="navigateTo('dashboard')"><span class="title">평가지표</span><span class="desc">대시보드</span></div>
             </div>
         </div>
 
@@ -154,18 +97,13 @@
             <div class="content-wrap">
                 <div class="custom-title">결원 입력 (대체간호사 신청)</div>
                 
-                <!-- 필터 영역 -->
                 <h5 style="margin-bottom: 10px;">🗓️ 조회 연도 및 병동 선택</h5>
                 <div style="display: flex; gap: 10px; margin-bottom: 20px;">
-                    <select id="sel-year" style="padding: 8px; border-radius: 4px;">
-                        <option value="2025">2025</option>
-                        <option value="2026" selected>2026</option>
-                        <option value="2027">2027</option>
+                    <select id="sel-year" class="form-control" style="width: 100px;">
+                        <option value="2025">2025</option><option value="2026" selected>2026</option><option value="2027">2027</option>
                     </select>
-                    <select id="sel-month" style="padding: 8px; border-radius: 4px;">
-                        <!-- JS로 1~12월 채움 -->
-                    </select>
-                    <select id="sel-ward" style="padding: 8px; border-radius: 4px; flex-grow: 1;">
+                    <select id="sel-month" class="form-control" style="width: 100px;"></select>
+                    <select id="sel-ward" class="form-control" style="flex: 1;">
                         <option value="">병동을 선택하세요</option>
                         <option value="50W">50W</option><option value="51W">51W</option><option value="52W">52W</option>
                         <option value="53W">53W</option><option value="65W">65W</option><option value="70W">70W</option>
@@ -174,59 +112,57 @@
                         <option value="85W">85W</option><option value="91W">91W</option><option value="92W">92W</option>
                         <option value="93W">93W</option><option value="100W">100W</option><option value="101W">101W</option>
                     </select>
-                    <button onclick="loadScheduleData()" style="padding: 8px 15px; background-color: #8B0029; color: white; border: none; border-radius: 4px; cursor: pointer;">조회</button>
+                    <button class="btn-primary" onclick="loadScheduleData()">조회</button>
                 </div>
 
-                <div id="loading-spinner" style="display: none; color: #8B0029; font-weight: bold; margin-bottom: 15px;">
-                    ⏳ 구글 시트에서 데이터를 불러오는 중입니다...
+                <h5 style="margin-bottom: 10px;">🔎 직원 이름 검색</h5>
+                <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                    <input type="text" id="search-name" class="form-control" placeholder="이름을 입력하세요 (예: 홍길동)" style="flex: 1;" onkeypress="if(event.key==='Enter') searchNurseByName()">
+                    <button class="btn-primary" style="background:#333;" onclick="searchNurseByName()">검색</button>
                 </div>
+                <div id="search-results-container" style="display: none; padding: 15px; border: 1px solid #ddd; background: #f9f9f9; margin-bottom: 20px; border-radius: 8px;"></div>
 
-                <!-- 근무표 테이블 출력 영역 -->
-                <div id="table-container" style="width: 100%; overflow-x: auto; margin-bottom: 30px; border: 1px solid #eaeaea; border-radius: 8px; background: white;">
-                    <!-- JS로 테이블이 삽입됩니다 -->
-                </div>
+                <div id="req-loading" style="display: none; color: var(--primary-color); font-weight: bold; margin-bottom: 15px;">⏳ 구글 시트에서 데이터를 불러오는 중입니다...</div>
+                
+                <!-- 테이블 영역 -->
+                <div id="table-container" style="width: 100%; overflow-x: auto; margin-bottom: 30px; border: 1px solid #eaeaea; border-radius: 8px; max-height: 500px;"></div>
 
-                <!-- 결원 신청 폼 (데이터 로드 전에는 숨김) -->
+                <!-- 결원 신청 폼 -->
                 <div id="absence-form-container" style="display: none; padding: 20px; border: 1px solid #ddd; border-radius: 8px; background: #fdfdfd;">
-                    <h5 style="margin-bottom: 15px; color: #8B0029;">📝 <span id="form-ward-display"></span> 결원 신청 및 자동 배정</h5>
+                    <h5 style="margin-bottom: 15px; color: var(--primary-color);">📝 <span id="form-ward-display"></span> 결원 신청 및 자동 배정</h5>
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 15px;">
-                        <div>
-                            <label style="font-size: 13px; font-weight: bold;">결원 발생 일자</label>
-                            <input type="date" id="req-date" style="width: 100%; padding: 8px; margin-top: 5px;">
-                        </div>
-                        <div>
-                            <label style="font-size: 13px; font-weight: bold;">결원자 이름</label>
-                            <input type="text" id="req-name" placeholder="표에서 선택하세요" readonly style="width: 100%; padding: 8px; margin-top: 5px; background: #eee;">
-                        </div>
-                        <div>
-                            <label style="font-size: 13px; font-weight: bold;">변경될 근무</label>
-                            <select id="req-changed-duty" style="width: 100%; padding: 8px; margin-top: 5px;">
-                                <option value="D">D</option><option value="E">E</option><option value="N">N</option>
-                                <option value="교육">교육</option><option value="OFF">OFF</option><option value="S">S</option><option value="A">A</option>
-                            </select>
-                        </div>
+                        <div><label style="font-size: 13px; font-weight: bold;">발생 일자</label><input type="date" id="req-date" class="form-control"></div>
+                        <div><label style="font-size: 13px; font-weight: bold;">결원자 이름</label><input type="text" id="req-name" class="form-control" placeholder="표에서 클릭" readonly style="background:#eee;"></div>
+                        <div><label style="font-size: 13px; font-weight: bold;">변경 근무</label><select id="req-changed-duty" class="form-control"><option value="D">D</option><option value="E">E</option><option value="N">N</option><option value="교육">교육</option><option value="OFF">OFF</option><option value="S">S</option><option value="A">A</option></select></div>
                         <div>
                             <label style="font-size: 13px; font-weight: bold;">결원 사유</label>
-                            <select id="req-reason" style="width: 100%; padding: 8px; margin-top: 5px;">
-                                <option value="1. 병가">1. 병가</option><option value="2. 조사">2. 조사</option>
-                                <option value="3. 사직">3. 사직</option><option value="4. 휴직">4. 휴직</option>
-                                <option value="5. 가족돌봄">5. 가족돌봄</option><option value="6. 임신간호사 발생">6. 임신간호사 발생</option>
-                                <option value="7. 기타">7. 기타</option>
+                            <select id="req-reason" class="form-control">
+                                <option value="1. 병가">1. 병가</option><option value="2. 조사">2. 조사</option><option value="3. 사직">3. 사직</option>
+                                <option value="4. 휴직">4. 휴직</option><option value="5. 가족돌봄">5. 가족돌봄</option><option value="6. 임신간호사 발생">6. 임신간호사 발생</option><option value="7. 기타">7. 기타</option>
                             </select>
                         </div>
+                        <div><label style="font-size: 13px; font-weight: bold;">대체 여부</label><select id="req-sub-yn" class="form-control"><option value="Y">Y</option><option value="N">N</option></select></div>
+                        <div><label style="font-size: 13px; font-weight: bold;">비고</label><input type="text" id="req-note" class="form-control" placeholder="자유 기입"></div>
                     </div>
-                    <button onclick="submitAbsenceRequest()" style="width: 100%; padding: 12px; background-color: #8B0029; color: white; font-weight: bold; border: none; border-radius: 4px; cursor: pointer;">
-                        💾 위 내용으로 결원 신청 및 자동 배정
-                    </button>
+                    <button class="btn-primary" style="width: 100%; padding: 12px;" onclick="submitAbsenceRequest(event)">💾 위 내용으로 결원 신청 및 자동 배정</button>
                 </div>
 
+                <!-- 여기에 추가: 부서별 신청 내역 -->
+                <h5 style="margin-top: 30px; margin-bottom: 10px; color: var(--text-color);">📂 부서별 신청 내역</h5>
+                <div id="ward-history-container" style="width: 100%; overflow-x: auto; border: 1px solid #ddd; border-radius: 8px; max-height: 400px; background: white;">
+                    <p style="padding: 15px; color: #666;">조회 버튼을 누르면 내역이 표시됩니다.</p>
+                </div>
             </div>
         </div>
 
-        <!-- 3. 근무표 화면 (Iframe 연동) -->
+        <!-- 3. 근무표 화면 -->
         <div id="page-schedule" class="page">
             <div class="content-wrap">
                 <div class="custom-title">대체간호사 전체 근무표</div>
+                
+                <!-- 여기에 추가: 동기화 버튼 -->
+                <button class="btn-primary" style="width: 100%; margin-bottom: 15px;" onclick="syncScheduleIframe()">🔄 근무표 실시간 동기화</button>
+                
                 <iframe id="schedule-iframe" height="800" src="https://docs.google.com/spreadsheets/d/1tNobsqOTDzIKwAcF0VfUanRTSZCArqIF63n5AxKfDbc/htmlembed?gid=1622990971&single=true&widget=false&chrome=false"></iframe>
             </div>
         </div>
@@ -236,39 +172,27 @@
             <div class="content-wrap">
                 <div class="custom-title">대체간호사 배정 (담당자 전용)</div>
                 
-                <!-- 로그인 화면 -->
                 <div id="admin-login-container" style="max-width: 400px; margin: 50px auto; text-align: center;">
-                    <p style="margin-bottom: 10px; font-weight: bold; color: var(--text-color);">관리자 비밀번호를 입력하세요</p>
-                    <input type="password" id="admin-pw" style="width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 4px; margin-bottom: 10px;" placeholder="비밀번호 입력 (admin1234)" onkeypress="if(event.key==='Enter') adminLogin()">
-                    <button onclick="adminLogin()" style="width: 100%; padding: 12px; background-color: #8B0029; color: white; border: none; border-radius: 4px; font-weight: bold; cursor: pointer;">로그인</button>
+                    <p style="margin-bottom: 10px; font-weight: bold;">관리자 비밀번호를 입력하세요</p>
+                    <input type="password" id="admin-pw" class="form-control" style="margin-bottom: 10px;" placeholder="비밀번호 (admin1234)" onkeypress="if(event.key==='Enter') adminLogin()">
+                    <button class="btn-primary" style="width: 100%;" onclick="adminLogin()">로그인</button>
                 </div>
 
-                <!-- 관리자 대시보드 화면 (로그인 성공 시 표시됨) -->
                 <div id="admin-dashboard-container" style="display: none;">
                     <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
-                        <button onclick="adminLogout()" style="padding: 8px 15px; border: 1px solid #ccc; background: #fff; cursor: pointer; border-radius: 4px;">로그아웃</button>
-                        <button onclick="syncAdminData()" style="padding: 8px 15px; background: #f8f9fa; border: 1px solid #ddd; cursor: pointer; border-radius: 4px;">🔄 시트 기준으로 동기화</button>
+                        <button class="form-control" style="width: auto; cursor:pointer;" onclick="adminLogout()">로그아웃</button>
+                        <button class="form-control" style="width: auto; background:#f8f9fa; cursor:pointer;" onclick="syncAdminData()" id="btn-sync-admin">🔄 시트 기준으로 동기화</button>
                     </div>
 
-                    <!-- 1. 미배정 신청 건 리스트 -->
-                    <h4 style="color: var(--text-color); margin-top: 20px; margin-bottom: 15px;">🚨 미배정 신청 건 리스트</h4>
-                    <div id="pending-list-container">
-                        <!-- JS로 카드 UI가 렌더링 됩니다 -->
-                        <p style="color: #666;">로딩 중이거나 미배정 건이 없습니다.</p>
-                    </div>
+                    <h4 style="margin-bottom: 15px; color: var(--primary-color);">🚨 미배정 신청 건 리스트</h4>
+                    <div id="pending-list-container"></div>
 
                     <hr style="margin: 40px 0; border: 0; border-top: 1px solid #eee;">
 
-                    <!-- 2. 전체 신청 내역 데이터그리드 (수정 가능 표) -->
-                    <h4 style="color: var(--text-color); margin-bottom: 15px;">📋 전체 신청 내역 수정 (Data Editor)</h4>
-                    <div id="admin-history-table" style="width: 100%; overflow-x: auto; max-height: 500px; border: 1px solid #ddd; margin-bottom: 20px;">
-                        <!-- JS로 편집 가능한 HTML Table이 들어갑니다 -->
-                    </div>
-                    <button onclick="saveAdminHistory()" style="width: 100%; padding: 15px; background-color: #8B0029; color: white; font-size: 16px; font-weight: bold; border: none; border-radius: 4px; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-                        💾 전체 내역 수정사항 저장하기
-                    </button>
+                    <h4 style="margin-bottom: 15px;">📋 전체 신청 내역 수정 (Data Editor)</h4>
+                    <div id="admin-history-table" style="width: 100%; overflow-x: auto; max-height: 500px; border: 1px solid #ddd; margin-bottom: 20px;"></div>
+                    <button class="btn-primary" style="width: 100%; padding: 15px;" onclick="saveAdminHistory(event)">💾 전체 내역 수정사항 저장하기</button>
                 </div>
-
             </div>
         </div>
 
@@ -276,260 +200,287 @@
         <div id="page-dashboard" class="page">
             <div class="content-wrap">
                 <div class="custom-title">제2차 교대제 : 평가지표</div>
-                <p>지표 분석 대시보드 개발 예정</p>
+                
+                <div style="background: #f9f9f9; padding: 20px; border-radius: 8px; border: 1px solid #ddd; margin-bottom: 30px;">
+                    <div style="margin-bottom: 15px; font-weight: bold;">
+                        <label style="margin-right: 20px;"><input type="radio" name="analyze-mode" value="single" checked> 단일 월 분석</label>
+                        <label><input type="radio" name="analyze-mode" value="multi"> 기간 통합 분석</label>
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <select id="dashboard-month" class="form-control" style="width: 200px;">
+                            <!-- JS로 2601 ~ 2612 세팅 -->
+                        </select>
+                        <button class="btn-primary" onclick="runMetricsAnalysis(event)">📊 데이터 분석 실행</button>
+                    </div>
+                </div>
+
+                <div id="metrics-loading" style="display: none; color: var(--primary-color); font-weight: bold; text-align: center; margin: 50px 0;">
+                    <span style="font-size: 40px;">⏳</span><br><br>교대제 DNS 시트에서 수천 건의 데이터를 읽고 판다스(Pandas) 병합 연산을 수행 중입니다.<br>잠시만 기다려주세요 (약 5~10초 소요)...
+                </div>
+                
+                <div id="metrics-result-container" style="display: none;">
+                    <h3 style="margin-bottom: 15px; border-bottom: 2px solid #333; padding-bottom: 5px;">지표 1. 결원 대체율</h3>
+                    <div style="display: flex; gap: 15px; margin-bottom: 40px;">
+                        <div class="metric-card"><div>결원발생 일수의 합</div><div class="metric-val" id="val-vac-days">0일</div></div>
+                        <div class="metric-card"><div>대체근무일수의 합</div><div class="metric-val" id="val-rep-days">0일</div></div>
+                        <div class="metric-card" style="background:#fff0f0; border-color:var(--primary-color);"><div>🔥 결원 대체율</div><div class="metric-val" id="val-rep-rate">0.00%</div></div>
+                    </div>
+
+                    <h3 style="margin-bottom: 15px; border-bottom: 2px solid #333; padding-bottom: 5px;">지표 2. 계획 근무 준수율</h3>
+                    <div style="display: flex; gap: 15px; margin-bottom: 15px;">
+                        <div class="metric-card"><div>월 근무일수 합 (분모)</div><div class="metric-val" id="val-denom">0일</div></div>
+                        <div class="metric-card"><div>변동X + 대체합 (분자)</div><div class="metric-val" id="val-numer">0일</div></div>
+                        <div class="metric-card" style="background:#e8f4fd; border-color:#1772d1;"><div>🏆 계획 근무 준수율</div><div class="metric-val" style="color:#1772d1;" id="val-comp-rate">0.00%</div></div>
+                    </div>
+                    
+                    <div style="display: flex; gap: 10px; font-size: 13px; margin-bottom: 40px;">
+                        <div style="flex:1; padding: 10px; border: 1px solid #eee; background:#fafafa;">A. 변동없는 근무: <strong id="val-A">0</strong>일</div>
+                        <div style="flex:1; padding: 10px; border: 1px solid #eee; background:#fafafa;">B. 임신 변동: <strong id="val-B">0</strong>일</div>
+                        <div style="flex:1; padding: 10px; border: 1px solid #eee; background:#fafafa;">C. 임신 중 대체: <strong id="val-C">0</strong>일</div>
+                        <div style="flex:1; padding: 10px; border: 1px solid #eee; background:#fafafa;">D. 전체 대체근무: <strong id="val-D">0</strong>일</div>
+                    </div>
+
+                    <h3 style="margin-bottom: 15px; border-bottom: 2px solid #333; padding-bottom: 5px;">💡 병동별 인사이트 및 순위</h3>
+                    <div id="insight-container" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <!-- JS 렌더링 -->
+                    </div>
+                    <!-- 여기에 추가: 병동별 랭킹 표 -->
+                    <h3 style="margin-top: 40px; margin-bottom: 15px; border-bottom: 2px solid #333; padding-bottom: 5px;">📊 병동별 순위</h3>
+                    <div id="ranking-table-container" style="width: 100%; overflow-x: auto; border: 1px solid #ddd; border-radius: 8px;"></div>
+                </div>
             </div>
         </div>
     </main>
 
     <script>
+        // ⚠️ [중요] 반드시 본인의 구글 Apps Script 웹 앱 URL로 변경하세요.
+        // 현재 평가지표(DNS) 시트를 불러오기 위해 GAS 코드 1번 항목도 업데이트 해야 합니다.
         const GAS_URL = "https://script.google.com/macros/s/AKfycbxe2oBl9GuV6FYufc-BtgZE6V5N6mwmdDRUvXi7pe79lrBaDSuIoRmJo024OHIORNI2/exec";
 
-        // 전역 상태 변수 (Streamlit의 st.session_state 역할)
-        const sessionState = {
-            page: 'home',
-            selected_ward: null,
-            admin_logged_in: false,
-            target_date: new Date().toISOString().split('T')[0]
-        };
+        const teamMapping = { "A": ["52W", "65W", "83W", "92W", "93W", "100W"], "B": ["51W", "53W", "70W", "71W", "81W", "101W"], "C": ["50W", "72W", "73W", "80W", "85W", "91W"] };
+        const wardList = ["50W", "51W", "52W", "53W", "65W", "70W", "71W", "72W", "73W", "80W", "81W", "83W", "85W", "91W", "92W", "93W", "100W", "101W"];
 
-        // 페이지 이동(라우팅) 함수
+        const sessionState = { page: 'home', target_date: new Date().toISOString().split('T')[0], admin_logged_in: false };
+
         function navigateTo(pageId) {
             sessionState.page = pageId;
-            
-            // 모든 페이지 숨기기
             document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
-            // 모든 네비게이션 활성화 해제
             document.querySelectorAll('nav div').forEach(el => el.classList.remove('active'));
-            
-            // 선택한 페이지만 보이기
             document.getElementById('page-' + pageId).classList.add('active');
             
-            // 테마 변경 (홈 vs 서브페이지)
-            if (pageId === 'home') {
-                document.body.classList.add('home-theme');
-            } else {
+            if (pageId === 'home') document.body.classList.add('home-theme');
+            else {
                 document.body.classList.remove('home-theme');
-                const navEl = document.getElementById('nav-' + pageId);
-                if (navEl) navEl.classList.add('active');
+                const navBtn = document.getElementById('nav-' + pageId);
+                if (navBtn) navBtn.classList.add('active');
             }
         }
 
-        // 구글 시트에서 데이터 가져오기 예시 함수
-        async function fetchSheetData(sheetName) {
-            try {
-                const response = await fetch(`${GAS_URL}?action=getData&sheetName=${sheetName}`);
-                const result = await response.json();
-                if(result.success) {
-                    console.log(`${sheetName} 데이터 로드 완료:`, result.data);
-                    return result.data;
-                } else {
-                    console.error("오류:", result.error);
-                }
-            } catch (err) {
-                console.error("통신 실패:", err);
-            }
-        }
-
-        // 1~12월 드롭다운 세팅
         window.onload = () => {
-            const monthSelect = document.getElementById('sel-month');
-            const currentMonth = new Date().getMonth() + 1;
+            const mSel = document.getElementById('sel-month');
+            for(let i=1; i<=12; i++) mSel.innerHTML += `<option value="${i}" ${i === new Date().getMonth()+1 ? 'selected':''}>${i}월</option>`;
+            document.getElementById('req-date').value = sessionState.target_date;
+
+            const dashMonth = document.getElementById('dashboard-month');
             for(let i=1; i<=12; i++) {
-                let opt = document.createElement('option');
-                opt.value = i;
-                opt.text = i + "월";
-                if(i === currentMonth) opt.selected = true;
-                monthSelect.appendChild(opt);
+                let mStr = String(i).padStart(2, '0');
+                dashMonth.innerHTML += `<option value="26${mStr}">26${mStr}</option>`;
             }
         };
 
-        // 전역 데이터 보관용 (판다스의 df_plan 역할)
-        let currentPlanData = [];
-        let currentHeaders = [];
+        // 공통 API 통신 모듈
+        async function fetchSheetData(sheetName, isDns = false) {
+            try {
+                const res = await fetch(`${GAS_URL}?action=getData&sheetName=${sheetName}&isDns=${isDns}`);
+                const result = await res.json();
+                if(result.success) return result.data;
+                console.error("데이터 로드 실패:", result.error); return null;
+            } catch (err) { console.error("통신 에러:", err); return null; }
+        }
 
-        // 데이터 조회 함수
-        async function loadScheduleData() {
-            const year = document.getElementById('sel-year').value.slice(-2); // 2026 -> 26
-            const month = document.getElementById('sel-month').value.padStart(2, '0'); // 3 -> 03
+        async function postToGAS(payload) {
+            try {
+                const res = await fetch(GAS_URL, { method: "POST", body: JSON.stringify(payload) });
+                return await res.json();
+            } catch(err) { return { success: false, error: "네트워크 통신 오류" }; }
+        }
+
+        /* ==========================================
+           2. 결원 입력 화면 로직 (검색 + 조회 + 신청)
+           ========================================== */
+        let currentPlanData = [], currentHeaders = [];
+
+        async function searchNurseByName() {
+            const name = document.getElementById('search-name').value.trim();
+            if(!name) { alert("이름을 입력하세요."); return; }
+            
+            const year = document.getElementById('sel-year').value.slice(-2);
+            const month = document.getElementById('sel-month').value.padStart(2, '0');
+            const sheetName = `${year}${month} 계획근무`;
+
+            document.getElementById('req-loading').style.display = 'block';
+            const data = await fetchSheetData(sheetName);
+            document.getElementById('req-loading').style.display = 'none';
+            if(!data) { alert("해당 월의 계획 근무표가 없습니다."); return; }
+
+            let matches = [];
+            data.slice(1).forEach(row => {
+                if(row[2] && String(row[2]).includes(name)) {
+                    let w = String(row[0]).trim(); if(!w.endsWith("W")) w += "W";
+                    matches.push({ ward: w, name: String(row[2]).trim(), id: String(row[1]).trim() });
+                }
+            });
+
+            const resDiv = document.getElementById('search-results-container');
+            resDiv.style.display = 'block';
+            if(matches.length === 0) resDiv.innerHTML = `<p style="color:red; font-weight:bold;">'${name}' 간호사를 찾을 수 없습니다.</p>`;
+            else {
+                let html = `<p style="font-weight:bold; color:green; margin-bottom: 10px;">✅ 총 ${matches.length}명 검색됨. 아래 버튼을 클릭하여 선택해 주세요.</p>`;
+                matches.forEach(m => {
+                    html += `<button class="btn-primary" style="background:#fff; color:#333; border:1px solid #ccc; margin-right:5px; margin-bottom:5px;" onclick="applyNurseSearch('${m.ward}', '${m.name}')">${m.ward} | ${m.name}(${m.id})</button>`;
+                });
+                resDiv.innerHTML = html;
+            }
+        }
+
+        function applyNurseSearch(ward, name) {
+            document.getElementById('sel-ward').value = ward;
+            document.getElementById('search-name').value = name;
+            loadScheduleData(name);
+        }
+
+        async function loadScheduleData(filterName = null) {
+            const year = document.getElementById('sel-year').value.slice(-2);
+            const month = document.getElementById('sel-month').value.padStart(2, '0');
             const ward = document.getElementById('sel-ward').value;
 
-            if(!ward) {
-                alert("위 목록에서 부서를 먼저 선택해 주세요.");
-                return;
-            }
+            if(!ward) { alert("부서를 선택해 주세요."); return; }
 
-            const sheetName = `${year}${month} 계획근무`; // ex) "2603 계획근무"
-            
-            document.getElementById('loading-spinner').style.display = 'block';
+            const sheetName = `${year}${month} 계획근무`;
+            document.getElementById('req-loading').style.display = 'block';
             document.getElementById('table-container').innerHTML = '';
             document.getElementById('absence-form-container').style.display = 'none';
 
-            // 1단계에서 만든 GAS API 호출
-            const sheetData = await fetchSheetData(sheetName);
-            document.getElementById('loading-spinner').style.display = 'none';
+            const data = await fetchSheetData(sheetName);
+            document.getElementById('req-loading').style.display = 'none';
 
-            if(!sheetData || sheetData.length < 2) {
-                document.getElementById('table-container').innerHTML = '<p style="padding:20px; color:red;">해당 월의 등록된 계획 근무표가 없습니다.</p>';
-                return;
+            if(!data || data.length < 2) {
+                document.getElementById('table-container').innerHTML = '<p style="padding:20px; color:red;">계획 근무표가 없습니다.</p>'; return;
             }
 
-            currentHeaders = sheetData[0]; // 첫 줄은 헤더
+            currentHeaders = data[0];
             const targetWardNum = ward.replace('W', '');
-
-            // 파이썬의 df_plan = [df_plan['부서'] == target_ward_num] 와 완벽히 동일한 JS 로직
-            currentPlanData = sheetData.slice(1).filter(row => String(row[0]).trim() === targetWardNum);
+            
+            // 병동 필터링
+            currentPlanData = data.slice(1).filter(row => String(row[0]).trim() === targetWardNum);
+            
+            // 이름 검색으로 넘어온 경우 해당 이름만 추가 필터링
+            if(filterName) {
+                currentPlanData = currentPlanData.filter(row => String(row[2]).trim() === filterName);
+            }
 
             if(currentPlanData.length === 0) {
-                document.getElementById('table-container').innerHTML = `<p style="padding:20px;">'${sheetName}'에 ${ward} 병동 데이터가 아직 없습니다.</p>`;
-                return;
+                document.getElementById('table-container').innerHTML = `<p style="padding:20px;">해당 조건의 데이터가 없습니다.</p>`; return;
             }
 
-            renderTable(currentPlanData, currentHeaders);
-            
-            // 데이터 로드 완료 후 폼 표시
-            document.getElementById('absence-form-container').style.display = 'block';
-            document.getElementById('form-ward-display').innerText = ward;
-            document.getElementById('req-date').value = sessionState.target_date;
-        }
-
-        // HTML <table> 그리기 함수
-        function renderTable(dataRows, headers) {
-            let html = '<table style="width: 100%; border-collapse: collapse; min-width: 800px;">';
-            
-            // 헤더 생성 (이름, 면허번호 + 날짜들)
-            html += '<thead style="background-color: #f8f9fa; border-bottom: 2px solid #8B0029;"><tr>';
-            html += `<th style="padding: 10px; border: 1px solid #ddd;">이름</th>`;
-            html += `<th style="padding: 10px; border: 1px solid #ddd;">면허번호</th>`;
-            for(let i=3; i<headers.length; i++) {
-                if(headers[i]) html += `<th style="padding: 10px; border: 1px solid #ddd; font-size: 13px;">${headers[i]}</th>`;
-            }
+            let html = '<table><thead><tr><th>이름</th><th>면허번호</th>';
+            for(let i=3; i<currentHeaders.length; i++) if(currentHeaders[i]) html += `<th>${currentHeaders[i]}</th>`;
             html += '</tr></thead><tbody>';
 
-            // 데이터 행 생성
-            dataRows.forEach((row, index) => {
-                // 클릭 시 해당 간호사를 폼에 자동 입력하는 이벤트 연결
-                html += `<tr style="border-bottom: 1px solid #eee; cursor: pointer;" onclick="selectNurse('${row[2]}', '${row[1]}', this)" onmouseover="this.style.backgroundColor='#fff0f0'" onmouseout="this.style.backgroundColor='transparent'">`;
-                html += `<td style="padding: 10px; border: 1px solid #ddd; font-weight: bold; text-align: center;">${row[2]}</td>`; // 이름
-                html += `<td style="padding: 10px; border: 1px solid #ddd; text-align: center;">${row[1]}</td>`; // 사번/면허
-                
-                for(let i=3; i<row.length; i++) {
-                    html += `<td style="padding: 10px; border: 1px solid #ddd; text-align: center;">${row[i]}</td>`;
-                }
+            currentPlanData.forEach(row => {
+                html += `<tr style="cursor: pointer;" onclick="selectNurse('${row[2]}', '${row[1]}', this)" onmouseover="this.style.background='#fff0f0'" onmouseout="this.style.background=''">`;
+                html += `<td><strong>${row[2]}</strong></td><td>${row[1]}</td>`;
+                for(let i=3; i<row.length; i++) html += `<td>${row[i]}</td>`;
                 html += '</tr>';
             });
             html += '</tbody></table>';
-            
+
             document.getElementById('table-container').innerHTML = html;
-        }
+            document.getElementById('absence-form-container').style.display = 'block';
+            document.getElementById('form-ward-display').innerText = ward;
 
-        // 표에서 간호사 클릭 시 폼에 자동 세팅되는 함수
-        function selectNurse(name, id, trElement) {
-            document.getElementById('req-name').value = `${name} (${id})`;
+            // 부서별 신청 내역 불러오기 로직 추가
+            const reqHistoryData = await fetchSheetData('신청내역');
+            if(reqHistoryData && reqHistoryData.length > 1) {
+                const hHeaders = reqHistoryData[0];
+                const hIdxWard = hHeaders.findIndex(h => h.includes("요청부서"));
+                const filteredHistory = reqHistoryData.slice(1).filter(row => String(row[hIdxWard]).trim() === ward);
+                
+                let hHtml = '<table style="width: 100%; font-size: 13px; white-space: nowrap;"><thead style="background: #f1f3f5; position: sticky; top: 0;"><tr>';
+                hHeaders.forEach(h => hHtml += `<th style="padding: 8px; border: 1px solid #ddd;">${h}</th>`);
+                hHtml += '</tr></thead><tbody>';
+                
+                filteredHistory.forEach(row => {
+                    hHtml += '<tr>';
+                    row.forEach(cell => hHtml += `<td style="padding: 8px; border: 1px solid #ddd;">${cell}</td>`);
+                    hHtml += '</tr>';
+                });
+                hHtml += '</tbody></table>';
+                
+                document.getElementById('ward-history-container').innerHTML = filteredHistory.length > 0 ? hHtml : '<p style="padding: 15px;">신청 내역이 없습니다.</p>';
+            }
             
-            // 클릭된 행 강조 표시
-            const allTrs = trElement.parentNode.querySelectorAll('tr');
-            allTrs.forEach(tr => tr.style.backgroundColor = 'transparent');
-            trElement.style.backgroundColor = '#ffcccc';
-            trElement.onmouseout = null; // 선택된 행은 마우스 아웃 효과 제거
+            // 자동 선택 트리거 (검색해서 한명만 나왔을 때)
+            if(filterName && currentPlanData.length === 1) {
+                document.getElementById('req-name').value = `${currentPlanData[0][2]} (${currentPlanData[0][1]})`;
+            }
         }
 
-        async function submitAbsenceRequest() {
+        function selectNurse(name, id, tr) {
+            document.getElementById('req-name').value = `${name} (${id})`;
+            tr.parentNode.querySelectorAll('tr').forEach(el => el.style.background = '');
+            tr.style.background = '#ffcccc'; tr.onmouseout = null;
+        }
+
+        async function submitAbsenceRequest(e) {
+            const btn = e.target;
             const ward = document.getElementById('sel-ward').value;
             const reqDate = document.getElementById('req-date').value;
             const nameField = document.getElementById('req-name').value;
             const changedDuty = document.getElementById('req-changed-duty').value;
             const reqReason = document.getElementById('req-reason').value;
-            // HTML에 사유(비고) ID를 안만들었으므로 하드코딩 처리, 필요시 html에 id="req-note" 추가하세요.
-            const reqSubYn = "Y"; // 대체간호사 신청여부 (임시 기본값)
+            const reqNote = document.getElementById('req-note').value;
+            const reqSubYn = document.getElementById('req-sub-yn').value;
 
-            if(!nameField) {
-                alert("표에서 결원자(간호사)를 먼저 클릭하여 선택해 주세요.");
-                return;
-            }
+            if(!nameField) { alert("표에서 결원자를 클릭하세요."); return; }
 
-            // "홍길동 (12345)" 형식 분리
-            const nameParts = nameField.split(" (");
-            const reqName = nameParts[0];
-            const reqId = nameParts[1].replace(")", "");
-
-            // 계획 근무 데이터(currentPlanData)에서 이 사람의 기존 근무 찾기
+            const [reqName, reqId] = nameField.split(" (").map(s => s.replace(")", ""));
             const targetRow = currentPlanData.find(row => row[2] === reqName && String(row[1]).trim() === reqId);
-            if(!targetRow) {
-                alert("선택한 간호사의 근무 정보를 찾을 수 없습니다."); return;
-            }
             
-            // 날짜에 해당하는 열(Column) 인덱스 탐색
-            let reqDateObj = new Date(reqDate);
-            let m = reqDateObj.getMonth() + 1;
-            let d = reqDateObj.getDate();
+            let m = new Date(reqDate).getMonth() + 1, d = new Date(reqDate).getDate();
             let colIdx = currentHeaders.findIndex(h => {
                 let str = String(h).replace(/\s/g, "");
                 return str.includes(`${m}/${d}`) || str.includes(`${String(m).padStart(2,'0')}/${String(d).padStart(2,'0')}`);
             });
 
             let reqDuty = colIdx !== -1 ? String(targetRow[colIdx]).trim() : "";
-            if(!reqDuty) {
-                alert("해당 날짜에 기존 근무가 입력되어 있지 않습니다."); return;
-            }
+            if(!reqDuty) { alert("해당 날짜에 기존 근무가 없습니다."); return; }
 
-            const payload = {
-                action: 'submitAbsence',
-                ward: ward,
-                reqDate: reqDate,
-                reqName: reqName,
-                reqId: reqId,
-                reqDuty: reqDuty,
-                changedDuty: changedDuty,
-                reqReason: reqReason,
-                reqNote: "", 
-                reqSubYn: reqSubYn
-            };
-
-            const btn = event.target;
-            btn.innerText = "⏳ 배정 로직 실행 중...";
-            btn.disabled = true;
+            const payload = { action: 'submitAbsence', ward, reqDate, reqName, reqId, reqDuty, changedDuty, reqReason, reqNote, reqSubYn };
             
-            try {
-                const response = await fetch(GAS_URL, {
-                    method: "POST",
-                    body: JSON.stringify(payload)
-                });
-                const result = await response.json();
-                
-                if(result.success) {
-                    if(result.updatesMade) {
-                        alert(`🎉 성공! 대체간호사(${result.assignedName}) 자동 배정이 완료되었습니다.`);
-                    } else {
-                        alert("⚠️ 조건에 맞는 대체간호사가 없어 '대기중' 상태로 신청되었습니다.");
-                    }
-                    // 성공 후 화면 새로고침
-                    loadScheduleData();
-                } else {
-                    alert("구글 시트 연동 오류: " + result.error);
-                }
-            } catch(e) {
-                alert("서버 통신 중 오류가 발생했습니다.");
-            } finally {
-                btn.innerText = "💾 위 내용으로 결원 신청 및 자동 배정";
-                btn.disabled = false;
-            }
+            btn.innerText = "⏳ 배정 로직 실행 중..."; btn.disabled = true;
+            const res = await postToGAS(payload);
+            btn.innerText = "💾 위 내용으로 결원 신청 및 자동 배정"; btn.disabled = false;
+
+            if(res.success) {
+                alert(res.updatesMade ? `🎉 대체간호사(${res.assignedName}) 배정 완료!` : "⚠️ 대체간호사가 없어 대기 상태로 신청되었습니다.");
+                loadScheduleData(); // 리로드
+            } else alert("오류: " + res.error);
         }
 
-        // 전역 변수 추가
-        let adminRequestData = []; // 전체 신청내역 원본 보관용
-        let adminHeaders = [];
 
-        // 1. 관리자 로그인/로그아웃
+        /* ==========================================
+           4. 관리자 배정 화면 로직
+           ========================================== */
+        let adminReqData = [], adminHeadersData = [], adminSchData = [];
+
         function adminLogin() {
-            const pw = document.getElementById('admin-pw').value;
-            if (pw === "admin1234") { // 비밀번호
+            if (document.getElementById('admin-pw').value === "admin1234") {
                 sessionState.admin_logged_in = true;
                 document.getElementById('admin-login-container').style.display = 'none';
                 document.getElementById('admin-dashboard-container').style.display = 'block';
-                loadAdminData(); // 로그인 성공 시 데이터 로드
-            } else {
-                alert("비밀번호가 일치하지 않습니다.");
-            }
+                loadAdminData();
+            } else alert("비밀번호 불일치");
         }
 
         function adminLogout() {
@@ -539,326 +490,348 @@
             document.getElementById('admin-dashboard-container').style.display = 'none';
         }
 
-        let adminScheduleData = [];
-
-        // 1. [수정] 관리자 데이터 로드 (신청내역 + 근무표 동시 호출)
         async function loadAdminData() {
-            const btn = document.querySelector('button[onclick="syncAdminData()"]');
-            btn.innerText = "⏳ 데이터 불러오는 중...";
+            const btn = document.getElementById('btn-sync-admin');
+            btn.innerText = "⏳ 불러오는 중...";
             
-            try {
-                // 신청내역과 근무표 데이터를 병렬로 동시에 가져옵니다. (로딩 속도 최적화)
-                const [reqResult, schResult] = await Promise.all([
-                    fetchSheetData('신청내역'),
-                    fetchSheetData('대체간호사 근무표')
-                ]);
+            const [reqRes, schRes] = await Promise.all([fetchSheetData('신청내역'), fetchSheetData('대체간호사 근무표')]);
+            if(reqRes) { adminHeadersData = reqRes[0]; adminReqData = reqRes.slice(1); }
+            if(schRes) adminSchData = schRes;
 
-                if(reqResult && reqResult.length > 1) {
-                    adminHeaders = reqResult[0];
-                    adminRequestData = reqResult.slice(1);
-                }
-                if(schResult && schResult.length > 1) {
-                    adminScheduleData = schResult;
-                }
-
-                renderPendingCards(); // 카드형 UI 렌더링 호출
-                renderAdminDataGrid(); // 엑셀형 DataGrid 렌더링 호출
-
-            } catch(e) {
-                console.error(e);
-                alert("데이터 로딩 중 오류가 발생했습니다.");
-            } finally {
-                btn.innerText = "🔄 시트 기준으로 동기화";
-            }
+            renderPendingCards();
+            renderAdminGrid();
+            btn.innerText = "🔄 시트 기준으로 동기화";
         }
 
-        // 2. [추가] 파이썬의 조건/점수 계산 알고리즘을 JS로 완벽 번역
         function renderPendingCards() {
             const container = document.getElementById('pending-list-container');
             container.innerHTML = '';
-
-            const idxYn = adminHeaders.findIndex(h => h.includes("대체여부") || h.includes("상태"));
-            const idxWard = adminHeaders.findIndex(h => h.includes("요청부서"));
-            const idxDate = adminHeaders.findIndex(h => h.includes("결원일자"));
-            const idxName = adminHeaders.findIndex(h => h.includes("결원자명") || h.includes("결원자성명"));
-            const idxId = adminHeaders.findIndex(h => h.includes("면허번호") || h.includes("사번"));
-            const idxDuty = adminHeaders.findIndex(h => h.includes("기존 근무") || h.includes("기존근무"));
-
-            // '대기중'인 데이터만 필터링
-            const pendingList = adminRequestData.filter(row => row[idxYn] === '대기중');
-
-            if (pendingList.length === 0) {
-                container.innerHTML = '<p style="color: #666; padding: 15px;">현재 대기 중인 신청 건이 없습니다.</p>';
-                return;
-            }
-
-            // 간호사 근무표 정보 파싱 (nurses_info 생성)
-            const sHeaders = adminScheduleData[0];
-            let nursesInfo = {};
             
-            for (let r = 2; r < adminScheduleData.length; r++) {
-                let row = adminScheduleData[r];
-                let tVal = String(row[0]).trim().toUpperCase();
-                let nName = String(row[2]).trim();
-                let kind = String(row[4]).trim().replace(/\s/g, "");
+            const idxYn = adminHeadersData.findIndex(h => h.includes("대체여부") || h.includes("상태"));
+            const pendingList = adminReqData.filter(row => row[idxYn] === '대기중');
+            if (pendingList.length === 0) { container.innerHTML = '<p>대기 중인 건이 없습니다.</p>'; return; }
 
-                if (["A", "B", "C"].includes(tVal) && nName !== "") {
+            const sHeaders = adminSchData[0];
+            let nursesInfo = {};
+            for (let r = 2; r < adminSchData.length; r++) {
+                let row = adminSchData[r], tVal = String(row[0]).trim().toUpperCase(), nName = String(row[2]).trim(), kind = String(row[4]).trim().replace(/\s/g, "");
+                if (["A", "B", "C"].includes(tVal) && nName) {
                     if (!nursesInfo[nName]) nursesInfo[nName] = { team: tVal, id: String(row[1]).trim(), name: nName, duty_row: -1, alt_row: -1, sup_row: -1 };
-                }
-                if (nName && nursesInfo[nName]) {
                     if (kind.includes("대체")) nursesInfo[nName].alt_row = r;
                     else if (kind.includes("지원")) nursesInfo[nName].sup_row = r;
-                    else if (kind === "" || kind.includes("근무") || kind.includes("듀티") || kind === "RN" || kind.includes("등급")) nursesInfo[nName].duty_row = r;
+                    else if (kind==="" || kind.includes("근무") || kind.includes("듀티") || kind==="RN" || kind.includes("등급")) nursesInfo[nName].duty_row = r;
                 }
             }
             const nursesList = Object.values(nursesInfo);
 
-            const teamMapping = { "A": ["52W", "65W", "83W", "92W", "93W", "100W"], "B": ["51W", "53W", "70W", "71W", "81W", "101W"], "C": ["50W", "72W", "73W", "80W", "85W", "91W"] };
+            pendingList.forEach((r, idx) => {
+                let reqWard = String(r[1]).trim(), reqDate = String(r[2]), reqName = String(r[3]), reqId = String(r[4]), reqDuty = String(r[7]).trim().toUpperCase();
+                let reqTeam = ""; for (let t in teamMapping) if(teamMapping[t].includes(reqWard)) reqTeam = t;
 
-            // 각 대기중 항목마다 카드(UI) 생성
-            pendingList.forEach((reqRow, pIndex) => {
-                const reqWard = String(reqRow[idxWard]).trim();
-                const reqDate = String(reqRow[idxDate]);
-                const reqName = String(reqRow[idxName]).trim();
-                const reqId = String(reqRow[idxId]).trim();
-                const reqDuty = String(reqRow[idxDuty]).trim().toUpperCase();
-
-                let reqTeam = "";
-                for (let t in teamMapping) if (teamMapping[t].includes(reqWard)) reqTeam = t;
-
-                let validCandidates = [];
-                let colIdx = -1;
-                let targetDateObj = new Date(reqDate);
-                let targetM = targetDateObj.getMonth() + 1;
-                let targetD = targetDateObj.getDate();
-
-                for (let i = 0; i < sHeaders.length; i++) {
-                    let hStr = String(sHeaders[i]).replace(/\s/g, "");
-                    if (hStr.includes(`${targetM}/${targetD}`) || hStr.includes(`${String(targetM).padStart(2,'0')}/${String(targetD).padStart(2,'0')}`)) { colIdx = i; break; }
-                }
+                let validCands = [], colIdx = -1;
+                let d = new Date(reqDate), m = d.getMonth()+1, dt = d.getDate();
+                colIdx = sHeaders.findIndex(h => { let s = String(h).replace(/\s/g, ""); return s.includes(`${m}/${dt}`) || s.includes(`${String(m).padStart(2,'0')}/${String(dt).padStart(2,'0')}`); });
 
                 if (colIdx !== -1 && reqTeam) {
                     nursesList.forEach(n => {
                         if (n.team !== reqTeam || n.duty_row === -1 || n.alt_row === -1) return;
-                        
-                        let rawDuty = String(adminScheduleData[n.duty_row][colIdx]).trim().toUpperCase();
-                        let cleanDuty = rawDuty.replace("M", "");
+                        let cleanDuty = String(adminSchData[n.duty_row][colIdx]).trim().toUpperCase().replace("M", "");
                         if (cleanDuty !== reqDuty) return;
+                        let alt = String(adminSchData[n.alt_row][colIdx]).trim();
+                        if (alt && alt !== "-" && alt.toLowerCase() !== "nan" && alt.toLowerCase() !== "none") return;
 
-                        let nurseAlt = String(adminScheduleData[n.alt_row][colIdx]).trim();
-                        if (nurseAlt !== "" && nurseAlt !== "-" && nurseAlt.toLowerCase() !== "nan" && nurseAlt.toLowerCase() !== "none") return;
-
-                        let nurseSup = n.sup_row !== -1 ? String(adminScheduleData[n.sup_row][colIdx]).trim().toUpperCase() : "";
-                        let isSupMatch = (nurseSup.includes(reqWard.toUpperCase()) || reqWard.toUpperCase().includes(nurseSup));
-                        let supStr = isSupMatch ? "⭐지원일치 1순위" : "일반 배정 가능";
-                        
-                        // 파이썬과 동일하게 문자열 포맷팅
-                        validCandidates.push({
-                            label: `${n.name} - ${n.id} (${cleanDuty}m) [${supStr}]`,
-                            isStar: isSupMatch
-                        });
+                        let sup = n.sup_row !== -1 ? String(adminSchData[n.sup_row][colIdx]).trim().toUpperCase() : "";
+                        let isSupMatch = (sup.includes(reqWard.toUpperCase()) || reqWard.toUpperCase().includes(sup));
+                        validCands.push({ label: `${n.name} - ${n.id} (${cleanDuty}m) [${isSupMatch ? "⭐지원일치" : "일반"}]`, isStar: isSupMatch });
                     });
                 }
+                
+                validCands.sort((a, b) => b.isStar - a.isStar);
+                let optHtml = validCands.length > 0 ? validCands.map(c => `<option value="${c.label}">${c.label}</option>`).join('') : `<option value="">❌ 대상 없음</option>`;
 
-                // 지원일치(⭐)가 위로 오도록 정렬
-                validCandidates.sort((a, b) => b.isStar - a.isStar);
-
-                let candOptionsHTML = '';
-                if (validCandidates.length > 0) {
-                    validCandidates.forEach(c => { candOptionsHTML += `<option value="${c.label}">${c.label}</option>`; });
-                } else {
-                    candOptionsHTML = `<option value="">❌ 조건에 맞는 대체간호사 없음</option>`;
-                }
-
-                // 카드 HTML 조립 (디자인은 스트림릿 st.info 느낌)
-                const cardHtml = `
-                    <div style="border: 1px solid #ddd; border-radius: 8px; padding: 15px; margin-bottom: 15px; background-color: #fdfdfd;">
-                        <div style="background-color: #e8f4fd; border-left: 4px solid #1772d1; padding: 10px 15px; border-radius: 4px; color: #004085; font-size: 14px; margin-bottom: 15px;">
-                            📍 <strong>[${reqWard}] (${reqTeam}팀)</strong> | 일자: ${reqDate.split('T')[0]} | 결원자: ${reqName}(${reqId}) - ${reqDuty}
-                        </div>
-                        <div style="display: flex; gap: 15px; align-items: flex-end;">
-                            <div style="flex: 1;">
-                                <label style="font-size: 13px; font-weight: bold; color: #555;">대체여부</label>
-                                <select id="pend-yn-${pIndex}" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; margin-top: 5px;">
-                                    <option value="Y">Y</option>
-                                    <option value="N">N</option>
-                                </select>
-                            </div>
-                            <div style="flex: 2.5;">
-                                <label style="font-size: 13px; font-weight: bold; color: #555;">배정할 대체간호사 선택</label>
-                                <select id="pend-cand-${pIndex}" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; margin-top: 5px;">
-                                    ${candOptionsHTML}
-                                </select>
-                            </div>
-                            <div style="flex: 1;">
-                                <button onclick="submitManualAssign(${pIndex}, '${reqDate.split('T')[0]}', '${reqName}', '${reqId}', '${reqWard}')" style="width: 100%; padding: 9px; background-color: #f8f9fa; border: 1px solid #ddd; border-radius: 4px; font-weight: bold; cursor: pointer; color: #333;">
-                                    💾 배정 저장
-                                </button>
-                            </div>
+                container.insertAdjacentHTML('beforeend', `
+                    <div style="border:1px solid #ddd; padding:15px; margin-bottom:15px; border-radius:8px; background:#fff;">
+                        <div style="background:#e8f4fd; border-left:4px solid #1772d1; padding:10px; margin-bottom:10px;">📍 [${reqWard}] ${reqDate.split('T')[0]} | ${reqName}(${reqId}) - ${reqDuty}</div>
+                        <div style="display:flex; gap:10px; align-items:flex-end;">
+                            <div style="flex:1"><label>대체여부</label><select id="pend-yn-${idx}" class="form-control"><option value="Y">Y</option><option value="N">N</option></select></div>
+                            <div style="flex:3"><label>대체간호사 선택</label><select id="pend-cand-${idx}" class="form-control">${optHtml}</select></div>
+                            <button class="btn-primary" onclick="submitManualAssign(event, ${idx}, '${reqDate}', '${reqName}', '${reqId}', '${reqWard}')">배정 저장</button>
                         </div>
                     </div>
-                `;
-                container.insertAdjacentHTML('beforeend', cardHtml);
+                `);
             });
         }
 
-        // 3. [추가] 개별 배정(저장) 버튼 클릭 시 호출
-        async function submitManualAssign(pIndex, reqDate, reqName, reqId, reqWard) {
-            const ynVal = document.getElementById(`pend-yn-${pIndex}`).value;
-            const candVal = document.getElementById(`pend-cand-${pIndex}`).value;
-
-            let candName = "", candDuty = "";
-            if (ynVal === "Y") {
-                if (!candVal || candVal.includes("❌")) {
-                    alert("배정할 간호사를 선택해주세요."); return;
-                }
-                // 파이썬 로직: sel_cand.split(" -")[0], sel_cand.split("(")[1].split(")")[0]
-                candName = candVal.split(" -")[0].trim();
-                candDuty = candVal.split("(")[1].split(")")[0].trim();
+        async function submitManualAssign(e, idx, date, name, id, ward) {
+            const yn = document.getElementById(`pend-yn-${idx}`).value;
+            const cand = document.getElementById(`pend-cand-${idx}`).value;
+            let cName = "", cDuty = "";
+            if (yn === "Y") {
+                if(!cand || cand.includes("❌")) { alert("간호사를 선택하세요"); return; }
+                cName = cand.split(" -")[0].trim(); cDuty = cand.split("(")[1].split(")")[0].trim();
             }
 
-            const payload = {
-                action: 'submitManualAssign',
-                reqDate: reqDate,
-                reqName: reqName,
-                reqId: reqId,
-                reqWard: reqWard,
-                subYn: ynVal,
-                candName: candName,
-                candDuty: candDuty
-            };
-
-            const btn = event.target;
-            const originalText = btn.innerText;
-            btn.innerText = "⏳ 처리중...";
-            btn.disabled = true;
-
-            try {
-                const response = await fetch(GAS_URL, { method: "POST", body: JSON.stringify(payload) });
-                const result = await response.json();
-                
-                if(result.success) {
-                    alert(`✅ ${ynVal === 'Y' ? candName + " 간호사 배정 완료!" : "반려 처리 완료!"}`);
-                    loadAdminData(); // 화면(DataGrid, 리스트) 새로고침
-                } else {
-                    alert("오류 발생: " + result.error);
-                }
-            } catch(e) {
-                alert("통신 중 오류가 발생했습니다.");
-            } finally {
-                btn.innerText = originalText;
-                btn.disabled = false;
-            }
-        }
-
-        // 3. st.data_editor를 완벽하게 모방하는 DataGrid 생성
-        function renderAdminDataGrid() {
-            // 헤더 인덱스 탐색
-            const idxYn = adminHeaders.findIndex(h => h.includes("대체여부") || h.includes("상태"));
-            const idxTargetName = adminHeaders.findIndex(h => h.includes("대상자_성명"));
-            const idxTargetId = adminHeaders.findIndex(h => h.includes("대상자_사번"));
-            const idxTargetDuty = adminHeaders.findIndex(h => h.includes("대상자_근무"));
-
-            let html = '<table style="width: 100%; border-collapse: collapse; min-width: 1200px; font-size: 13px;">';
+            const btn = e.target; btn.disabled = true; btn.innerText = "⏳";
+            const res = await postToGAS({ action: 'submitManualAssign', reqDate: date, reqName: name, reqId: id, reqWard: ward, subYn: yn, candName: cName, candDuty: cDuty });
             
-            // 헤더 그리기
-            html += '<thead style="background: #f1f3f5; position: sticky; top: 0;"><tr>';
-            adminHeaders.forEach(h => {
-                html += `<th style="padding: 10px; border: 1px solid #ddd; text-align: left;">${h}</th>`;
-            });
-            html += '</tr></thead><tbody>';
+            if(res.success) { alert("처리 완료!"); loadAdminData(); }
+            else { alert("오류: " + res.error); btn.disabled = false; btn.innerText = "배정 저장"; }
+        }
 
-            // 행 그리기 (엑셀처럼 input과 select 넣기)
-            adminRequestData.forEach((row, rowIndex) => {
+        function renderAdminGrid() {
+            const idxYn = adminHeadersData.findIndex(h => h.includes("대체여부") || h.includes("상태"));
+            const idxName = adminHeadersData.findIndex(h => h.includes("대상자_성명"));
+            const idxId = adminHeadersData.findIndex(h => h.includes("대상자_사번"));
+            const idxDuty = adminHeadersData.findIndex(h => h.includes("대상자_근무"));
+
+            let html = '<table><thead><tr>' + adminHeadersData.map(h => `<th>${h}</th>`).join('') + '</tr></thead><tbody>';
+            adminReqData.forEach((row, rIdx) => {
                 html += '<tr>';
-                row.forEach((cell, colIndex) => {
-                    let cellHtml = '';
-                    // 수정 가능한 특정 컬럼만 input/select로 렌더링
-                    if (colIndex === idxYn) {
-                        cellHtml = `<select id="edit_${rowIndex}_${colIndex}" style="width: 100%; padding: 5px; border: 1px solid #ccc;">
-                            <option value="Y" ${cell==='Y'?'selected':''}>Y</option>
-                            <option value="N" ${cell==='N'?'selected':''}>N</option>
-                            <option value="대기중" ${cell==='대기중'?'selected':''}>대기중</option>
-                            <option value="승인" ${cell==='승인'?'selected':''}>승인</option>
-                            <option value="반려" ${cell==='반려'?'selected':''}>반려</option>
-                        </select>`;
-                    } else if (colIndex === idxTargetName || colIndex === idxTargetId) {
-                        cellHtml = `<input type="text" id="edit_${rowIndex}_${colIndex}" value="${cell}" style="width: 100%; padding: 5px; border: 1px solid #ccc;">`;
-                    } else if (colIndex === idxTargetDuty) {
-                        cellHtml = `<select id="edit_${rowIndex}_${colIndex}" style="width: 100%; padding: 5px; border: 1px solid #ccc;">
-                            <option value="" ${cell===''?'selected':''}></option>
-                            <option value="D" ${cell==='D'?'selected':''}>D</option>
-                            <option value="E" ${cell==='E'?'selected':''}>E</option>
-                            <option value="N" ${cell==='N'?'selected':''}>N</option>
-                            <option value="Dm" ${cell==='Dm'?'selected':''}>Dm</option>
-                            <option value="Em" ${cell==='Em'?'selected':''}>Em</option>
-                            <option value="Nm" ${cell==='Nm'?'selected':''}>Nm</option>
-                        </select>`;
-                    } else {
-                        // 나머지는 읽기 전용 텍스트
-                        cellHtml = `<span style="padding: 5px; display: block; white-space: nowrap;">${cell}</span>`;
-                    }
-                    html += `<td style="border: 1px solid #ddd; padding: 4px; background: ${[idxYn, idxTargetName, idxTargetId, idxTargetDuty].includes(colIndex) ? '#fffcdc' : 'white'};">${cellHtml}</td>`;
+                row.forEach((cell, cIdx) => {
+                    let tdBg = [idxYn, idxName, idxId, idxDuty].includes(cIdx) ? '#fffcdc' : '#fff';
+                    let cHtml = cell;
+                    if(cIdx === idxYn) cHtml = `<select id="ed_${rIdx}_${cIdx}" class="form-control" style="padding:4px;"><option value="Y" ${cell==='Y'?'selected':''}>Y</option><option value="N" ${cell==='N'?'selected':''}>N</option><option value="대기중" ${cell==='대기중'?'selected':''}>대기중</option><option value="승인" ${cell==='승인'?'selected':''}>승인</option><option value="반려" ${cell==='반려'?'selected':''}>반려</option></select>`;
+                    else if(cIdx === idxName || cIdx === idxId) cHtml = `<input type="text" id="ed_${rIdx}_${cIdx}" value="${cell}" class="form-control" style="padding:4px;">`;
+                    else if(cIdx === idxDuty) cHtml = `<select id="ed_${rIdx}_${cIdx}" class="form-control" style="padding:4px;"><option value=""></option><option value="D" ${cell==='D'?'selected':''}>D</option><option value="E" ${cell==='E'?'selected':''}>E</option><option value="N" ${cell==='N'?'selected':''}>N</option><option value="Dm" ${cell==='Dm'?'selected':''}>Dm</option><option value="Em" ${cell==='Em'?'selected':''}>Em</option><option value="Nm" ${cell==='Nm'?'selected':''}>Nm</option></select>`;
+                    
+                    html += `<td style="background:${tdBg}; min-width: 100px;">${cHtml}</td>`;
                 });
                 html += '</tr>';
             });
             html += '</tbody></table>';
-
             document.getElementById('admin-history-table').innerHTML = html;
         }
 
-        // 4. 수정한 내역을 긁어모아 GAS로 통째로 전송 (파이썬 df.update 역할)
-        async function saveAdminHistory() {
-            const idxYn = adminHeaders.findIndex(h => h.includes("대체여부") || h.includes("상태"));
-            const idxTargetName = adminHeaders.findIndex(h => h.includes("대상자_성명"));
-            const idxTargetId = adminHeaders.findIndex(h => h.includes("대상자_사번"));
-            const idxTargetDuty = adminHeaders.findIndex(h => h.includes("대상자_근무"));
-
-            // 현재 DOM에 있는 값들을 읽어와서 adminRequestData 배열 업데이트
-            let updatedData = [];
-            adminRequestData.forEach((row, rowIndex) => {
-                let newRow = [...row];
-                newRow[idxYn] = document.getElementById(`edit_${rowIndex}_${idxYn}`).value;
-                newRow[idxTargetName] = document.getElementById(`edit_${rowIndex}_${idxTargetName}`).value;
-                newRow[idxTargetId] = document.getElementById(`edit_${rowIndex}_${idxTargetId}`).value;
-                newRow[idxTargetDuty] = document.getElementById(`edit_${rowIndex}_${idxTargetDuty}`).value;
-                updatedData.push(newRow);
+        async function saveAdminHistory(e) {
+            const ids = [ "대체여부", "대상자_성명", "대상자_사번", "대상자_근무" ].map(k => adminHeadersData.findIndex(h => h.includes(k)));
+            let upData = adminReqData.map((row, rIdx) => {
+                let nRow = [...row];
+                ids.forEach(cIdx => { if(cIdx !== -1) nRow[cIdx] = document.getElementById(`ed_${rIdx}_${cIdx}`).value; });
+                return nRow;
             });
+            
+            const btn = e.target; btn.innerText = "⏳ 저장 중..."; btn.disabled = true;
+            const res = await postToGAS({ action: 'saveAdminData', requestData: upData });
+            if(res.success) { alert("✅ 저장 완료!"); loadAdminData(); }
+            else { alert("오류 발생"); }
+            btn.innerText = "💾 전체 내역 수정사항 저장하기"; btn.disabled = false;
+        }
 
-            // GAS로 POST 전송
-            const payload = {
-                action: 'saveAdminData',
-                requestData: updatedData
-            };
 
-            const btn = event.target;
-            const originalText = btn.innerText;
-            btn.innerText = "💾 저장 중입니다...";
+        /* ==========================================
+           5. 평가지표 (DNS 시트 연산 / Pandas 포팅)
+           ========================================== */
+        async function runMetricsAnalysis(e) {
+            const btn = e.target;
+            const targetMonth = document.getElementById('dashboard-month').value; // ex: 2603
+            const isSingle = document.querySelector('input[name="analyze-mode"]:checked').value === 'single';
+            
+            document.getElementById('metrics-loading').style.display = 'block';
+            // --- 여기에 추가: 병동별 순위 계산 및 테이블 렌더링 ---
+                function getRanks(dict) {
+                    let sortedVals = Object.values(dict).filter(v => v > 0).sort((a,b)=>b-a);
+                    let ranks = {};
+                    for(let k in dict) {
+                        ranks[k] = dict[k] > 0 ? (sortedVals.indexOf(dict[k]) + 1 + "위") : "-";
+                    }
+                    return ranks;
+                }
+
+                const rankC = getRanks(wChange);
+                const rankV = getRanks(wVac);
+                const rankR = getRanks(wRep);
+
+                let maxC = Math.max(...Object.values(wChange), 1);
+                let maxV = Math.max(...Object.values(wVac), 1);
+                let maxR = Math.max(...Object.values(wRep), 1);
+
+                let rHtml = '<table style="text-align: right; white-space: nowrap;"><thead style="background:#f8f9fa;"><tr><th>병동명</th><th>변동 순위</th><th style="text-align:left;">근무 변동(건)</th><th>변동 비율(%)</th><th>결원 순위</th><th style="text-align:left;">결원 발생(건)</th><th>결원 비율(%)</th><th>대체 순위</th><th style="text-align:left;">대체 투입(건)</th><th>대체 비율(%)</th></tr></thead><tbody>';
+                
+                wardList.forEach(w => {
+                    let cPct = wTotal[w] > 0 ? (wChange[w] / wTotal[w] * 100).toFixed(1) : "0.0";
+                    let vPct = wTotal[w] > 0 ? (wVac[w] / wTotal[w] * 100).toFixed(1) : "0.0";
+                    let rPct = wVac[w] > 0 ? (wRep[w] / wVac[w] * 100).toFixed(1) : "0.0";
+
+                    // Progress 바(막대 그래프) UI 생성 함수
+                    const bar = (val, max) => `<div style="display:flex; align-items:center; gap:8px;"><div style="width:100px; height:12px; background:#eee; border-radius:3px; overflow:hidden;"><div style="width:${(val/max)*100}%; height:100%; background:var(--primary-color);"></div></div><span>${val}건</span></div>`;
+
+                    rHtml += `<tr>
+                        <td style="text-align:center; font-weight:bold;">${w}</td>
+                        <td style="text-align:center;">${rankC[w]}</td>
+                        <td style="text-align:left;">${bar(wChange[w], maxC)}</td>
+                        <td>${cPct}%</td>
+                        <td style="text-align:center;">${rankV[w]}</td>
+                        <td style="text-align:left;">${bar(wVac[w], maxV)}</td>
+                        <td>${vPct}%</td>
+                        <td style="text-align:center;">${rankR[w]}</td>
+                        <td style="text-align:left;">${bar(wRep[w], maxR)}</td>
+                        <td>${rPct}%</td>
+                    </tr>`;
+                });
+                rHtml += '</tbody></table>';
+                document.getElementById('ranking-table-container').innerHTML = rHtml;
+                // -----------------------------------------------------
+            document.getElementById('metrics-result-container').style.display = 'none';
             btn.disabled = true;
 
             try {
-                const response = await fetch(GAS_URL, {
-                    method: "POST",
-                    body: JSON.stringify(payload)
-                });
-                const result = await response.json();
-                
-                if(result.success) {
-                    alert("✅ 전체 신청 내역 수정사항이 성공적으로 저장되었습니다!");
-                    loadAdminData(); // 최신 데이터로 다시 렌더링
-                } else {
-                    alert("저장 오류: " + result.error);
+                // 평가지표 전용 DNS 시트에서 데이터 로드 (isDns = true 플래그 전달)
+                const [df_plan, df_actual, df_vac, df_preg] = await Promise.all([
+                    fetchSheetData(`${targetMonth} 계획근무`, true),
+                    fetchSheetData(`${targetMonth} 실제근무`, true),
+                    fetchSheetData(`${targetMonth} 결원대체현황`, true),
+                    fetchSheetData(`${targetMonth} 임신변동현황`, true)
+                ]);
+
+                if(!df_plan || !df_actual) { alert("해당 월의 데이터가 부족합니다."); return; }
+
+                let tot_denom=0, tot_A=0, tot_B=0, tot_C=0, tot_vac_days=0, tot_rep_days=0;
+                let wChange = {}, wVac = {}, wRep = {}, wTotal = {};
+                wardList.forEach(w => { wChange[w]=0; wVac[w]=0; wRep[w]=0; wTotal[w]=0; });
+
+                // 1. 결원대체현황 (df_vacancy 분석)
+                if (df_vac && df_vac.length > 1) {
+                    for(let i=1; i<df_vac.length; i++) {
+                        let w = String(df_vac[i][0]).replace('.0', '').trim();
+                        let n = String(df_vac[i][3]).trim();
+                        let repY = String(df_vac[i][7]).trim().toUpperCase();
+                        let rsn = String(df_vac[i][6]).replace(/\s/g, '');
+
+                        if (wardList.includes(w) && n && n !== 'nan') {
+                            tot_vac_days++; wVac[w]++;
+                            if (repY === 'Y') { tot_rep_days++; wRep[w]++; }
+                            if (rsn.includes('임신') && repY === 'Y') tot_C++;
+                        }
+                    }
                 }
+
+                // 2. 임신변동현황 (df_preg 분석) -> B 계산
+                if (df_preg && df_preg.length > 1) {
+                    let hRsn = df_preg[0].findIndex(h=>h.includes('비고'));
+                    for(let i=1; i<df_preg.length; i++) {
+                        if(String(df_preg[i][hRsn]).replace(/\s/g,'').includes('임신')) tot_B++;
+                    }
+                }
+
+                // 3. Pandas Melt & Merge 완벽 구현
+                const pHeaders = df_plan[0];
+                const dateCols = pHeaders.map((h, i) => String(h).includes('/') ? i : -1).filter(i => i !== -1);
+                
+                let actualMap = {};
+                df_actual.slice(1).forEach(r => actualMap[String(r[1]).trim()] = r); // 사번 딕셔너리화
+
+                df_plan.slice(1).forEach(pRow => {
+                    let w = String(pRow[0]).replace('.0', '').trim();
+                    let id = String(pRow[1]).trim();
+                    let aRow = actualMap[id];
+                    
+                    if (aRow && wardList.includes(w)) {
+                        dateCols.forEach(dIdx => {
+                            let pV = String(pRow[dIdx]).trim();
+                            if (pV !== '' && pV.toLowerCase() !== 'nan') {
+                                tot_denom++; wTotal[w]++;
+                                let aV = String(aRow[dIdx]).trim();
+                                if (pV === aV) tot_A++;
+                                else wChange[w]++;
+                            }
+                        });
+                    }
+                });
+
+                // 최종 공식 계산
+                let tot_D = tot_rep_days;
+                let tot_numer = tot_A + tot_B - tot_C + tot_D;
+                let comp_rate = tot_denom > 0 ? (tot_numer / tot_denom * 100) : 0;
+                let rep_rate = tot_vac_days > 0 ? (tot_rep_days / tot_vac_days * 100) : 0;
+
+                // UI 업데이트
+                document.getElementById('val-vac-days').innerText = `${tot_vac_days}일`;
+                document.getElementById('val-rep-days').innerText = `${tot_rep_days}일`;
+                document.getElementById('val-rep-rate').innerText = `${rep_rate.toFixed(2)}%`;
+                document.getElementById('val-denom').innerText = `${tot_denom}일`;
+                document.getElementById('val-numer').innerText = `${tot_numer}일`;
+                document.getElementById('val-comp-rate').innerText = `${comp_rate.toFixed(2)}%`;
+                document.getElementById('val-A').innerText = tot_A;
+                document.getElementById('val-B').innerText = tot_B;
+                document.getElementById('val-C').innerText = tot_C;
+                document.getElementById('val-D').innerText = tot_D;
+
+                // 인사이트 그리드 UI 생성 (파이썬의 format_ward_grid 대체)
+                const gridHtml = (title, dict) => {
+                    let sorted = Object.entries(dict).sort((a, b) => parseInt(a[0].replace('W','')) - parseInt(b[0].replace('W','')));
+                    let html = `<div style="border:1px solid #ddd; padding:15px; border-radius:8px; background:#fff;"><h4 style="margin-bottom:10px;">${title}</h4><div class="ward-grid">`;
+                    sorted.forEach(([w, c]) => {
+                        html += `<div class="ward-box ${c===0?'empty':''}"><div style="font-weight:bold; font-size:14px;">${w}</div><div style="font-size:12px;">${c}건</div></div>`;
+                    });
+                    return html + `</div></div>`;
+                };
+
+                document.getElementById('insight-container').innerHTML = 
+                    gridHtml("🔄 병동별 근무 변동 건수", wChange) + 
+                    gridHtml("⚠️ 병동별 결원 발생 건수", wVac);
+
+                // ==========================================
+                // 💡 누락되었던 [병동별 랭킹 표] 계산 및 렌더링 로직
+                // ==========================================
+                function getRanks(dict) {
+                    let sortedVals = Object.values(dict).filter(v => v > 0).sort((a,b)=>b-a);
+                    let ranks = {};
+                    for(let k in dict) {
+                        ranks[k] = dict[k] > 0 ? (sortedVals.indexOf(dict[k]) + 1 + "위") : "-";
+                    }
+                    return ranks;
+                }
+
+                const rankC = getRanks(wChange);
+                const rankV = getRanks(wVac);
+                const rankR = getRanks(wRep);
+
+                let maxC = Math.max(...Object.values(wChange), 1);
+                let maxV = Math.max(...Object.values(wVac), 1);
+                let maxR = Math.max(...Object.values(wRep), 1);
+
+                let rHtml = '<table style="text-align: right; white-space: nowrap;"><thead style="background:#f8f9fa;"><tr><th>병동명</th><th>변동 순위</th><th style="text-align:left;">근무 변동(건)</th><th>변동 비율(%)</th><th>결원 순위</th><th style="text-align:left;">결원 발생(건)</th><th>결원 비율(%)</th><th>대체 순위</th><th style="text-align:left;">대체 투입(건)</th><th>대체 비율(%)</th></tr></thead><tbody>';
+                
+                wardList.forEach(w => {
+                    let cPct = wTotal[w] > 0 ? (wChange[w] / wTotal[w] * 100).toFixed(1) : "0.0";
+                    let vPct = wTotal[w] > 0 ? (wVac[w] / wTotal[w] * 100).toFixed(1) : "0.0";
+                    let rPct = wVac[w] > 0 ? (wRep[w] / wVac[w] * 100).toFixed(1) : "0.0";
+
+                    // Progress 바(막대 그래프) UI 생성 함수
+                    const bar = (val, max) => `<div style="display:flex; align-items:center; gap:8px;"><div style="width:100px; height:12px; background:#eee; border-radius:3px; overflow:hidden;"><div style="width:${(val/max)*100}%; height:100%; background:var(--primary-color);"></div></div><span>${val}건</span></div>`;
+
+                    rHtml += `<tr>
+                        <td style="text-align:center; font-weight:bold;">${w}</td>
+                        <td style="text-align:center;">${rankC[w]}</td>
+                        <td style="text-align:left;">${bar(wChange[w], maxC)}</td>
+                        <td>${cPct}%</td>
+                        <td style="text-align:center;">${rankV[w]}</td>
+                        <td style="text-align:left;">${bar(wVac[w], maxV)}</td>
+                        <td>${vPct}%</td>
+                        <td style="text-align:center;">${rankR[w]}</td>
+                        <td style="text-align:left;">${bar(wRep[w], maxR)}</td>
+                        <td>${rPct}%</td>
+                    </tr>`;
+                });
+                rHtml += '</tbody></table>';
+                document.getElementById('ranking-table-container').innerHTML = rHtml;
+                // ==========================================
+
+                document.getElementById('metrics-result-container').style.display = 'block';
+
             } catch(e) {
-                alert("통신 중 오류가 발생했습니다.");
+                console.error(e); alert("분석 중 오류 발생");
             } finally {
-                btn.innerText = originalText;
+                document.getElementById('metrics-loading').style.display = 'none';
                 btn.disabled = false;
             }
         }
 
-        function syncAdminData() {
-            loadAdminData();
+        function syncScheduleIframe() {
+            const iframe = document.getElementById('schedule-iframe');
+            const baseUrl = "https://docs.google.com/spreadsheets/d/1tNobsqOTDzIKwAcF0VfUanRTSZCArqIF63n5AxKfDbc/htmlembed?gid=1622990971&single=true&widget=false&chrome=false";
+            iframe.src = baseUrl + "&t=" + new Date().getTime();
+            alert("✅ 최신 데이터 동기화 완료!");
         }
     </script>
 </body>
