@@ -124,12 +124,10 @@
 
                 <div id="req-loading" style="display: none; color: var(--primary-color); font-weight: bold; margin-bottom: 15px;">⏳ 구글 시트에서 데이터를 불러오는 중입니다...</div>
                 
-                <!-- 테이블 영역 -->
                 <div id="table-container" style="width: 100%; overflow-x: auto; margin-bottom: 30px; border: 1px solid #eaeaea; border-radius: 8px; max-height: 500px;"></div>
 
-                <!-- 결원 신청 폼 -->
                 <div id="absence-form-container" style="display: none; padding: 20px; border: 1px solid #ddd; border-radius: 8px; background: #fdfdfd;">
-                    <h5 style="margin-bottom: 15px; color: var(--primary-color);">📝 <span id="form-ward-display"></span> 결원 신청 및 자동 배정</h5>
+                    <h5 style="color: #8B0029; margin-bottom: 15px;">📝 <span id="form-ward-display"></span> 결원 신청</h5>
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 15px;">
                         <div><label style="font-size: 13px; font-weight: bold;">발생 일자</label><input type="date" id="req-date" class="form-control"></div>
                         <div><label style="font-size: 13px; font-weight: bold;">결원자 이름</label><input type="text" id="req-name" class="form-control" placeholder="표에서 클릭" readonly style="background:#eee;"></div>
@@ -147,7 +145,6 @@
                     <button class="btn-primary" style="width: 100%; padding: 12px;" onclick="submitAbsenceRequest(event)">💾 위 내용으로 결원 신청 및 자동 배정</button>
                 </div>
 
-                <!-- 여기에 추가: 부서별 신청 내역 -->
                 <h5 style="margin-top: 30px; margin-bottom: 10px; color: var(--text-color);">📂 부서별 신청 내역</h5>
                 <div id="ward-history-container" style="width: 100%; overflow-x: auto; border: 1px solid #ddd; border-radius: 8px; max-height: 400px; background: white;">
                     <p style="padding: 15px; color: #666;">조회 버튼을 누르면 내역이 표시됩니다.</p>
@@ -159,10 +156,7 @@
         <div id="page-schedule" class="page">
             <div class="content-wrap">
                 <div class="custom-title">대체간호사 전체 근무표</div>
-                
-                <!-- 여기에 추가: 동기화 버튼 -->
                 <button class="btn-primary" style="width: 100%; margin-bottom: 15px;" onclick="syncScheduleIframe()">🔄 근무표 실시간 동기화</button>
-                
                 <iframe id="schedule-iframe" height="800" src="https://docs.google.com/spreadsheets/d/1tNobsqOTDzIKwAcF0VfUanRTSZCArqIF63n5AxKfDbc/htmlembed?gid=1622990971&single=true&widget=false&chrome=false"></iframe>
             </div>
         </div>
@@ -207,9 +201,7 @@
                         <label><input type="radio" name="analyze-mode" value="multi"> 기간 통합 분석</label>
                     </div>
                     <div style="display: flex; gap: 10px;">
-                        <select id="dashboard-month" class="form-control" style="width: 200px;">
-                            <!-- JS로 2601 ~ 2612 세팅 -->
-                        </select>
+                        <select id="dashboard-month" class="form-control" style="width: 200px;"></select>
                         <button class="btn-primary" onclick="runMetricsAnalysis(event)">📊 데이터 분석 실행</button>
                     </div>
                 </div>
@@ -240,12 +232,10 @@
                         <div style="flex:1; padding: 10px; border: 1px solid #eee; background:#fafafa;">D. 전체 대체근무: <strong id="val-D">0</strong>일</div>
                     </div>
 
-                    <h3 style="margin-bottom: 15px; border-bottom: 2px solid #333; padding-bottom: 5px;">💡 병동별 인사이트 및 순위</h3>
-                    <div id="insight-container" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                        <!-- JS 렌더링 -->
-                    </div>
-                    <!-- 여기에 추가: 병동별 랭킹 표 -->
-                    <h3 style="margin-top: 40px; margin-bottom: 15px; border-bottom: 2px solid #333; padding-bottom: 5px;">📊 병동별 순위</h3>
+                    <h3 style="margin-bottom: 15px; border-bottom: 2px solid #333; padding-bottom: 5px;">💡 병동별 인사이트</h3>
+                    <div id="insight-container" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 40px;"></div>
+                    
+                    <h3 style="margin-bottom: 15px; border-bottom: 2px solid #333; padding-bottom: 5px;">📊 병동별 순위</h3>
                     <div id="ranking-table-container" style="width: 100%; overflow-x: auto; border: 1px solid #ddd; border-radius: 8px;"></div>
                 </div>
             </div>
@@ -254,7 +244,6 @@
 
     <script>
         // ⚠️ [중요] 반드시 본인의 구글 Apps Script 웹 앱 URL로 변경하세요.
-        // 현재 평가지표(DNS) 시트를 불러오기 위해 GAS 코드 1번 항목도 업데이트 해야 합니다.
         const GAS_URL = "https://script.google.com/macros/s/AKfycbxe2oBl9GuV6FYufc-BtgZE6V5N6mwmdDRUvXi7pe79lrBaDSuIoRmJo024OHIORNI2/exec";
 
         const teamMapping = { "A": ["52W", "65W", "83W", "92W", "93W", "100W"], "B": ["51W", "53W", "70W", "71W", "81W", "101W"], "C": ["50W", "72W", "73W", "80W", "85W", "91W"] };
@@ -288,7 +277,6 @@
             }
         };
 
-        // 공통 API 통신 모듈
         async function fetchSheetData(sheetName, isDns = false) {
             try {
                 const res = await fetch(`${GAS_URL}?action=getData&sheetName=${sheetName}&isDns=${isDns}`);
@@ -305,9 +293,9 @@
             } catch(err) { return { success: false, error: "네트워크 통신 오류" }; }
         }
 
-        /* ==========================================
-           2. 결원 입력 화면 로직 (검색 + 조회 + 신청)
-           ========================================== */
+        /* -------------------------------------------------------------
+           2. 결원 입력 (대체간호사 신청)
+        ------------------------------------------------------------- */
         let currentPlanData = [], currentHeaders = [];
 
         async function searchNurseByName() {
@@ -370,12 +358,9 @@
 
             currentHeaders = data[0];
             const targetWardNum = ward.replace('W', '');
-            
-            // 병동 필터링
             currentPlanData = data.slice(1).filter(row => String(row[0]).trim() === targetWardNum);
             
-            // 이름 검색으로 넘어온 경우 해당 이름만 추가 필터링
-            if(filterName) {
+            if(typeof filterName === 'string') {
                 currentPlanData = currentPlanData.filter(row => String(row[2]).trim() === filterName);
             }
 
@@ -398,31 +383,28 @@
             document.getElementById('table-container').innerHTML = html;
             document.getElementById('absence-form-container').style.display = 'block';
             document.getElementById('form-ward-display').innerText = ward;
+            
+            if(typeof filterName === 'string' && currentPlanData.length === 1) {
+                document.getElementById('req-name').value = `${currentPlanData[0][2]} (${currentPlanData[0][1]})`;
+            }
 
-            // 부서별 신청 내역 불러오기 로직 추가
+            // 부서별 신청 내역 하단에 표시
             const reqHistoryData = await fetchSheetData('신청내역');
             if(reqHistoryData && reqHistoryData.length > 1) {
                 const hHeaders = reqHistoryData[0];
                 const hIdxWard = hHeaders.findIndex(h => h.includes("요청부서"));
                 const filteredHistory = reqHistoryData.slice(1).filter(row => String(row[hIdxWard]).trim() === ward);
                 
-                let hHtml = '<table style="width: 100%; font-size: 13px; white-space: nowrap;"><thead style="background: #f1f3f5; position: sticky; top: 0;"><tr>';
-                hHeaders.forEach(h => hHtml += `<th style="padding: 8px; border: 1px solid #ddd;">${h}</th>`);
+                let hHtml = '<table style="white-space: nowrap;"><thead style="background: #f1f3f5; position: sticky; top: 0;"><tr>';
+                hHeaders.forEach(h => hHtml += `<th>${h}</th>`);
                 hHtml += '</tr></thead><tbody>';
-                
                 filteredHistory.forEach(row => {
                     hHtml += '<tr>';
-                    row.forEach(cell => hHtml += `<td style="padding: 8px; border: 1px solid #ddd;">${cell}</td>`);
+                    row.forEach(cell => hHtml += `<td>${cell}</td>`);
                     hHtml += '</tr>';
                 });
                 hHtml += '</tbody></table>';
-                
                 document.getElementById('ward-history-container').innerHTML = filteredHistory.length > 0 ? hHtml : '<p style="padding: 15px;">신청 내역이 없습니다.</p>';
-            }
-            
-            // 자동 선택 트리거 (검색해서 한명만 나왔을 때)
-            if(filterName && currentPlanData.length === 1) {
-                document.getElementById('req-name').value = `${currentPlanData[0][2]} (${currentPlanData[0][1]})`;
             }
         }
 
@@ -464,14 +446,23 @@
 
             if(res.success) {
                 alert(res.updatesMade ? `🎉 대체간호사(${res.assignedName}) 배정 완료!` : "⚠️ 대체간호사가 없어 대기 상태로 신청되었습니다.");
-                loadScheduleData(); // 리로드
+                loadScheduleData(); // 데이터 갱신
             } else alert("오류: " + res.error);
         }
 
+        /* -------------------------------------------------------------
+           3. 근무표 화면 연동
+        ------------------------------------------------------------- */
+        function syncScheduleIframe() {
+            const iframe = document.getElementById('schedule-iframe');
+            const baseUrl = "https://docs.google.com/spreadsheets/d/1tNobsqOTDzIKwAcF0VfUanRTSZCArqIF63n5AxKfDbc/htmlembed?gid=1622990971&single=true&widget=false&chrome=false";
+            iframe.src = baseUrl + "&t=" + new Date().getTime();
+            alert("✅ 최신 데이터 동기화 완료!");
+        }
 
-        /* ==========================================
-           4. 관리자 배정 화면 로직
-           ========================================== */
+        /* -------------------------------------------------------------
+           4. 관리자 배정 (담당자 전용)
+        ------------------------------------------------------------- */
         let adminReqData = [], adminHeadersData = [], adminSchData = [];
 
         function adminLogin() {
@@ -493,11 +484,9 @@
         async function loadAdminData() {
             const btn = document.getElementById('btn-sync-admin');
             btn.innerText = "⏳ 불러오는 중...";
-            
             const [reqRes, schRes] = await Promise.all([fetchSheetData('신청내역'), fetchSheetData('대체간호사 근무표')]);
             if(reqRes) { adminHeadersData = reqRes[0]; adminReqData = reqRes.slice(1); }
             if(schRes) adminSchData = schRes;
-
             renderPendingCards();
             renderAdminGrid();
             btn.innerText = "🔄 시트 기준으로 동기화";
@@ -506,7 +495,6 @@
         function renderPendingCards() {
             const container = document.getElementById('pending-list-container');
             container.innerHTML = '';
-            
             const idxYn = adminHeadersData.findIndex(h => h.includes("대체여부") || h.includes("상태"));
             const pendingList = adminReqData.filter(row => row[idxYn] === '대기중');
             if (pendingList.length === 0) { container.innerHTML = '<p>대기 중인 건이 없습니다.</p>'; return; }
@@ -593,7 +581,6 @@
                     if(cIdx === idxYn) cHtml = `<select id="ed_${rIdx}_${cIdx}" class="form-control" style="padding:4px;"><option value="Y" ${cell==='Y'?'selected':''}>Y</option><option value="N" ${cell==='N'?'selected':''}>N</option><option value="대기중" ${cell==='대기중'?'selected':''}>대기중</option><option value="승인" ${cell==='승인'?'selected':''}>승인</option><option value="반려" ${cell==='반려'?'selected':''}>반려</option></select>`;
                     else if(cIdx === idxName || cIdx === idxId) cHtml = `<input type="text" id="ed_${rIdx}_${cIdx}" value="${cell}" class="form-control" style="padding:4px;">`;
                     else if(cIdx === idxDuty) cHtml = `<select id="ed_${rIdx}_${cIdx}" class="form-control" style="padding:4px;"><option value=""></option><option value="D" ${cell==='D'?'selected':''}>D</option><option value="E" ${cell==='E'?'selected':''}>E</option><option value="N" ${cell==='N'?'selected':''}>N</option><option value="Dm" ${cell==='Dm'?'selected':''}>Dm</option><option value="Em" ${cell==='Em'?'selected':''}>Em</option><option value="Nm" ${cell==='Nm'?'selected':''}>Nm</option></select>`;
-                    
                     html += `<td style="background:${tdBg}; min-width: 100px;">${cHtml}</td>`;
                 });
                 html += '</tr>';
@@ -617,65 +604,20 @@
             btn.innerText = "💾 전체 내역 수정사항 저장하기"; btn.disabled = false;
         }
 
+        function syncAdminData() { loadAdminData(); }
 
-        /* ==========================================
-           5. 평가지표 (DNS 시트 연산 / Pandas 포팅)
-           ========================================== */
+        /* -------------------------------------------------------------
+           5. 평가지표 대시보드
+        ------------------------------------------------------------- */
         async function runMetricsAnalysis(e) {
             const btn = e.target;
-            const targetMonth = document.getElementById('dashboard-month').value; // ex: 2603
-            const isSingle = document.querySelector('input[name="analyze-mode"]:checked').value === 'single';
+            const targetMonth = document.getElementById('dashboard-month').value;
             
             document.getElementById('metrics-loading').style.display = 'block';
-            // --- 여기에 추가: 병동별 순위 계산 및 테이블 렌더링 ---
-                function getRanks(dict) {
-                    let sortedVals = Object.values(dict).filter(v => v > 0).sort((a,b)=>b-a);
-                    let ranks = {};
-                    for(let k in dict) {
-                        ranks[k] = dict[k] > 0 ? (sortedVals.indexOf(dict[k]) + 1 + "위") : "-";
-                    }
-                    return ranks;
-                }
-
-                const rankC = getRanks(wChange);
-                const rankV = getRanks(wVac);
-                const rankR = getRanks(wRep);
-
-                let maxC = Math.max(...Object.values(wChange), 1);
-                let maxV = Math.max(...Object.values(wVac), 1);
-                let maxR = Math.max(...Object.values(wRep), 1);
-
-                let rHtml = '<table style="text-align: right; white-space: nowrap;"><thead style="background:#f8f9fa;"><tr><th>병동명</th><th>변동 순위</th><th style="text-align:left;">근무 변동(건)</th><th>변동 비율(%)</th><th>결원 순위</th><th style="text-align:left;">결원 발생(건)</th><th>결원 비율(%)</th><th>대체 순위</th><th style="text-align:left;">대체 투입(건)</th><th>대체 비율(%)</th></tr></thead><tbody>';
-                
-                wardList.forEach(w => {
-                    let cPct = wTotal[w] > 0 ? (wChange[w] / wTotal[w] * 100).toFixed(1) : "0.0";
-                    let vPct = wTotal[w] > 0 ? (wVac[w] / wTotal[w] * 100).toFixed(1) : "0.0";
-                    let rPct = wVac[w] > 0 ? (wRep[w] / wVac[w] * 100).toFixed(1) : "0.0";
-
-                    // Progress 바(막대 그래프) UI 생성 함수
-                    const bar = (val, max) => `<div style="display:flex; align-items:center; gap:8px;"><div style="width:100px; height:12px; background:#eee; border-radius:3px; overflow:hidden;"><div style="width:${(val/max)*100}%; height:100%; background:var(--primary-color);"></div></div><span>${val}건</span></div>`;
-
-                    rHtml += `<tr>
-                        <td style="text-align:center; font-weight:bold;">${w}</td>
-                        <td style="text-align:center;">${rankC[w]}</td>
-                        <td style="text-align:left;">${bar(wChange[w], maxC)}</td>
-                        <td>${cPct}%</td>
-                        <td style="text-align:center;">${rankV[w]}</td>
-                        <td style="text-align:left;">${bar(wVac[w], maxV)}</td>
-                        <td>${vPct}%</td>
-                        <td style="text-align:center;">${rankR[w]}</td>
-                        <td style="text-align:left;">${bar(wRep[w], maxR)}</td>
-                        <td>${rPct}%</td>
-                    </tr>`;
-                });
-                rHtml += '</tbody></table>';
-                document.getElementById('ranking-table-container').innerHTML = rHtml;
-                // -----------------------------------------------------
             document.getElementById('metrics-result-container').style.display = 'none';
             btn.disabled = true;
 
             try {
-                // 평가지표 전용 DNS 시트에서 데이터 로드 (isDns = true 플래그 전달)
                 const [df_plan, df_actual, df_vac, df_preg] = await Promise.all([
                     fetchSheetData(`${targetMonth} 계획근무`, true),
                     fetchSheetData(`${targetMonth} 실제근무`, true),
@@ -689,14 +631,12 @@
                 let wChange = {}, wVac = {}, wRep = {}, wTotal = {};
                 wardList.forEach(w => { wChange[w]=0; wVac[w]=0; wRep[w]=0; wTotal[w]=0; });
 
-                // 1. 결원대체현황 (df_vacancy 분석)
                 if (df_vac && df_vac.length > 1) {
                     for(let i=1; i<df_vac.length; i++) {
                         let w = String(df_vac[i][0]).replace('.0', '').trim();
                         let n = String(df_vac[i][3]).trim();
                         let repY = String(df_vac[i][7]).trim().toUpperCase();
                         let rsn = String(df_vac[i][6]).replace(/\s/g, '');
-
                         if (wardList.includes(w) && n && n !== 'nan') {
                             tot_vac_days++; wVac[w]++;
                             if (repY === 'Y') { tot_rep_days++; wRep[w]++; }
@@ -705,7 +645,6 @@
                     }
                 }
 
-                // 2. 임신변동현황 (df_preg 분석) -> B 계산
                 if (df_preg && df_preg.length > 1) {
                     let hRsn = df_preg[0].findIndex(h=>h.includes('비고'));
                     for(let i=1; i<df_preg.length; i++) {
@@ -713,12 +652,10 @@
                     }
                 }
 
-                // 3. Pandas Melt & Merge 완벽 구현
                 const pHeaders = df_plan[0];
                 const dateCols = pHeaders.map((h, i) => String(h).includes('/') ? i : -1).filter(i => i !== -1);
-                
                 let actualMap = {};
-                df_actual.slice(1).forEach(r => actualMap[String(r[1]).trim()] = r); // 사번 딕셔너리화
+                df_actual.slice(1).forEach(r => actualMap[String(r[1]).trim()] = r);
 
                 df_plan.slice(1).forEach(pRow => {
                     let w = String(pRow[0]).replace('.0', '').trim();
@@ -738,13 +675,11 @@
                     }
                 });
 
-                // 최종 공식 계산
                 let tot_D = tot_rep_days;
                 let tot_numer = tot_A + tot_B - tot_C + tot_D;
                 let comp_rate = tot_denom > 0 ? (tot_numer / tot_denom * 100) : 0;
                 let rep_rate = tot_vac_days > 0 ? (tot_rep_days / tot_vac_days * 100) : 0;
 
-                // UI 업데이트
                 document.getElementById('val-vac-days').innerText = `${tot_vac_days}일`;
                 document.getElementById('val-rep-days').innerText = `${tot_rep_days}일`;
                 document.getElementById('val-rep-rate').innerText = `${rep_rate.toFixed(2)}%`;
@@ -756,66 +691,43 @@
                 document.getElementById('val-C').innerText = tot_C;
                 document.getElementById('val-D').innerText = tot_D;
 
-                // 인사이트 그리드 UI 생성 (파이썬의 format_ward_grid 대체)
                 const gridHtml = (title, dict) => {
                     let sorted = Object.entries(dict).sort((a, b) => parseInt(a[0].replace('W','')) - parseInt(b[0].replace('W','')));
                     let html = `<div style="border:1px solid #ddd; padding:15px; border-radius:8px; background:#fff;"><h4 style="margin-bottom:10px;">${title}</h4><div class="ward-grid">`;
-                    sorted.forEach(([w, c]) => {
-                        html += `<div class="ward-box ${c===0?'empty':''}"><div style="font-weight:bold; font-size:14px;">${w}</div><div style="font-size:12px;">${c}건</div></div>`;
-                    });
+                    sorted.forEach(([w, c]) => { html += `<div class="ward-box ${c===0?'empty':''}"><div style="font-weight:bold; font-size:14px;">${w}</div><div style="font-size:12px;">${c}건</div></div>`; });
                     return html + `</div></div>`;
                 };
 
-                document.getElementById('insight-container').innerHTML = 
-                    gridHtml("🔄 병동별 근무 변동 건수", wChange) + 
-                    gridHtml("⚠️ 병동별 결원 발생 건수", wVac);
+                document.getElementById('insight-container').innerHTML = gridHtml("🔄 병동별 근무 변동 건수", wChange) + gridHtml("⚠️ 병동별 결원 발생 건수", wVac);
 
-                // ==========================================
-                // 💡 누락되었던 [병동별 랭킹 표] 계산 및 렌더링 로직
-                // ==========================================
+                // --- 📊 병동별 순위 렌더링 로직 ---
                 function getRanks(dict) {
                     let sortedVals = Object.values(dict).filter(v => v > 0).sort((a,b)=>b-a);
                     let ranks = {};
-                    for(let k in dict) {
-                        ranks[k] = dict[k] > 0 ? (sortedVals.indexOf(dict[k]) + 1 + "위") : "-";
-                    }
+                    for(let k in dict) { ranks[k] = dict[k] > 0 ? (sortedVals.indexOf(dict[k]) + 1 + "위") : "-"; }
                     return ranks;
                 }
 
-                const rankC = getRanks(wChange);
-                const rankV = getRanks(wVac);
-                const rankR = getRanks(wRep);
+                const rankC = getRanks(wChange), rankV = getRanks(wVac), rankR = getRanks(wRep);
+                let maxC = Math.max(...Object.values(wChange), 1), maxV = Math.max(...Object.values(wVac), 1), maxR = Math.max(...Object.values(wRep), 1);
 
-                let maxC = Math.max(...Object.values(wChange), 1);
-                let maxV = Math.max(...Object.values(wVac), 1);
-                let maxR = Math.max(...Object.values(wRep), 1);
-
-                let rHtml = '<table style="text-align: right; white-space: nowrap;"><thead style="background:#f8f9fa;"><tr><th>병동명</th><th>변동 순위</th><th style="text-align:left;">근무 변동(건)</th><th>변동 비율(%)</th><th>결원 순위</th><th style="text-align:left;">결원 발생(건)</th><th>결원 비율(%)</th><th>대체 순위</th><th style="text-align:left;">대체 투입(건)</th><th>대체 비율(%)</th></tr></thead><tbody>';
+                let rHtml = '<table><thead style="background:#f8f9fa;"><tr><th>병동명</th><th>변동 순위</th><th style="text-align:left;">근무 변동(건)</th><th>변동 비율(%)</th><th>결원 순위</th><th style="text-align:left;">결원 발생(건)</th><th>결원 비율(%)</th><th>대체 순위</th><th style="text-align:left;">대체 투입(건)</th><th>대체 비율(%)</th></tr></thead><tbody>';
                 
                 wardList.forEach(w => {
                     let cPct = wTotal[w] > 0 ? (wChange[w] / wTotal[w] * 100).toFixed(1) : "0.0";
                     let vPct = wTotal[w] > 0 ? (wVac[w] / wTotal[w] * 100).toFixed(1) : "0.0";
                     let rPct = wVac[w] > 0 ? (wRep[w] / wVac[w] * 100).toFixed(1) : "0.0";
-
-                    // Progress 바(막대 그래프) UI 생성 함수
                     const bar = (val, max) => `<div style="display:flex; align-items:center; gap:8px;"><div style="width:100px; height:12px; background:#eee; border-radius:3px; overflow:hidden;"><div style="width:${(val/max)*100}%; height:100%; background:var(--primary-color);"></div></div><span>${val}건</span></div>`;
 
                     rHtml += `<tr>
-                        <td style="text-align:center; font-weight:bold;">${w}</td>
-                        <td style="text-align:center;">${rankC[w]}</td>
-                        <td style="text-align:left;">${bar(wChange[w], maxC)}</td>
-                        <td>${cPct}%</td>
-                        <td style="text-align:center;">${rankV[w]}</td>
-                        <td style="text-align:left;">${bar(wVac[w], maxV)}</td>
-                        <td>${vPct}%</td>
-                        <td style="text-align:center;">${rankR[w]}</td>
-                        <td style="text-align:left;">${bar(wRep[w], maxR)}</td>
-                        <td>${rPct}%</td>
+                        <td style="font-weight:bold;">${w}</td>
+                        <td>${rankC[w]}</td><td style="text-align:left;">${bar(wChange[w], maxC)}</td><td>${cPct}%</td>
+                        <td>${rankV[w]}</td><td style="text-align:left;">${bar(wVac[w], maxV)}</td><td>${vPct}%</td>
+                        <td>${rankR[w]}</td><td style="text-align:left;">${bar(wRep[w], maxR)}</td><td>${rPct}%</td>
                     </tr>`;
                 });
                 rHtml += '</tbody></table>';
                 document.getElementById('ranking-table-container').innerHTML = rHtml;
-                // ==========================================
 
                 document.getElementById('metrics-result-container').style.display = 'block';
 
@@ -825,13 +737,6 @@
                 document.getElementById('metrics-loading').style.display = 'none';
                 btn.disabled = false;
             }
-        }
-
-        function syncScheduleIframe() {
-            const iframe = document.getElementById('schedule-iframe');
-            const baseUrl = "https://docs.google.com/spreadsheets/d/1tNobsqOTDzIKwAcF0VfUanRTSZCArqIF63n5AxKfDbc/htmlembed?gid=1622990971&single=true&widget=false&chrome=false";
-            iframe.src = baseUrl + "&t=" + new Date().getTime();
-            alert("✅ 최신 데이터 동기화 완료!");
         }
     </script>
 </body>
