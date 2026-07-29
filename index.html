@@ -863,9 +863,6 @@
                             filterName.trim()
                     );
             }
-            if(typeof filterName === 'string') {
-                currentPlanData = currentPlanData.filter(row => String(row[2]).trim() === filterName);
-            }
 
             if(currentPlanData.length === 0) {
                 document.getElementById('table-container').innerHTML = `<p style="padding:20px;">해당 조건의 데이터가 없습니다.</p>`; return;
@@ -1676,7 +1673,6 @@
             
             const btn = e.target; btn.innerText = "⏳ 저장 중..."; btn.disabled = true;
             const res = await postToGAS({ action: 'saveAdminData', requestData: upData });
-            if(res.success) { alert("✅ 저장 완료!"); loadAdminData(); }
             if (res.success) {
                 alert(
                     '✅ 저장 완료!'
@@ -1756,16 +1752,25 @@
                                         .includes('비고');
                                 }
                             );
-                        
+                    
                         if (hRsn !== -1) {
-                            for(let i=1; i<df_preg.length; i++) {
-                                if(String(df_preg[i][hRsn]).replace(/\s/g,'').includes('임신')) {
+                            for (let i = 1; i < df_preg.length; i++) {
+                                if (
+                                    String(df_preg[i][hRsn])
+                                        .replace(/\s/g, '')
+                                        .includes('임신')
+                                ) {
                                     tot_B++;
-                                    allPregDataList.push({ month: targetMonth, row: df_preg[i] });
+                    
+                                    allPregDataList.push({
+                                        month: targetMonth,
+                                        row: df_preg[i]
+                                    });
                                 }
                             }
                         }
-        
+                    } // 이 중괄호가 누락되어 있었음
+                    
                     const pHeaders = df_plan[0];
                     const dateCols =
                         pHeaders
