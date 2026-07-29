@@ -514,6 +514,156 @@
                 btn.disabled = false;
             }
         }
+
+        // 전역 변수 추가
+        let adminRequestData = []; // 전체 신청내역 원본 보관용
+        let adminHeaders = [];
+
+        // 1. 관리자 로그인/로그아웃
+        function adminLogin() {
+            const pw = document.getElementById('admin-pw').value;
+            if (pw === "admin1234") { // 비밀번호
+                sessionState.admin_logged_in = true;
+                document.getElementById('admin-login-container').style.display = 'none';
+                document.getElementById('admin-dashboard-container').style.display = 'block';
+                loadAdminData(); // 로그인 성공 시 데이터 로드
+            } else {
+                alert("비밀번호가 일치하지 않습니다.");
+            }
+        }
+
+        function adminLogout() {
+            sessionState.admin_logged_in = false;
+            document.getElementById('admin-pw').value = '';
+            document.getElementById('admin-login-container').style.display = 'block';
+            document.getElementById('admin-dashboard-container').style.display = 'none';
+        }
+
+        // 2. 관리자 데이터 로드 (st.data_editor 대체용 데이터 세팅)
+        async function loadAdminData() {
+            const btn = document.querySelector('button[onclick="syncAdminData()"]');
+            btn.innerText = "⏳ 데이터 불러오는 중...";
+            
+            const rawData = await fetchSheetData('신청내역');
+            btn.innerText = "🔄 시트 기준으로 동기화";
+
+            if(rawData && rawData.length > 1) {
+                adminHeaders = rawData[0];
+                adminRequestData = rawData.slice(1);
+                renderAdminDataGrid(); // DataGrid 렌더링
+                // renderPendingCards(); // (향후 미배정 카드 UI 그리는 함수 호출 위치)
+            }
+        }
+
+        // 3. st.data_editor를 완벽하게 모방하는 DataGrid 생성
+        function renderAdminDataGrid() {
+            // 헤더 인덱스 탐색
+            const idxYn = adminHeaders.findIndex(h => h.includes("대체여부") || h.includes("상태"));
+            const idxTargetName = adminHeaders.findIndex(h => h.includes("대상자_성명"));
+            const idxTargetId = adminHeaders.findIndex(h => h.includes("대상자_사번"));
+            const idxTargetDuty = adminHeaders.findIndex(h => h.includes("대상자_근무"));
+
+            let html = '<table style="width: 100%; border-collapse: collapse; min-width: 1200px; font-size: 13px;">';
+            
+            // 헤더 그리기
+            html += '<thead style="background: #f1f3f5; position: sticky; top: 0;"><tr>';
+            adminHeaders.forEach(h => {
+                html += `<th style="padding: 10px; border: 1px solid #ddd; text-align: left;">${h}</th>`;
+            });
+            html += '</tr></thead><tbody>';
+
+            // 행 그리기 (엑셀처럼 input과 select 넣기)
+            adminRequestData.forEach((row, rowIndex) => {
+                html += '<tr>';
+                row.forEach((cell, colIndex) => {
+                    let cellHtml = '';
+                    // 수정 가능한 특정 컬럼만 input/select로 렌더링
+                    if (colIndex === idxYn) {
+                        cellHtml = `<select id="edit_${rowIndex}_${colIndex}" style="width: 100%; padding: 5px; border: 1px solid #ccc;">
+                            <option value="Y" ${cell==='Y'?'selected':''}>Y</option>
+                            <option value="N" ${cell==='N'?'selected':''}>N</option>
+                            <option value="대기중" ${cell==='대기중'?'selected':''}>대기중</option>
+                            <option value="승인" ${cell==='승인'?'selected':''}>승인</option>
+                            <option value="반려" ${cell==='반려'?'selected':''}>반려</option>
+                        </select>`;
+                    } else if (colIndex === idxTargetName || colIndex === idxTargetId) {
+                        cellHtml = `<input type="text" id="edit_${rowIndex}_${colIndex}" value="${cell}" style="width: 100%; padding: 5px; border: 1px solid #ccc;">`;
+                    } else if (colIndex === idxTargetDuty) {
+                        cellHtml = `<select id="edit_${rowIndex}_${colIndex}" style="width: 100%; padding: 5px; border: 1px solid #ccc;">
+                            <option value="" ${cell===''?'selected':''}></option>
+                            <option value="D" ${cell==='D'?'selected':''}>D</option>
+                            <option value="E" ${cell==='E'?'selected':''}>E</option>
+                            <option value="N" ${cell==='N'?'selected':''}>N</option>
+                            <option value="Dm" ${cell==='Dm'?'selected':''}>Dm</option>
+                            <option value="Em" ${cell==='Em'?'selected':''}>Em</option>
+                            <option value="Nm" ${cell==='Nm'?'selected':''}>Nm</option>
+                        </select>`;
+                    } else {
+                        // 나머지는 읽기 전용 텍스트
+                        cellHtml = `<span style="padding: 5px; display: block; white-space: nowrap;">${cell}</span>`;
+                    }
+                    html += `<td style="border: 1px solid #ddd; padding: 4px; background: ${[idxYn, idxTargetName, idxTargetId, idxTargetDuty].includes(colIndex) ? '#fffcdc' : 'white'};">${cellHtml}</td>`;
+                });
+                html += '</tr>';
+            });
+            html += '</tbody></table>';
+
+            document.getElementById('admin-history-table').innerHTML = html;
+        }
+
+        // 4. 수정한 내역을 긁어모아 GAS로 통째로 전송 (파이썬 df.update 역할)
+        async function saveAdminHistory() {
+            const idxYn = adminHeaders.findIndex(h => h.includes("대체여부") || h.includes("상태"));
+            const idxTargetName = adminHeaders.findIndex(h => h.includes("대상자_성명"));
+            const idxTargetId = adminHeaders.findIndex(h => h.includes("대상자_사번"));
+            const idxTargetDuty = adminHeaders.findIndex(h => h.includes("대상자_근무"));
+
+            // 현재 DOM에 있는 값들을 읽어와서 adminRequestData 배열 업데이트
+            let updatedData = [];
+            adminRequestData.forEach((row, rowIndex) => {
+                let newRow = [...row];
+                newRow[idxYn] = document.getElementById(`edit_${rowIndex}_${idxYn}`).value;
+                newRow[idxTargetName] = document.getElementById(`edit_${rowIndex}_${idxTargetName}`).value;
+                newRow[idxTargetId] = document.getElementById(`edit_${rowIndex}_${idxTargetId}`).value;
+                newRow[idxTargetDuty] = document.getElementById(`edit_${rowIndex}_${idxTargetDuty}`).value;
+                updatedData.push(newRow);
+            });
+
+            // GAS로 POST 전송
+            const payload = {
+                action: 'saveAdminData',
+                requestData: updatedData
+            };
+
+            const btn = event.target;
+            const originalText = btn.innerText;
+            btn.innerText = "💾 저장 중입니다...";
+            btn.disabled = true;
+
+            try {
+                const response = await fetch(GAS_URL, {
+                    method: "POST",
+                    body: JSON.stringify(payload)
+                });
+                const result = await response.json();
+                
+                if(result.success) {
+                    alert("✅ 전체 신청 내역 수정사항이 성공적으로 저장되었습니다!");
+                    loadAdminData(); // 최신 데이터로 다시 렌더링
+                } else {
+                    alert("저장 오류: " + result.error);
+                }
+            } catch(e) {
+                alert("통신 중 오류가 발생했습니다.");
+            } finally {
+                btn.innerText = originalText;
+                btn.disabled = false;
+            }
+        }
+
+        function syncAdminData() {
+            loadAdminData();
+        }
     </script>
 </body>
 </html>
