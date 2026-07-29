@@ -419,7 +419,35 @@
         const teamMapping = { "A": ["52W", "65W", "83W", "92W", "93W", "100W"], "B": ["51W", "53W", "70W", "71W", "81W", "101W"], "C": ["50W", "72W", "73W", "80W", "85W", "91W"] };
         const wardList = ["50W", "51W", "52W", "53W", "65W", "70W", "71W", "72W", "73W", "80W", "81W", "83W", "85W", "91W", "92W", "93W", "100W", "101W"];
 
-        const sessionState = { page: 'home', target_date: new Date().toISOString().split('T')[0], admin_logged_in: false };
+        function getTodayLocalString() {
+            const now = new Date();
+        
+            const year = now.getFullYear();
+            const month = String(
+                now.getMonth() + 1
+            ).padStart(2, '0');
+        
+            const day = String(
+                now.getDate()
+            ).padStart(2, '0');
+        
+            return `${year}-${month}-${day}`;
+        }
+        
+        const sessionState = {
+            page: 'home',
+            target_date: getTodayLocalString(),
+            admin_logged_in: false
+        };
+
+        currentPlanData =
+            data
+                .slice(1)
+                .filter(
+                    row =>
+                        normalizeWard(row[0]) ===
+                        normalizeWard(ward)
+                );
 
         function parseLocalDate(dateString) {
           const parts =
@@ -442,6 +470,66 @@
             parts[1] - 1,
             parts[2]
           );
+        }
+
+        function getHeaderMonthDay(headerValue) {
+            if (
+                headerValue === null ||
+                headerValue === undefined ||
+                headerValue === ''
+            ) {
+                return null;
+            }
+        
+            const text =
+                String(headerValue).trim();
+        
+            // ISO 날짜 형식
+            const isoMatch =
+                text.match(
+                    /^(\d{4})-(\d{2})-(\d{2})/
+                );
+        
+            if (isoMatch) {
+                return {
+                    month: Number(isoMatch[2]),
+                    day: Number(isoMatch[3])
+                };
+            }
+        
+            // 7/29, 07/29, 7월 29일 형식
+            const slashMatch =
+                text.match(
+                    /(\d{1,2})\s*[\/월]\s*(\d{1,2})/
+                );
+        
+            if (slashMatch) {
+                return {
+                    month: Number(slashMatch[1]),
+                    day: Number(slashMatch[2])
+                };
+            }
+        
+            return null;
+        }
+        
+        function findDateColumn(
+            headers,
+            month,
+            day
+        ) {
+            return headers.findIndex(
+                function (header) {
+                    const parsed =
+                        getHeaderMonthDay(header);
+        
+                    return (
+                        parsed &&
+                        parsed.month === Number(month) &&
+                        parsed.day === Number(day)
+                    );
+                }
+            );
         }
 
         function navigateTo(pageId) {
@@ -468,9 +556,25 @@
             });
         
             const dashMonth = document.getElementById('dashboard-month');
-            for(let i=1; i<=12; i++) {
-                let mStr = String(i).padStart(2, '0');
-                dashMonth.innerHTML += `<option value="26${mStr}">26${mStr}</option>`;
+            const dashboardYear =
+                new Date().getFullYear();
+            
+            const dashboardYearShort =
+                String(dashboardYear).slice(-2);
+            
+            for (
+                let i = 1;
+                i <= 12;
+                i++
+            ) {
+                const month =
+                    String(i).padStart(2, '0');
+            
+                dashMonth.innerHTML += `
+                    <option value="${dashboardYearShort}${month}">
+                        ${dashboardYear}년 ${i}월
+                    </option>
+                `;
             }
         
             // 💡 라디오 버튼 이벤트 리스너는 여기에 위치해야 합니다.
@@ -588,7 +692,8 @@
             let matches = [];
             data.slice(1).forEach(row => {
                 if(row[2] && String(row[2]).includes(name)) {
-                    let w = String(row[0]).trim(); if(!w.endsWith("W")) w += "W";
+                    const w =
+                        normalizeWard(row[0]);
                     matches.push({ ward: w, name: String(row[2]).trim(), id: String(row[1]).trim() });
                 }
             });
@@ -604,7 +709,31 @@
                          </div><hr style="margin: 10px 0;">`;
                 
                 matches.forEach(m => {
-                    html += `<button class="btn-primary" style="background:#fff; color:#333; border:1px solid #ccc; margin-right:5px; margin-bottom:5px;" onclick="applyNurseSearch('${m.ward}', '${m.name}')">👉 선택한 날짜로 근무 조회 (${m.ward} | ${m.name})</button>`;
+                    const wardArg =
+                        JSON.stringify(m.ward);
+                    
+                    const nameArg =
+                        JSON.stringify(m.name);
+                    
+                    html += `
+                        <button
+                            class="btn-primary"
+                            style="
+                                background:#fff;
+                                color:#333;
+                                border:1px solid #ccc;
+                                margin-right:5px;
+                                margin-bottom:5px;
+                            "
+                            onclick='applyNurseSearch(
+                                ${wardArg},
+                                ${nameArg}
+                            )'
+                        >
+                            👉 선택한 날짜로 근무 조회
+                            (${m.ward} | ${m.name})
+                        </button>
+                    `;
                 });
                 resDiv.innerHTML = html;
             }
@@ -640,8 +769,20 @@
             }
 
             currentHeaders = data[0];
-            const targetWardNum = ward.replace('W', '');
-            currentPlanData = data.slice(1).filter(row => String(row[0]).trim() === targetWardNum);
+            function normalizeWard(value) {
+                const text =
+                    String(value || '')
+                        .trim()
+                        .toUpperCase();
+            
+                if (!text) {
+                    return '';
+                }
+            
+                return text.endsWith('W')
+                    ? text
+                    : text + 'W';
+            }
             
             if(typeof filterName === 'string') {
                 currentPlanData = currentPlanData.filter(row => String(row[2]).trim() === filterName);
@@ -656,7 +797,32 @@
             html += '</tr></thead><tbody>';
 
             currentPlanData.forEach(row => {
-                html += `<tr style="cursor: pointer;" onclick="selectNurse('${row[2]}', '${row[1]}', this)" onmouseover="this.style.background='#fff0f0'" onmouseout="this.style.background=''">`;
+                const nameArg =
+                    JSON.stringify(
+                        String(row[2] || '')
+                    );
+                
+                const idArg =
+                    JSON.stringify(
+                        String(row[1] || '')
+                    );
+                
+                html += `
+                    <tr
+                        style="cursor:pointer;"
+                        onclick='selectNurse(
+                            ${nameArg},
+                            ${idArg},
+                            this
+                        )'
+                        onmouseover="
+                            this.style.background='#fff0f0'
+                        "
+                        onmouseout="
+                            this.style.background=''
+                        "
+                    >
+                `;
                 html += `<td><strong>${row[2]}</strong></td><td>${row[1]}</td>`;
                 for(let i=3; i<row.length; i++) html += `<td>${row[i]}</td>`;
                 html += '</tr>';
@@ -701,10 +867,12 @@
             if(!reqDate || !currentPlanData.length || !selectedName) return;
             
             let d = parseLocalDate(reqDate), m = d.getMonth()+1, dt = d.getDate();
-            let colIdx = currentHeaders.findIndex(h => {
-                let s = String(h).replace(/\s/g, "");
-                return s.includes(`${m}/${dt}`) || s.includes(`${String(m).padStart(2,'0')}/${String(dt).padStart(2,'0')}`);
-            });
+            const colIdx =
+                findDateColumn(
+                    currentHeaders,
+                    m,
+                    dt
+                );
         
             const targetRow = currentPlanData.find(row => row[2] === selectedName.split(" (")[0]);
             let shiftVal = (colIdx !== -1 && targetRow) ? String(targetRow[colIdx]).trim() : "OFF (또는 미입력)";
@@ -733,15 +901,51 @@
             const reqSubYn = document.getElementById('req-sub-yn').value;
 
             if(!nameField) { alert("표에서 결원자를 클릭하세요."); return; }
+            if (!reqDate) {
+                alert(
+                    '결원 발생 일자를 선택하세요.'
+                );
+                return;
+            }
+            
+            const parsedReqDate =
+                parseLocalDate(reqDate);
+            
+            if (!parsedReqDate) {
+                alert(
+                    '결원 발생 일자 형식이 올바르지 않습니다.'
+                );
+                return;
+            }
 
             const [reqName, reqId] = nameField.split(" (").map(s => s.replace(")", ""));
             const targetRow = currentPlanData.find(row => row[2] === reqName && String(row[1]).trim() === reqId);
+
+            if (!targetRow) {
+                alert(
+                    '선택한 결원자의 근무 데이터를 찾을 수 없습니다. 다시 조회해 주세요.'
+                );
+                return;
+            }
+                        
+            const m =
+                parsedReqDate.getMonth() + 1;
             
-            let m = parseLocalDate(reqDate).getMonth() + 1, d = parseLocalDate(reqDate).getDate();
-            let colIdx = currentHeaders.findIndex(h => {
-                let str = String(h).replace(/\s/g, "");
-                return str.includes(`${m}/${d}`) || str.includes(`${String(m).padStart(2,'0')}/${String(d).padStart(2,'0')}`);
-            });
+            const d =
+                parsedReqDate.getDate();
+            const colIdx =
+                findDateColumn(
+                    currentHeaders,
+                    m,
+                    d
+                );
+
+            if (colIdx === -1) {
+                alert(
+                    '계획 근무표에서 해당 날짜 열을 찾지 못했습니다.'
+                );
+                return;
+            }
 
             let reqDuty = colIdx !== -1 ? String(targetRow[colIdx]).trim() : "";
             if(!reqDuty) { alert("해당 날짜에 기존 근무가 없습니다."); return; }
@@ -836,25 +1040,192 @@
             const container = document.getElementById('pending-list-container');
             container.innerHTML = '';
             const idxYn = adminHeadersData.findIndex(h => h.includes("대체여부") || h.includes("상태"));
+            const findAdminColumn =
+                function (names) {
+                    return adminHeadersData.findIndex(
+                        function (header) {
+                            const cleanHeader =
+                                String(header)
+                                    .replace(/\s/g, '');
+            
+                            return names.some(
+                                function (name) {
+                                    return cleanHeader.includes(
+                                        name.replace(/\s/g, '')
+                                    );
+                                }
+                            );
+                        }
+                    );
+                };
+            
+            const idxWard =
+                findAdminColumn([
+                    '요청부서'
+                ]);
+            
+            const idxDate =
+                findAdminColumn([
+                    '결원일자'
+                ]);
+            
+            const idxReqName =
+                findAdminColumn([
+                    '결원자명',
+                    '결원자성명'
+                ]);
+            
+            const idxReqId =
+                findAdminColumn([
+                    '결원자사번',
+                    '결원자면허번호',
+                    '면허번호'
+                ]);
+            
+            const idxReqDuty =
+                findAdminColumn([
+                    '결원자 기존 근무',
+                    '기존근무'
+                ]);
+            
+            if (
+                idxYn === -1 ||
+                idxWard === -1 ||
+                idxDate === -1 ||
+                idxReqName === -1 ||
+                idxReqDuty === -1
+            ) {
+                container.innerHTML =
+                    '<p style="color:red;">' +
+                    '신청내역 시트의 필수 헤더를 찾을 수 없습니다.' +
+                    '</p>';
+            
+                return;
+            }
             const pendingList = adminReqData.filter(row => row[idxYn] === '대기중');
             if (pendingList.length === 0) { container.innerHTML = '<p>대기 중인 건이 없습니다.</p>'; return; }
 
-            const sHeaders = adminSchData[0];
-            let nursesInfo = {};
-            for (let r = 2; r < adminSchData.length; r++) {
-                let row = adminSchData[r], tVal = String(row[0]).trim().toUpperCase(), nName = String(row[2]).trim(), kind = String(row[4]).trim().replace(/\s/g, "");
-                if (["A", "B", "C"].includes(tVal) && nName) {
-                    if (!nursesInfo[nName]) nursesInfo[nName] = { team: tVal, id: String(row[1]).trim(), name: nName, duty_row: -1, alt_row: -1, sup_row: -1 };
-                    if (kind.includes("대체")) nursesInfo[nName].alt_row = r;
-                    else if (kind.includes("지원")) nursesInfo[nName].sup_row = r;
-                    else if (kind==="" || kind.includes("근무") || kind.includes("듀티") || kind==="RN" || kind.includes("등급")) nursesInfo[nName].duty_row = r;
+            const sHeaders =
+                adminSchData[0];
+            
+            const nursesInfo = {};
+            
+            let currentNurseName = null;
+            
+            for (
+                let r = 2;
+                r < adminSchData.length;
+                r++
+            ) {
+                const row =
+                    adminSchData[r];
+            
+                const team =
+                    String(row[0] || '')
+                        .trim()
+                        .toUpperCase();
+            
+                const id =
+                    String(row[1] || '')
+                        .trim();
+            
+                const name =
+                    String(row[2] || '')
+                        .trim();
+            
+                const kind =
+                    String(row[4] || '')
+                        .trim()
+                        .replace(/\s/g, '');
+            
+                if (
+                    ['A', 'B', 'C'].includes(team) &&
+                    name
+                ) {
+                    currentNurseName = name;
+            
+                    if (
+                        !nursesInfo[currentNurseName]
+                    ) {
+                        nursesInfo[currentNurseName] = {
+                            team: team,
+                            id: id,
+                            name: name,
+                            duty_row: -1,
+                            alt_row: -1,
+                            sup_row: -1
+                        };
+                    }
+                }
+            
+                if (
+                    !currentNurseName ||
+                    !nursesInfo[currentNurseName]
+                ) {
+                    continue;
+                }
+            
+                if (
+                    kind.includes('대체')
+                ) {
+                    nursesInfo[
+                        currentNurseName
+                    ].alt_row = r;
+            
+                } else if (
+                    kind.includes('지원')
+                ) {
+                    nursesInfo[
+                        currentNurseName
+                    ].sup_row = r;
+            
+                } else if (
+                    kind === '' ||
+                    kind.includes('근무') ||
+                    kind.includes('듀티') ||
+                    kind === 'RN' ||
+                    kind.includes('등급')
+                ) {
+                    nursesInfo[
+                        currentNurseName
+                    ].duty_row = r;
                 }
             }
-            const nursesList = Object.values(nursesInfo);
+            
+            const nursesList =
+                Object.values(nursesInfo);
 
             pendingList.forEach((r, idx) => {
-                let reqWard = String(r[1]).trim(), reqDate = String(r[2]), reqName = String(r[3]), reqId = String(r[4]), reqDuty = String(r[7]).trim().toUpperCase();
-                let reqTeam = ""; for (let t in teamMapping) if(teamMapping[t].includes(reqWard)) reqTeam = t;
+                const reqWard =
+                    String(
+                        r[idxWard] || ''
+                    ).trim();
+                
+                const reqDate =
+                    String(
+                        r[idxDate] || ''
+                    );
+                
+                const reqName =
+                    String(
+                        r[idxReqName] || ''
+                    ).trim();
+                
+                const reqId =
+                    idxReqId !== -1
+                        ? String(
+                            r[idxReqId] || ''
+                        ).trim()
+                        : '';
+                
+                const reqDuty =
+                    String(
+                        r[idxReqDuty] || ''
+                    )
+                        .trim()
+                        .toUpperCase()
+                        .replace(/M$/, '');
+                                let reqTeam = ""; for (let t in teamMapping) if(teamMapping[t].includes(reqWard)) reqTeam = t;
 
                 let validCands = [], colIdx = -1;
                 const d = parseLocalDate(reqDate);
@@ -865,7 +1236,12 @@
                 
                 const m = d.getMonth() + 1;
                 const dt = d.getDate();
-                colIdx = sHeaders.findIndex(h => { let s = String(h).replace(/\s/g, ""); return s.includes(`${m}/${dt}`) || s.includes(`${String(m).padStart(2,'0')}/${String(dt).padStart(2,'0')}`); });
+                colIdx =
+                    findDateColumn(
+                        sHeaders,
+                        m,
+                        dt
+                    );
 
                 if (colIdx !== -1 && reqTeam) {
                     nursesList.forEach(n => {
@@ -1090,7 +1466,39 @@
                     }
         
                     if (df_preg && df_preg.length > 1) {
-                        let hRsn = df_preg[0].findIndex(h=>h.includes('비고'));
+                        const hRsn =
+                            df_preg[0].findIndex(
+                                function (header) {
+                                    return String(header)
+                                        .replace(/\s/g, '')
+                                        .includes('비고');
+                                }
+                            );
+                        
+                        if (hRsn !== -1) {
+                            for (
+                                let i = 1;
+                                i < df_preg.length;
+                                i++
+                            ) {
+                                const reason =
+                                    String(
+                                        df_preg[i][hRsn] || ''
+                                    )
+                                        .replace(/\s/g, '');
+                        
+                                if (
+                                    reason.includes('임신')
+                                ) {
+                                    tot_B++;
+                        
+                                    allPregDataList.push({
+                                        month: targetMonth,
+                                        row: df_preg[i]
+                                    });
+                                }
+                            }
+                        }
                         for(let i=1; i<df_preg.length; i++) {
                             if(String(df_preg[i][hRsn]).replace(/\s/g,'').includes('임신')) {
                                 tot_B++;
@@ -1100,7 +1508,20 @@
                     }
         
                     const pHeaders = df_plan[0];
-                    const dateCols = pHeaders.map((h, i) => String(h).includes('/') ? i : -1).filter(i => i !== -1);
+                    const dateCols =
+                        pHeaders
+                            .map(
+                                function (header, index) {
+                                    return getHeaderMonthDay(
+                                        header
+                                    )
+                                        ? index
+                                        : -1;
+                                }
+                            )
+                            .filter(
+                                index => index !== -1
+                            );
                     let actualMap = {};
                     df_actual.slice(1).forEach(r => actualMap[String(r[1]).trim()] = r);
         
