@@ -539,19 +539,215 @@
             document.getElementById('admin-dashboard-container').style.display = 'none';
         }
 
-        // 2. 관리자 데이터 로드 (st.data_editor 대체용 데이터 세팅)
+        let adminScheduleData = [];
+
+        // 1. [수정] 관리자 데이터 로드 (신청내역 + 근무표 동시 호출)
         async function loadAdminData() {
             const btn = document.querySelector('button[onclick="syncAdminData()"]');
             btn.innerText = "⏳ 데이터 불러오는 중...";
             
-            const rawData = await fetchSheetData('신청내역');
-            btn.innerText = "🔄 시트 기준으로 동기화";
+            try {
+                // 신청내역과 근무표 데이터를 병렬로 동시에 가져옵니다. (로딩 속도 최적화)
+                const [reqResult, schResult] = await Promise.all([
+                    fetchSheetData('신청내역'),
+                    fetchSheetData('대체간호사 근무표')
+                ]);
 
-            if(rawData && rawData.length > 1) {
-                adminHeaders = rawData[0];
-                adminRequestData = rawData.slice(1);
-                renderAdminDataGrid(); // DataGrid 렌더링
-                // renderPendingCards(); // (향후 미배정 카드 UI 그리는 함수 호출 위치)
+                if(reqResult && reqResult.length > 1) {
+                    adminHeaders = reqResult[0];
+                    adminRequestData = reqResult.slice(1);
+                }
+                if(schResult && schResult.length > 1) {
+                    adminScheduleData = schResult;
+                }
+
+                renderPendingCards(); // 카드형 UI 렌더링 호출
+                renderAdminDataGrid(); // 엑셀형 DataGrid 렌더링 호출
+
+            } catch(e) {
+                console.error(e);
+                alert("데이터 로딩 중 오류가 발생했습니다.");
+            } finally {
+                btn.innerText = "🔄 시트 기준으로 동기화";
+            }
+        }
+
+        // 2. [추가] 파이썬의 조건/점수 계산 알고리즘을 JS로 완벽 번역
+        function renderPendingCards() {
+            const container = document.getElementById('pending-list-container');
+            container.innerHTML = '';
+
+            const idxYn = adminHeaders.findIndex(h => h.includes("대체여부") || h.includes("상태"));
+            const idxWard = adminHeaders.findIndex(h => h.includes("요청부서"));
+            const idxDate = adminHeaders.findIndex(h => h.includes("결원일자"));
+            const idxName = adminHeaders.findIndex(h => h.includes("결원자명") || h.includes("결원자성명"));
+            const idxId = adminHeaders.findIndex(h => h.includes("면허번호") || h.includes("사번"));
+            const idxDuty = adminHeaders.findIndex(h => h.includes("기존 근무") || h.includes("기존근무"));
+
+            // '대기중'인 데이터만 필터링
+            const pendingList = adminRequestData.filter(row => row[idxYn] === '대기중');
+
+            if (pendingList.length === 0) {
+                container.innerHTML = '<p style="color: #666; padding: 15px;">현재 대기 중인 신청 건이 없습니다.</p>';
+                return;
+            }
+
+            // 간호사 근무표 정보 파싱 (nurses_info 생성)
+            const sHeaders = adminScheduleData[0];
+            let nursesInfo = {};
+            
+            for (let r = 2; r < adminScheduleData.length; r++) {
+                let row = adminScheduleData[r];
+                let tVal = String(row[0]).trim().toUpperCase();
+                let nName = String(row[2]).trim();
+                let kind = String(row[4]).trim().replace(/\s/g, "");
+
+                if (["A", "B", "C"].includes(tVal) && nName !== "") {
+                    if (!nursesInfo[nName]) nursesInfo[nName] = { team: tVal, id: String(row[1]).trim(), name: nName, duty_row: -1, alt_row: -1, sup_row: -1 };
+                }
+                if (nName && nursesInfo[nName]) {
+                    if (kind.includes("대체")) nursesInfo[nName].alt_row = r;
+                    else if (kind.includes("지원")) nursesInfo[nName].sup_row = r;
+                    else if (kind === "" || kind.includes("근무") || kind.includes("듀티") || kind === "RN" || kind.includes("등급")) nursesInfo[nName].duty_row = r;
+                }
+            }
+            const nursesList = Object.values(nursesInfo);
+
+            const teamMapping = { "A": ["52W", "65W", "83W", "92W", "93W", "100W"], "B": ["51W", "53W", "70W", "71W", "81W", "101W"], "C": ["50W", "72W", "73W", "80W", "85W", "91W"] };
+
+            // 각 대기중 항목마다 카드(UI) 생성
+            pendingList.forEach((reqRow, pIndex) => {
+                const reqWard = String(reqRow[idxWard]).trim();
+                const reqDate = String(reqRow[idxDate]);
+                const reqName = String(reqRow[idxName]).trim();
+                const reqId = String(reqRow[idxId]).trim();
+                const reqDuty = String(reqRow[idxDuty]).trim().toUpperCase();
+
+                let reqTeam = "";
+                for (let t in teamMapping) if (teamMapping[t].includes(reqWard)) reqTeam = t;
+
+                let validCandidates = [];
+                let colIdx = -1;
+                let targetDateObj = new Date(reqDate);
+                let targetM = targetDateObj.getMonth() + 1;
+                let targetD = targetDateObj.getDate();
+
+                for (let i = 0; i < sHeaders.length; i++) {
+                    let hStr = String(sHeaders[i]).replace(/\s/g, "");
+                    if (hStr.includes(`${targetM}/${targetD}`) || hStr.includes(`${String(targetM).padStart(2,'0')}/${String(targetD).padStart(2,'0')}`)) { colIdx = i; break; }
+                }
+
+                if (colIdx !== -1 && reqTeam) {
+                    nursesList.forEach(n => {
+                        if (n.team !== reqTeam || n.duty_row === -1 || n.alt_row === -1) return;
+                        
+                        let rawDuty = String(adminScheduleData[n.duty_row][colIdx]).trim().toUpperCase();
+                        let cleanDuty = rawDuty.replace("M", "");
+                        if (cleanDuty !== reqDuty) return;
+
+                        let nurseAlt = String(adminScheduleData[n.alt_row][colIdx]).trim();
+                        if (nurseAlt !== "" && nurseAlt !== "-" && nurseAlt.toLowerCase() !== "nan" && nurseAlt.toLowerCase() !== "none") return;
+
+                        let nurseSup = n.sup_row !== -1 ? String(adminScheduleData[n.sup_row][colIdx]).trim().toUpperCase() : "";
+                        let isSupMatch = (nurseSup.includes(reqWard.toUpperCase()) || reqWard.toUpperCase().includes(nurseSup));
+                        let supStr = isSupMatch ? "⭐지원일치 1순위" : "일반 배정 가능";
+                        
+                        // 파이썬과 동일하게 문자열 포맷팅
+                        validCandidates.push({
+                            label: `${n.name} - ${n.id} (${cleanDuty}m) [${supStr}]`,
+                            isStar: isSupMatch
+                        });
+                    });
+                }
+
+                // 지원일치(⭐)가 위로 오도록 정렬
+                validCandidates.sort((a, b) => b.isStar - a.isStar);
+
+                let candOptionsHTML = '';
+                if (validCandidates.length > 0) {
+                    validCandidates.forEach(c => { candOptionsHTML += `<option value="${c.label}">${c.label}</option>`; });
+                } else {
+                    candOptionsHTML = `<option value="">❌ 조건에 맞는 대체간호사 없음</option>`;
+                }
+
+                // 카드 HTML 조립 (디자인은 스트림릿 st.info 느낌)
+                const cardHtml = `
+                    <div style="border: 1px solid #ddd; border-radius: 8px; padding: 15px; margin-bottom: 15px; background-color: #fdfdfd;">
+                        <div style="background-color: #e8f4fd; border-left: 4px solid #1772d1; padding: 10px 15px; border-radius: 4px; color: #004085; font-size: 14px; margin-bottom: 15px;">
+                            📍 <strong>[${reqWard}] (${reqTeam}팀)</strong> | 일자: ${reqDate.split('T')[0]} | 결원자: ${reqName}(${reqId}) - ${reqDuty}
+                        </div>
+                        <div style="display: flex; gap: 15px; align-items: flex-end;">
+                            <div style="flex: 1;">
+                                <label style="font-size: 13px; font-weight: bold; color: #555;">대체여부</label>
+                                <select id="pend-yn-${pIndex}" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; margin-top: 5px;">
+                                    <option value="Y">Y</option>
+                                    <option value="N">N</option>
+                                </select>
+                            </div>
+                            <div style="flex: 2.5;">
+                                <label style="font-size: 13px; font-weight: bold; color: #555;">배정할 대체간호사 선택</label>
+                                <select id="pend-cand-${pIndex}" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; margin-top: 5px;">
+                                    ${candOptionsHTML}
+                                </select>
+                            </div>
+                            <div style="flex: 1;">
+                                <button onclick="submitManualAssign(${pIndex}, '${reqDate.split('T')[0]}', '${reqName}', '${reqId}', '${reqWard}')" style="width: 100%; padding: 9px; background-color: #f8f9fa; border: 1px solid #ddd; border-radius: 4px; font-weight: bold; cursor: pointer; color: #333;">
+                                    💾 배정 저장
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.insertAdjacentHTML('beforeend', cardHtml);
+            });
+        }
+
+        // 3. [추가] 개별 배정(저장) 버튼 클릭 시 호출
+        async function submitManualAssign(pIndex, reqDate, reqName, reqId, reqWard) {
+            const ynVal = document.getElementById(`pend-yn-${pIndex}`).value;
+            const candVal = document.getElementById(`pend-cand-${pIndex}`).value;
+
+            let candName = "", candDuty = "";
+            if (ynVal === "Y") {
+                if (!candVal || candVal.includes("❌")) {
+                    alert("배정할 간호사를 선택해주세요."); return;
+                }
+                // 파이썬 로직: sel_cand.split(" -")[0], sel_cand.split("(")[1].split(")")[0]
+                candName = candVal.split(" -")[0].trim();
+                candDuty = candVal.split("(")[1].split(")")[0].trim();
+            }
+
+            const payload = {
+                action: 'submitManualAssign',
+                reqDate: reqDate,
+                reqName: reqName,
+                reqId: reqId,
+                reqWard: reqWard,
+                subYn: ynVal,
+                candName: candName,
+                candDuty: candDuty
+            };
+
+            const btn = event.target;
+            const originalText = btn.innerText;
+            btn.innerText = "⏳ 처리중...";
+            btn.disabled = true;
+
+            try {
+                const response = await fetch(GAS_URL, { method: "POST", body: JSON.stringify(payload) });
+                const result = await response.json();
+                
+                if(result.success) {
+                    alert(`✅ ${ynVal === 'Y' ? candName + " 간호사 배정 완료!" : "반려 처리 완료!"}`);
+                    loadAdminData(); // 화면(DataGrid, 리스트) 새로고침
+                } else {
+                    alert("오류 발생: " + result.error);
+                }
+            } catch(e) {
+                alert("통신 중 오류가 발생했습니다.");
+            } finally {
+                btn.innerText = originalText;
+                btn.disabled = false;
             }
         }
 
