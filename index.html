@@ -123,7 +123,13 @@
                 <div id="search-results-container" style="display: none; padding: 15px; border: 1px solid #ddd; background: #f9f9f9; margin-bottom: 20px; border-radius: 8px;"></div>
 
                 <div id="req-loading" style="display: none; color: var(--primary-color); font-weight: bold; margin-bottom: 15px;">⏳ 구글 시트에서 데이터를 불러오는 중입니다...</div>
-                
+                <div id="dynamic-shift-display" style="display:none; align-items:center; justify-content:space-between; margin-bottom: 15px;">
+                    <div style="background-color: rgba(139, 0, 41, 0.05); border-left: 4px solid #8B0029; padding: 10px 15px; border-radius: 6px; flex: 1; margin-right: 15px; display: flex; justify-content: space-between; align-items: center;">
+                        <span id="shift-date-text" style="font-size: 14px; font-weight: 600; color: #333; opacity: 0.8;"></span>
+                        <span id="shift-val-text" style="font-size: 20px; font-weight: 900; color: #8B0029;"></span>
+                    </div>
+                    <button class="btn-primary" style="background:#f8f9fa; color:#333; border:1px solid #ddd;" onclick="clearSearchAndReload()">🔄 전체 병동 보기</button>
+                </div>
                 <div id="table-container" style="width: 100%; overflow-x: auto; margin-bottom: 30px; border: 1px solid #eaeaea; border-radius: 8px; max-height: 500px;"></div>
 
                 <div id="absence-form-container" style="display: none; padding: 20px; border: 1px solid #ddd; border-radius: 8px; background: #fdfdfd;">
@@ -233,7 +239,7 @@
                     </div>
 
                     <h3 style="margin-bottom: 15px; border-bottom: 2px solid #333; padding-bottom: 5px;">💡 병동별 인사이트</h3>
-                    <div id="insight-container" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 40px;"></div>
+                    <div id="insight-container" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; margin-bottom: 40px;"></div>
                     
                     <h3 style="margin-bottom: 15px; border-bottom: 2px solid #333; padding-bottom: 5px;">📊 병동별 순위</h3>
                     <div id="ranking-table-container" style="width: 100%; overflow-x: auto; border: 1px solid #ddd; border-radius: 8px;"></div>
@@ -268,13 +274,31 @@
         window.onload = () => {
             const mSel = document.getElementById('sel-month');
             for(let i=1; i<=12; i++) mSel.innerHTML += `<option value="${i}" ${i === new Date().getMonth()+1 ? 'selected':''}>${i}월</option>`;
-            document.getElementById('req-date').value = sessionState.target_date;
-
+            
+            document.getElementById('req-date').addEventListener('change', function() {
+                const nameField = document.getElementById('req-name').value;
+                if(nameField) updateShiftDisplay(nameField);
+            });
+        
             const dashMonth = document.getElementById('dashboard-month');
             for(let i=1; i<=12; i++) {
                 let mStr = String(i).padStart(2, '0');
                 dashMonth.innerHTML += `<option value="26${mStr}">26${mStr}</option>`;
             }
+        
+            // 💡 라디오 버튼 이벤트 리스너는 여기에 위치해야 합니다.
+            document.querySelectorAll('input[name="analyze-mode"]').forEach(radio => {
+                radio.addEventListener('change', (e) => {
+                    const sel = document.getElementById('dashboard-month');
+                    if (e.target.value === 'multi') {
+                        sel.multiple = true;
+                        sel.style.height = '120px';
+                    } else {
+                        sel.multiple = false;
+                        sel.style.height = 'auto';
+                    }
+                });
+            });
         };
 
         async function fetchSheetData(sheetName, isDns = false) {
@@ -323,15 +347,24 @@
             resDiv.style.display = 'block';
             if(matches.length === 0) resDiv.innerHTML = `<p style="color:red; font-weight:bold;">'${name}' 간호사를 찾을 수 없습니다.</p>`;
             else {
-                let html = `<p style="font-weight:bold; color:green; margin-bottom: 10px;">✅ 총 ${matches.length}명 검색됨. 아래 버튼을 클릭하여 선택해 주세요.</p>`;
+                let html = `<p style="font-weight:bold; color:green; margin-bottom: 10px;">✅ 총 ${matches.length}명 검색됨.</p>`;
+                html += `<div style="margin-bottom: 10px;">
+                            <label style="font-size: 13px; font-weight: bold;">🗓️ 결원 발생 일자 (조회 날짜) 선택:</label>
+                            <input type="date" id="pre-select-date" class="form-control" value="${sessionState.target_date}" style="width: 200px; display: inline-block; margin-left: 10px;">
+                         </div><hr style="margin: 10px 0;">`;
+                
                 matches.forEach(m => {
-                    html += `<button class="btn-primary" style="background:#fff; color:#333; border:1px solid #ccc; margin-right:5px; margin-bottom:5px;" onclick="applyNurseSearch('${m.ward}', '${m.name}')">${m.ward} | ${m.name}(${m.id})</button>`;
+                    html += `<button class="btn-primary" style="background:#fff; color:#333; border:1px solid #ccc; margin-right:5px; margin-bottom:5px;" onclick="applyNurseSearch('${m.ward}', '${m.name}')">👉 선택한 날짜로 근무 조회 (${m.ward} | ${m.name})</button>`;
                 });
                 resDiv.innerHTML = html;
             }
         }
 
         function applyNurseSearch(ward, name) {
+            const preDate = document.getElementById('pre-select-date').value;
+            sessionState.target_date = preDate;
+            document.getElementById('req-date').value = preDate; // 하단 폼과 동기화
+            
             document.getElementById('sel-ward').value = ward;
             document.getElementById('search-name').value = name;
             loadScheduleData(name);
@@ -408,10 +441,35 @@
             }
         }
 
+        function clearSearchAndReload() {
+            document.getElementById('search-name').value = '';
+            loadScheduleData(); // 필터 없이 전체 로드
+        }
+        
+        function updateShiftDisplay(selectedName) {
+            const reqDate = document.getElementById('req-date').value;
+            if(!reqDate || !currentPlanData.length || !selectedName) return;
+            
+            let d = new Date(reqDate), m = d.getMonth()+1, dt = d.getDate();
+            let colIdx = currentHeaders.findIndex(h => {
+                let s = String(h).replace(/\s/g, "");
+                return s.includes(`${m}/${dt}`) || s.includes(`${String(m).padStart(2,'0')}/${String(dt).padStart(2,'0')}`);
+            });
+        
+            const targetRow = currentPlanData.find(row => row[2] === selectedName.split(" (")[0]);
+            let shiftVal = (colIdx !== -1 && targetRow) ? String(targetRow[colIdx]).trim() : "OFF (또는 미입력)";
+            if(!shiftVal) shiftVal = "OFF (또는 미입력)";
+        
+            document.getElementById('shift-date-text').innerText = `${m}월 ${dt}일 계획 근무`;
+            document.getElementById('shift-val-text').innerText = shiftVal;
+            document.getElementById('dynamic-shift-display').style.display = 'flex';
+        }
+
         function selectNurse(name, id, tr) {
             document.getElementById('req-name').value = `${name} (${id})`;
             tr.parentNode.querySelectorAll('tr').forEach(el => el.style.background = '');
             tr.style.background = '#ffcccc'; tr.onmouseout = null;
+            updateShiftDisplay(name);
         }
 
         async function submitAbsenceRequest(e) {
@@ -611,75 +669,89 @@
         ------------------------------------------------------------- */
         async function runMetricsAnalysis(e) {
             const btn = e.target;
-            const targetMonth = document.getElementById('dashboard-month').value;
+            const monthSelect = document.getElementById('dashboard-month');
+            const selectedMonths = Array.from(monthSelect.selectedOptions).map(opt => opt.value);
+            
+            if (selectedMonths.length === 0) {
+                alert("⚠️ 분석할 년월을 하나 이상 선택해주세요.");
+                return;
+            }
             
             document.getElementById('metrics-loading').style.display = 'block';
             document.getElementById('metrics-result-container').style.display = 'none';
             btn.disabled = true;
-
+        
             try {
-                const [df_plan, df_actual, df_vac, df_preg] = await Promise.all([
-                    fetchSheetData(`${targetMonth} 계획근무`, true),
-                    fetchSheetData(`${targetMonth} 실제근무`, true),
-                    fetchSheetData(`${targetMonth} 결원대체현황`, true),
-                    fetchSheetData(`${targetMonth} 임신변동현황`, true)
-                ]);
-
-                if(!df_plan || !df_actual) { alert("해당 월의 데이터가 부족합니다."); return; }
-
-                let tot_denom=0, tot_A=0, tot_B=0, tot_C=0, tot_vac_days=0, tot_rep_days=0;
+                let tot_denom = 0, tot_A = 0, tot_B = 0, tot_C = 0, tot_vac_days = 0, tot_rep_days = 0;
                 let wChange = {}, wVac = {}, wRep = {}, wTotal = {};
                 wardList.forEach(w => { wChange[w]=0; wVac[w]=0; wRep[w]=0; wTotal[w]=0; });
-
-                if (df_vac && df_vac.length > 1) {
-                    for(let i=1; i<df_vac.length; i++) {
-                        let w = String(df_vac[i][0]).replace('.0', '').trim();
-                        let n = String(df_vac[i][3]).trim();
-                        let repY = String(df_vac[i][7]).trim().toUpperCase();
-                        let rsn = String(df_vac[i][6]).replace(/\s/g, '');
-                        if (wardList.includes(w) && n && n !== 'nan') {
-                            tot_vac_days++; wVac[w]++;
-                            if (repY === 'Y') { tot_rep_days++; wRep[w]++; }
-                            if (rsn.includes('임신') && repY === 'Y') tot_C++;
+        
+                let allPregDataList = [];
+        
+                // 💡 선택된 월들을 순회하며 데이터 누적 합산 (Streamlit 방식 구현)
+                for (let targetMonth of selectedMonths) {
+                    const [df_plan, df_actual, df_vac, df_preg] = await Promise.all([
+                        fetchSheetData(`${targetMonth} 계획근무`, true),
+                        fetchSheetData(`${targetMonth} 실제근무`, true),
+                        fetchSheetData(`${targetMonth} 결원대체현황`, true),
+                        fetchSheetData(`${targetMonth} 임신변동현황`, true)
+                    ]);
+        
+                    if(!df_plan || !df_actual) continue;
+        
+                    if (df_vac && df_vac.length > 1) {
+                        for(let i=1; i<df_vac.length; i++) {
+                            let w = String(df_vac[i][0]).replace('.0', '').trim();
+                            let n = String(df_vac[i][3]).trim();
+                            let repY = String(df_vac[i][7]).trim().toUpperCase();
+                            let rsn = String(df_vac[i][6]).replace(/\s/g, '');
+                            if (wardList.includes(w) && n && n !== 'nan') {
+                                tot_vac_days++; wVac[w]++;
+                                if (repY === 'Y') { tot_rep_days++; wRep[w]++; }
+                                if (rsn.includes('임신') && repY === 'Y') tot_C++;
+                            }
                         }
                     }
-                }
-
-                if (df_preg && df_preg.length > 1) {
-                    let hRsn = df_preg[0].findIndex(h=>h.includes('비고'));
-                    for(let i=1; i<df_preg.length; i++) {
-                        if(String(df_preg[i][hRsn]).replace(/\s/g,'').includes('임신')) tot_B++;
-                    }
-                }
-
-                const pHeaders = df_plan[0];
-                const dateCols = pHeaders.map((h, i) => String(h).includes('/') ? i : -1).filter(i => i !== -1);
-                let actualMap = {};
-                df_actual.slice(1).forEach(r => actualMap[String(r[1]).trim()] = r);
-
-                df_plan.slice(1).forEach(pRow => {
-                    let w = String(pRow[0]).replace('.0', '').trim();
-                    let id = String(pRow[1]).trim();
-                    let aRow = actualMap[id];
-                    
-                    if (aRow && wardList.includes(w)) {
-                        dateCols.forEach(dIdx => {
-                            let pV = String(pRow[dIdx]).trim();
-                            if (pV !== '' && pV.toLowerCase() !== 'nan') {
-                                tot_denom++; wTotal[w]++;
-                                let aV = String(aRow[dIdx]).trim();
-                                if (pV === aV) tot_A++;
-                                else wChange[w]++;
+        
+                    if (df_preg && df_preg.length > 1) {
+                        let hRsn = df_preg[0].findIndex(h=>h.includes('비고'));
+                        for(let i=1; i<df_preg.length; i++) {
+                            if(String(df_preg[i][hRsn]).replace(/\s/g,'').includes('임신')) {
+                                tot_B++;
+                                allPregDataList.push({ month: targetMonth, row: df_preg[i] });
                             }
-                        });
+                        }
                     }
-                });
-
+        
+                    const pHeaders = df_plan[0];
+                    const dateCols = pHeaders.map((h, i) => String(h).includes('/') ? i : -1).filter(i => i !== -1);
+                    let actualMap = {};
+                    df_actual.slice(1).forEach(r => actualMap[String(r[1]).trim()] = r);
+        
+                    df_plan.slice(1).forEach(pRow => {
+                        let w = String(pRow[0]).replace('.0', '').trim();
+                        let id = String(pRow[1]).trim();
+                        let aRow = actualMap[id];
+                        
+                        if (aRow && wardList.includes(w)) {
+                            dateCols.forEach(dIdx => {
+                                let pV = String(pRow[dIdx]).trim();
+                                if (pV !== '' && pV.toLowerCase() !== 'nan') {
+                                    tot_denom++; wTotal[w]++;
+                                    let aV = String(aRow[dIdx]).trim();
+                                    if (pV === aV) tot_A++;
+                                    else wChange[w]++;
+                                }
+                            });
+                        }
+                    });
+                }
+        
                 let tot_D = tot_rep_days;
                 let tot_numer = tot_A + tot_B - tot_C + tot_D;
                 let comp_rate = tot_denom > 0 ? (tot_numer / tot_denom * 100) : 0;
                 let rep_rate = tot_vac_days > 0 ? (tot_rep_days / tot_vac_days * 100) : 0;
-
+        
                 document.getElementById('val-vac-days').innerText = `${tot_vac_days}일`;
                 document.getElementById('val-rep-days').innerText = `${tot_rep_days}일`;
                 document.getElementById('val-rep-rate').innerText = `${rep_rate.toFixed(2)}%`;
@@ -690,16 +762,40 @@
                 document.getElementById('val-B').innerText = tot_B;
                 document.getElementById('val-C').innerText = tot_C;
                 document.getElementById('val-D').innerText = tot_D;
-
+        
+                // 3번째 카드 (임신 간호사 발생 목록) 생성
+                let pregListHtml = "";
+                if (allPregDataList.length > 0) {
+                    let pregMap = {};
+                    allPregDataList.forEach(item => {
+                        let r = item.row;
+                        let hName = 2; // 이름 필드 위치 가정 (필요시 조정)
+                        let name = String(r[hName] || "간호사").trim();
+                        let w = "임신발생"; // 병동 매핑
+                        if(!pregMap[w]) pregMap[w] = [];
+                        pregMap[w].push(`${name} (${item.month})`);
+                    });
+                    Object.keys(pregMap).forEach(w => {
+                        pregListHtml += `<div style='margin-bottom:8px;'><strong>${w}:</strong> ${pregMap[w].join(", ")}</div>`;
+                    });
+                } else {
+                    pregListHtml = "<div style='font-size:14px; color:#666;'>조건에 맞는 간호사가 없습니다.</div>";
+                }
+                const pregHtmlCard = `<div style="border:1px solid #ddd; padding:15px; border-radius:8px; background:#fff;"><h4 style="margin-bottom:10px; color:#8B0029;">🤰 임신간호사 발생</h4>${pregListHtml}</div>`;
+        
                 const gridHtml = (title, dict) => {
                     let sorted = Object.entries(dict).sort((a, b) => parseInt(a[0].replace('W','')) - parseInt(b[0].replace('W','')));
                     let html = `<div style="border:1px solid #ddd; padding:15px; border-radius:8px; background:#fff;"><h4 style="margin-bottom:10px;">${title}</h4><div class="ward-grid">`;
                     sorted.forEach(([w, c]) => { html += `<div class="ward-box ${c===0?'empty':''}"><div style="font-weight:bold; font-size:14px;">${w}</div><div style="font-size:12px;">${c}건</div></div>`; });
                     return html + `</div></div>`;
                 };
-
-                document.getElementById('insight-container').innerHTML = gridHtml("🔄 병동별 근무 변동 건수", wChange) + gridHtml("⚠️ 병동별 결원 발생 건수", wVac);
-
+        
+                // 💡 덮어쓰기 버그 해결: 3가지 카드를 모두 한 번에 삽입
+                document.getElementById('insight-container').innerHTML = 
+                    gridHtml("🔄 병동별 근무 변동 건수", wChange) + 
+                    gridHtml("⚠️ 병동별 결원 발생 건수", wVac) + 
+                    pregHtmlCard;
+        
                 // --- 📊 병동별 순위 렌더링 로직 ---
                 function getRanks(dict) {
                     let sortedVals = Object.values(dict).filter(v => v > 0).sort((a,b)=>b-a);
@@ -707,10 +803,10 @@
                     for(let k in dict) { ranks[k] = dict[k] > 0 ? (sortedVals.indexOf(dict[k]) + 1 + "위") : "-"; }
                     return ranks;
                 }
-
+        
                 const rankC = getRanks(wChange), rankV = getRanks(wVac), rankR = getRanks(wRep);
                 let maxC = Math.max(...Object.values(wChange), 1), maxV = Math.max(...Object.values(wVac), 1), maxR = Math.max(...Object.values(wRep), 1);
-
+        
                 let rHtml = '<table><thead style="background:#f8f9fa;"><tr><th>병동명</th><th>변동 순위</th><th style="text-align:left;">근무 변동(건)</th><th>변동 비율(%)</th><th>결원 순위</th><th style="text-align:left;">결원 발생(건)</th><th>결원 비율(%)</th><th>대체 순위</th><th style="text-align:left;">대체 투입(건)</th><th>대체 비율(%)</th></tr></thead><tbody>';
                 
                 wardList.forEach(w => {
@@ -718,7 +814,7 @@
                     let vPct = wTotal[w] > 0 ? (wVac[w] / wTotal[w] * 100).toFixed(1) : "0.0";
                     let rPct = wVac[w] > 0 ? (wRep[w] / wVac[w] * 100).toFixed(1) : "0.0";
                     const bar = (val, max) => `<div style="display:flex; align-items:center; gap:8px;"><div style="width:100px; height:12px; background:#eee; border-radius:3px; overflow:hidden;"><div style="width:${(val/max)*100}%; height:100%; background:var(--primary-color);"></div></div><span>${val}건</span></div>`;
-
+        
                     rHtml += `<tr>
                         <td style="font-weight:bold;">${w}</td>
                         <td>${rankC[w]}</td><td style="text-align:left;">${bar(wChange[w], maxC)}</td><td>${cPct}%</td>
@@ -728,11 +824,12 @@
                 });
                 rHtml += '</tbody></table>';
                 document.getElementById('ranking-table-container').innerHTML = rHtml;
-
+        
                 document.getElementById('metrics-result-container').style.display = 'block';
-
+        
             } catch(e) {
-                console.error(e); alert("분석 중 오류 발생");
+                console.error(e);
+                alert("분석 중 오류 발생");
             } finally {
                 document.getElementById('metrics-loading').style.display = 'none';
                 btn.disabled = false;
