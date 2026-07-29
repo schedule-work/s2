@@ -370,10 +370,62 @@
                         <label style="margin-right: 20px;"><input type="radio" name="analyze-mode" value="single" checked> 단일 월 분석</label>
                         <label><input type="radio" name="analyze-mode" value="multi"> 기간 통합 분석</label>
                     </div>
-                    <div style="display: flex; gap: 10px;">
-                        <select id="dashboard-month" class="form-control" style="width: 200px;"></select>
-                        <button class="btn-primary" onclick="runMetricsAnalysis(event)">📊 데이터 분석 실행</button>
+                    <div id="single-month-area">
+                        <select
+                            id="dashboard-single-month"
+                            class="form-control"
+                            style="max-width: 240px;"
+                        ></select>
                     </div>
+                    
+                    <div
+                        id="multi-month-area"
+                        style="display:none;"
+                    >
+                        <div
+                            id="dashboard-month-checkboxes"
+                            style="
+                                display:grid;
+                                grid-template-columns:
+                                    repeat(auto-fit, minmax(110px, 1fr));
+                                gap:10px;
+                                margin-bottom:15px;
+                            "
+                        ></div>
+                    
+                        <div
+                            style="
+                                display:flex;
+                                gap:8px;
+                                margin-bottom:15px;
+                            "
+                        >
+                            <button
+                                type="button"
+                                class="form-control"
+                                style="width:auto; cursor:pointer;"
+                                onclick="selectAllDashboardMonths(true)"
+                            >
+                                전체 선택
+                            </button>
+                    
+                            <button
+                                type="button"
+                                class="form-control"
+                                style="width:auto; cursor:pointer;"
+                                onclick="selectAllDashboardMonths(false)"
+                            >
+                                전체 해제
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <button
+                        class="btn-primary"
+                        onclick="runMetricsAnalysis(event)"
+                    >
+                        📊 데이터 분석 실행
+                    </button>
                 </div>
 
                 <div id="metrics-loading" style="display: none; color: var(--primary-color); font-weight: bold; text-align: center; margin: 50px 0;">
@@ -413,7 +465,140 @@
     </main>
 
     <script>
-        // ⚠️ [중요] 반드시 본인의 구글 Apps Script 웹 앱 URL로 변경하세요.
+        function initializeDashboardMonths() {
+            const singleSelect =
+                document.getElementById(
+                    'dashboard-single-month'
+                );
+        
+            const checkboxContainer =
+                document.getElementById(
+                    'dashboard-month-checkboxes'
+                );
+        
+            singleSelect.innerHTML = '';
+            checkboxContainer.innerHTML = '';
+        
+            for (
+                let month = 1;
+                month <= 12;
+                month++
+            ) {
+                const value =
+                    `26${String(month)
+                        .padStart(2, '0')}`;
+        
+                const label =
+                    `2026년 ${month}월`;
+        
+                singleSelect.insertAdjacentHTML(
+                    'beforeend',
+                    `
+                        <option value="${value}">
+                            ${label}
+                        </option>
+                    `
+                );
+        
+                checkboxContainer.insertAdjacentHTML(
+                    'beforeend',
+                    `
+                        <label
+                            style="
+                                display:flex;
+                                align-items:center;
+                                gap:8px;
+                                padding:10px 12px;
+                                border:1px solid #ddd;
+                                border-radius:7px;
+                                background:white;
+                                cursor:pointer;
+                            "
+                        >
+                            <input
+                                type="checkbox"
+                                name="dashboard-month-check"
+                                value="${value}"
+                            >
+                            <span>${month}월</span>
+                        </label>
+                    `
+                );
+            }
+        
+            const currentMonth =
+                new Date().getMonth() + 1;
+        
+            singleSelect.value =
+                `26${String(currentMonth)
+                    .padStart(2, '0')}`;
+        }
+
+        function updateDashboardMode() {
+            const mode =
+                document.querySelector(
+                    'input[name="analyze-mode"]:checked'
+                ).value;
+        
+            document
+                .getElementById(
+                    'single-month-area'
+                )
+                .style.display =
+                mode === 'single'
+                    ? 'block'
+                    : 'none';
+        
+            document
+                .getElementById(
+                    'multi-month-area'
+                )
+                .style.display =
+                mode === 'multi'
+                    ? 'block'
+                    : 'none';
+        }
+
+        function getSelectedDashboardMonths() {
+            const mode =
+                document.querySelector(
+                    'input[name="analyze-mode"]:checked'
+                ).value;
+        
+            if (mode === 'single') {
+                const value =
+                    document
+                        .getElementById(
+                            'dashboard-single-month'
+                        )
+                        .value;
+        
+                return value
+                    ? [value]
+                    : [];
+            }
+        
+            return Array
+                .from(
+                    document.querySelectorAll(
+                        'input[name="dashboard-month-check"]:checked'
+                    )
+                )
+                .map(input => input.value);
+        }
+        
+        function selectAllDashboardMonths(
+            checked
+        ) {
+            document
+                .querySelectorAll(
+                    'input[name="dashboard-month-check"]'
+                )
+                .forEach(input => {
+                    input.checked = checked;
+                });
+        }
+        
         const GAS_URL = "https://script.google.com/macros/s/AKfycbxe2oBl9GuV6FYufc-BtgZE6V5N6mwmdDRUvXi7pe79lrBaDSuIoRmJo024OHIORNI2/exec";
 
         const teamMapping = { "A": ["52W", "65W", "83W", "92W", "93W", "100W"], "B": ["51W", "53W", "70W", "71W", "81W", "101W"], "C": ["50W", "72W", "73W", "80W", "85W", "91W"] };
@@ -508,19 +693,40 @@
             const text =
                 String(headerValue).trim();
         
-            // ISO 날짜 형식
+            // Apps Script JSON에서 날짜가 UTC ISO 문자열로 넘어오는 경우
+            // 예: 한국시간 7월 1일 → 2026-06-30T15:00:00.000Z
+            if (/^\d{4}-\d{2}-\d{2}T/.test(text)) {
+                const utcDate = new Date(text);
+
+                if (!Number.isNaN(utcDate.getTime())) {
+                    const koreaDate =
+                        new Date(
+                            utcDate.getTime() +
+                            9 * 60 * 60 * 1000
+                        );
+
+                    return {
+                        month:
+                            koreaDate.getUTCMonth() + 1,
+                        day:
+                            koreaDate.getUTCDate()
+                    };
+                }
+            }
+
+            // yyyy-mm-dd 문자열
             const isoMatch =
                 text.match(
                     /^(\d{4})-(\d{2})-(\d{2})/
                 );
-        
+
             if (isoMatch) {
                 return {
                     month: Number(isoMatch[2]),
                     day: Number(isoMatch[3])
                 };
             }
-        
+
             // 7/29, 07/29, 7월 29일 형식
             const slashMatch =
                 text.match(
@@ -578,42 +784,20 @@
                 const nameField = document.getElementById('req-name').value;
                 if(nameField) updateShiftDisplay(nameField);
             });
+        initializeDashboardMonths();
         
-            const dashMonth = document.getElementById('dashboard-month');
-            const dashboardYear =
-                new Date().getFullYear();
-            
-            const dashboardYearShort =
-                String(dashboardYear).slice(-2);
-            
-            for (
-                let i = 1;
-                i <= 12;
-                i++
-            ) {
-                const month =
-                    String(i).padStart(2, '0');
-            
-                dashMonth.innerHTML += `
-                    <option value="${dashboardYearShort}${month}">
-                        ${dashboardYear}년 ${i}월
-                    </option>
-                `;
-            }
-        
-            // 💡 라디오 버튼 이벤트 리스너는 여기에 위치해야 합니다.
-            document.querySelectorAll('input[name="analyze-mode"]').forEach(radio => {
-                radio.addEventListener('change', (e) => {
-                    const sel = document.getElementById('dashboard-month');
-                    if (e.target.value === 'multi') {
-                        sel.multiple = true;
-                        sel.style.height = '120px';
-                    } else {
-                        sel.multiple = false;
-                        sel.style.height = 'auto';
-                    }
-                });
+        document
+            .querySelectorAll(
+                'input[name="analyze-mode"]'
+            )
+            .forEach(radio => {
+                radio.addEventListener(
+                    'change',
+                    updateDashboardMode
+                );
             });
+        
+        updateDashboardMode();
         };
 
         async function fetchSheetData(
@@ -869,7 +1053,30 @@
             }
 
             let html = '<table><thead><tr><th>이름</th><th>면허번호</th>';
-            for(let i=3; i<currentHeaders.length; i++) if(currentHeaders[i]) html += `<th>${currentHeaders[i]}</th>`;
+            for(let i=3; i<currentHeaders.length; i++) {
+                const headerDate =
+                    getHeaderMonthDay(
+                        currentHeaders[i]
+                    );
+            
+                if (!headerDate) {
+                    continue;
+                }
+            
+                if (
+                    headerDate.month !==
+                    Number(fullMonth)
+                ) {
+                    continue;
+                }
+            
+                html += `
+                    <th>
+                        ${headerDate.day}일
+                    </th>
+                `;
+            }
+
             html += '</tr></thead><tbody>';
 
             currentPlanData.forEach(row => {
@@ -900,7 +1107,33 @@
                     >
                 `;
                 html += `<td><strong>${row[2]}</strong></td><td>${row[1]}</td>`;
-                for(let i=3; i<row.length; i++) html += `<td>${row[i]}</td>`;
+                for (
+    let i = 3;
+    i < currentHeaders.length;
+    i++
+) {
+    const headerDate =
+        getHeaderMonthDay(
+            currentHeaders[i]
+        );
+
+    if (!headerDate) {
+        continue;
+    }
+
+    if (
+        headerDate.month !==
+        Number(fullMonth)
+    ) {
+        continue;
+    }
+
+    html += `
+        <td>
+            ${row[i] || ''}
+        </td>
+    `;
+}
                 html += '</tr>';
             });
             html += '</tbody></table>';
@@ -1697,202 +1930,887 @@
         /* -------------------------------------------------------------
            5. 평가지표 대시보드
         ------------------------------------------------------------- */
+        function cleanHeader(value) {
+            return String(value || '')
+                .replace(/\n/g, '')
+                .replace(/\s/g, '')
+                .trim();
+        }
+        
+        function findHeaderIndex(
+            headers,
+            candidates
+        ) {
+            const cleaned =
+                headers.map(cleanHeader);
+        
+            for (
+                const candidate of candidates
+            ) {
+                const target =
+                    cleanHeader(candidate);
+        
+                const exactIndex =
+                    cleaned.findIndex(
+                        header =>
+                            header === target
+                    );
+        
+                if (exactIndex !== -1) {
+                    return exactIndex;
+                }
+        
+                const includesIndex =
+                    cleaned.findIndex(
+                        header =>
+                            header.includes(target)
+                    );
+        
+                if (includesIndex !== -1) {
+                    return includesIndex;
+                }
+            }
+        
+            return -1;
+        }
+        
+        function cleanWard(value) {
+            const text =
+                String(value || '')
+                    .replace('.0', '')
+                    .trim()
+                    .toUpperCase();
+        
+            if (
+                !text ||
+                text === 'HN' ||
+                text.includes('대체간호사팀')
+            ) {
+                return '';
+            }
+        
+            return text.endsWith('W')
+                ? text
+                : `${text}W`;
+        }
+        
+        function cleanId(value) {
+            return String(value || '')
+                .replace('.0', '')
+                .trim();
+        }
+        
+        function isEmptyDuty(value) {
+            const text =
+                String(value || '')
+                    .trim()
+                    .toLowerCase();
+        
+            return (
+                text === '' ||
+                text === 'nan' ||
+                text === 'none'
+            );
+        }
+            
+        function renderMetricsInsights(data) {
+            const {
+                wardChange,
+                wardVac,
+                wardRep,
+                wardTotals
+            } = data;
+
+            const rows = wardList.map(ward => {
+                const total = Number(wardTotals[ward] || 0);
+                const changed = Number(wardChange[ward] || 0);
+                const vacancy = Number(wardVac[ward] || 0);
+                const replacement = Number(wardRep[ward] || 0);
+
+                return {
+                    ward,
+                    total,
+                    changed,
+                    vacancy,
+                    replacement,
+                    complianceRate:
+                        total > 0
+                            ? ((total - changed) / total) * 100
+                            : 0,
+                    replacementRate:
+                        vacancy > 0
+                            ? (replacement / vacancy) * 100
+                            : 0
+                };
+            });
+
+            const active =
+                rows.filter(row =>
+                    row.total > 0 ||
+                    row.vacancy > 0
+                );
+
+            const bestCompliance =
+                [...active]
+                    .filter(row => row.total > 0)
+                    .sort(
+                        (a, b) =>
+                            b.complianceRate -
+                            a.complianceRate
+                    )[0];
+
+            const mostVacancy =
+                [...active]
+                    .sort(
+                        (a, b) =>
+                            b.vacancy -
+                            a.vacancy
+                    )[0];
+
+            const bestReplacement =
+                [...active]
+                    .filter(row => row.vacancy > 0)
+                    .sort(
+                        (a, b) =>
+                            b.replacementRate -
+                            a.replacementRate
+                    )[0];
+
+            document
+                .getElementById('insight-container')
+                .innerHTML = `
+                    <div class="metric-card">
+                        <div>계획근무 준수율 최고</div>
+                        <div class="metric-val">
+                            ${bestCompliance ? bestCompliance.ward : '-'}
+                        </div>
+                        <div>
+                            ${
+                                bestCompliance
+                                    ? bestCompliance.complianceRate.toFixed(2) + '%'
+                                    : '데이터 없음'
+                            }
+                        </div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div>결원 발생 최다 병동</div>
+                        <div class="metric-val">
+                            ${
+                                mostVacancy &&
+                                mostVacancy.vacancy > 0
+                                    ? mostVacancy.ward
+                                    : '-'
+                            }
+                        </div>
+                        <div>
+                            ${
+                                mostVacancy &&
+                                mostVacancy.vacancy > 0
+                                    ? mostVacancy.vacancy + '일'
+                                    : '결원 없음'
+                            }
+                        </div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div>결원 대체율 최고</div>
+                        <div class="metric-val">
+                            ${bestReplacement ? bestReplacement.ward : '-'}
+                        </div>
+                        <div>
+                            ${
+                                bestReplacement
+                                    ? bestReplacement.replacementRate.toFixed(2) + '%'
+                                    : '데이터 없음'
+                            }
+                        </div>
+                    </div>
+                `;
+
+            const rankingRows =
+                [...rows].sort((a, b) => {
+                    if (
+                        b.complianceRate !==
+                        a.complianceRate
+                    ) {
+                        return (
+                            b.complianceRate -
+                            a.complianceRate
+                        );
+                    }
+
+                    return (
+                        b.replacementRate -
+                        a.replacementRate
+                    );
+                });
+
+            let html = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>순위</th>
+                            <th>병동</th>
+                            <th>계획근무일</th>
+                            <th>변동일수</th>
+                            <th>계획근무 준수율</th>
+                            <th>결원일수</th>
+                            <th>대체일수</th>
+                            <th>결원 대체율</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            rankingRows.forEach((row, index) => {
+                html += `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td><strong>${row.ward}</strong></td>
+                        <td>${row.total}</td>
+                        <td>${row.changed}</td>
+                        <td>${row.complianceRate.toFixed(2)}%</td>
+                        <td>${row.vacancy}</td>
+                        <td>${row.replacement}</td>
+                        <td>${row.replacementRate.toFixed(2)}%</td>
+                    </tr>
+                `;
+            });
+
+            html += '</tbody></table>';
+
+            document
+                .getElementById(
+                    'ranking-table-container'
+                )
+                .innerHTML = html;
+        }
+
         async function runMetricsAnalysis(e) {
             const btn = e.target;
-            const monthSelect = document.getElementById('dashboard-month');
-            const selectedMonths = Array.from(monthSelect.selectedOptions).map(opt => opt.value);
-            
-            if (selectedMonths.length === 0) {
-                alert("⚠️ 분석할 년월을 하나 이상 선택해주세요.");
+        
+            const selectedMonths =
+                getSelectedDashboardMonths();
+        
+            if (
+                selectedMonths.length === 0
+            ) {
+                alert(
+                    '분석할 년월을 하나 이상 선택하세요.'
+                );
                 return;
             }
-            
-            document.getElementById('metrics-loading').style.display = 'block';
-            document.getElementById('metrics-result-container').style.display = 'none';
+        
+            const loading =
+                document.getElementById(
+                    'metrics-loading'
+                );
+        
+            const resultContainer =
+                document.getElementById(
+                    'metrics-result-container'
+                );
+        
+            loading.style.display = 'block';
+            resultContainer.style.display = 'none';
             btn.disabled = true;
         
             try {
-                let tot_denom = 0, tot_A = 0, tot_B = 0, tot_C = 0, tot_vac_days = 0, tot_rep_days = 0;
-                let wChange = {}, wVac = {}, wRep = {}, wTotal = {};
-                wardList.forEach(w => { wChange[w]=0; wVac[w]=0; wRep[w]=0; wTotal[w]=0; });
+                const hnData =
+                    await fetchSheetData(
+                        'HN',
+                        true
+                    );
         
-                let allPregDataList = [];
+                const hnIds =
+                    new Set();
         
-                // 💡 선택된 월들을 순회하며 데이터 누적 합산 (Streamlit 방식 구현)
-                for (let targetMonth of selectedMonths) {
-                    const [df_plan, df_actual, df_vac, df_preg] = await Promise.all([
-                        fetchSheetData(`${targetMonth} 계획근무`, true),
-                        fetchSheetData(`${targetMonth} 실제근무`, true),
-                        fetchSheetData(`${targetMonth} 결원대체현황`, true),
-                        fetchSheetData(`${targetMonth} 임신변동현황`, true)
-                    ]);
+                if (
+                    hnData &&
+                    hnData.length > 1
+                ) {
+                    const hnHeaders =
+                        hnData[0];
         
-                    if(!df_plan || !df_actual) continue;
+                    const hnIdIndex =
+                        findHeaderIndex(
+                            hnHeaders,
+                            ['면허번호']
+                        );
         
-                    if (df_vac && df_vac.length > 1) {
-                        for(let i=1; i<df_vac.length; i++) {
-                            let w = String(df_vac[i][0]).replace('.0', '').trim();
-                            let n = String(df_vac[i][3]).trim();
-                            let repY = String(df_vac[i][7]).trim().toUpperCase();
-                            let rsn = String(df_vac[i][6]).replace(/\s/g, '');
-                            if (wardList.includes(w) && n && n !== 'nan') {
-                                tot_vac_days++; wVac[w]++;
-                                if (repY === 'Y') { tot_rep_days++; wRep[w]++; }
-                                if (rsn.includes('임신') && repY === 'Y') tot_C++;
-                            }
-                        }
-                    }
+                    if (hnIdIndex !== -1) {
+                        hnData
+                            .slice(1)
+                            .forEach(row => {
+                                const id =
+                                    cleanId(
+                                        row[hnIdIndex]
+                                    );
         
-                    if (df_preg && df_preg.length > 1) {
-                        const hRsn =
-                            df_preg[0].findIndex(
-                                function (header) {
-                                    return String(header)
-                                        .replace(/\s/g, '')
-                                        .includes('비고');
-                                }
-                            );
-                    
-                        if (hRsn !== -1) {
-                            for (let i = 1; i < df_preg.length; i++) {
-                                if (
-                                    String(df_preg[i][hRsn])
-                                        .replace(/\s/g, '')
-                                        .includes('임신')
-                                ) {
-                                    tot_B++;
-                    
-                                    allPregDataList.push({
-                                        month: targetMonth,
-                                        row: df_preg[i]
-                                    });
-                                }
-                            }
-                        }
-                    } // 이 중괄호가 누락되어 있었음
-                    
-                    const pHeaders = df_plan[0];
-                    const dateCols =
-                        pHeaders
-                            .map(
-                                function (header, index) {
-                                    return getHeaderMonthDay(
-                                        header
-                                    )
-                                        ? index
-                                        : -1;
-                                }
-                            )
-                            .filter(
-                                index => index !== -1
-                            );
-                    let actualMap = {};
-                    df_actual.slice(1).forEach(r => actualMap[String(r[1]).trim()] = r);
-        
-                    df_plan.slice(1).forEach(pRow => {
-                        let w = String(pRow[0]).replace('.0', '').trim();
-                        let id = String(pRow[1]).trim();
-                        let aRow = actualMap[id];
-                        
-                        if (aRow && wardList.includes(w)) {
-                            dateCols.forEach(dIdx => {
-                                let pV = String(pRow[dIdx]).trim();
-                                if (pV !== '' && pV.toLowerCase() !== 'nan') {
-                                    tot_denom++; wTotal[w]++;
-                                    let aV = String(aRow[dIdx]).trim();
-                                    if (pV === aV) tot_A++;
-                                    else wChange[w]++;
+                                if (id) {
+                                    hnIds.add(id);
                                 }
                             });
-                        }
-                    });
+                    }
                 }
         
-                let tot_D = tot_rep_days;
-                let tot_numer = tot_A + tot_B - tot_C + tot_D;
-                let comp_rate = tot_denom > 0 ? (tot_numer / tot_denom * 100) : 0;
-                let rep_rate = tot_vac_days > 0 ? (tot_rep_days / tot_vac_days * 100) : 0;
+                let totDenom = 0;
+                let totA = 0;
+                let totB = 0;
+                let totC = 0;
+                let totVacDays = 0;
+                let totRepDays = 0;
         
-                document.getElementById('val-vac-days').innerText = `${tot_vac_days}일`;
-                document.getElementById('val-rep-days').innerText = `${tot_rep_days}일`;
-                document.getElementById('val-rep-rate').innerText = `${rep_rate.toFixed(2)}%`;
-                document.getElementById('val-denom').innerText = `${tot_denom}일`;
-                document.getElementById('val-numer').innerText = `${tot_numer}일`;
-                document.getElementById('val-comp-rate').innerText = `${comp_rate.toFixed(2)}%`;
-                document.getElementById('val-A').innerText = tot_A;
-                document.getElementById('val-B').innerText = tot_B;
-                document.getElementById('val-C').innerText = tot_C;
-                document.getElementById('val-D').innerText = tot_D;
+                const wardChange = {};
+                const wardVac = {};
+                const wardRep = {};
+                const wardTotals = {};
         
-                // 3번째 카드 (임신 간호사 발생 목록) 생성
-                let pregListHtml = "";
-                if (allPregDataList.length > 0) {
-                    let pregMap = {};
-                    allPregDataList.forEach(item => {
-                        let r = item.row;
-                        let hName = 2; // 이름 필드 위치 가정 (필요시 조정)
-                        let name = String(r[hName] || "간호사").trim();
-                        let w = "임신발생"; // 병동 매핑
-                        if(!pregMap[w]) pregMap[w] = [];
-                        pregMap[w].push(`${name} (${item.month})`);
-                    });
-                    Object.keys(pregMap).forEach(w => {
-                        pregListHtml += `<div style='margin-bottom:8px;'><strong>${w}:</strong> ${pregMap[w].join(", ")}</div>`;
-                    });
-                } else {
-                    pregListHtml = "<div style='font-size:14px; color:#666;'>조건에 맞는 간호사가 없습니다.</div>";
-                }
-                const pregHtmlCard = `<div style="border:1px solid #ddd; padding:15px; border-radius:8px; background:#fff;"><h4 style="margin-bottom:10px; color:#8B0029;">🤰 임신간호사 발생</h4>${pregListHtml}</div>`;
-        
-                const gridHtml = (title, dict) => {
-                    let sorted = Object.entries(dict).sort((a, b) => parseInt(a[0].replace('W','')) - parseInt(b[0].replace('W','')));
-                    let html = `<div style="border:1px solid #ddd; padding:15px; border-radius:8px; background:#fff;"><h4 style="margin-bottom:10px;">${title}</h4><div class="ward-grid">`;
-                    sorted.forEach(([w, c]) => { html += `<div class="ward-box ${c===0?'empty':''}"><div style="font-weight:bold; font-size:14px;">${w}</div><div style="font-size:12px;">${c}건</div></div>`; });
-                    return html + `</div></div>`;
-                };
-        
-                // 💡 덮어쓰기 버그 해결: 3가지 카드를 모두 한 번에 삽입
-                document.getElementById('insight-container').innerHTML = 
-                    gridHtml("🔄 병동별 근무 변동 건수", wChange) + 
-                    gridHtml("⚠️ 병동별 결원 발생 건수", wVac) + 
-                    pregHtmlCard;
-        
-                // --- 📊 병동별 순위 렌더링 로직 ---
-                function getRanks(dict) {
-                    let sortedVals = Object.values(dict).filter(v => v > 0).sort((a,b)=>b-a);
-                    let ranks = {};
-                    for(let k in dict) { ranks[k] = dict[k] > 0 ? (sortedVals.indexOf(dict[k]) + 1 + "위") : "-"; }
-                    return ranks;
-                }
-        
-                const rankC = getRanks(wChange), rankV = getRanks(wVac), rankR = getRanks(wRep);
-                let maxC = Math.max(...Object.values(wChange), 1), maxV = Math.max(...Object.values(wVac), 1), maxR = Math.max(...Object.values(wRep), 1);
-        
-                let rHtml = '<table><thead style="background:#f8f9fa;"><tr><th>병동명</th><th>변동 순위</th><th style="text-align:left;">근무 변동(건)</th><th>변동 비율(%)</th><th>결원 순위</th><th style="text-align:left;">결원 발생(건)</th><th>결원 비율(%)</th><th>대체 순위</th><th style="text-align:left;">대체 투입(건)</th><th>대체 비율(%)</th></tr></thead><tbody>';
-                
-                wardList.forEach(w => {
-                    let cPct = wTotal[w] > 0 ? (wChange[w] / wTotal[w] * 100).toFixed(1) : "0.0";
-                    let vPct = wTotal[w] > 0 ? (wVac[w] / wTotal[w] * 100).toFixed(1) : "0.0";
-                    let rPct = wVac[w] > 0 ? (wRep[w] / wVac[w] * 100).toFixed(1) : "0.0";
-                    const bar = (val, max) => `<div style="display:flex; align-items:center; gap:8px;"><div style="width:100px; height:12px; background:#eee; border-radius:3px; overflow:hidden;"><div style="width:${(val/max)*100}%; height:100%; background:var(--primary-color);"></div></div><span>${val}건</span></div>`;
-        
-                    rHtml += `<tr>
-                        <td style="font-weight:bold;">${w}</td>
-                        <td>${rankC[w]}</td><td style="text-align:left;">${bar(wChange[w], maxC)}</td><td>${cPct}%</td>
-                        <td>${rankV[w]}</td><td style="text-align:left;">${bar(wVac[w], maxV)}</td><td>${vPct}%</td>
-                        <td>${rankR[w]}</td><td style="text-align:left;">${bar(wRep[w], maxR)}</td><td>${rPct}%</td>
-                    </tr>`;
+                wardList.forEach(ward => {
+                    wardChange[ward] = 0;
+                    wardVac[ward] = 0;
+                    wardRep[ward] = 0;
+                    wardTotals[ward] = 0;
                 });
-                rHtml += '</tbody></table>';
-                document.getElementById('ranking-table-container').innerHTML = rHtml;
         
-                document.getElementById('metrics-result-container').style.display = 'block';
+                const pregnancyList = [];
         
-            } catch(e) {
-                console.error(e);
-                alert("분석 중 오류 발생");
+                for (
+                    const targetMonth of
+                    selectedMonths
+                ) {
+                    const [
+                        planData,
+                        actualData,
+                        vacancyData,
+                        pregnancyData
+                    ] = await Promise.all([
+                        fetchSheetData(
+                            `${targetMonth} 계획근무`,
+                            true
+                        ),
+                        fetchSheetData(
+                            `${targetMonth} 실제근무`,
+                            true
+                        ),
+                        fetchSheetData(
+                            `${targetMonth} 결원대체현황`,
+                            true
+                        ),
+                        fetchSheetData(
+                            `${targetMonth} 임신변동현황`,
+                            true
+                        )
+                    ]);
+        
+                    if (
+                        !planData ||
+                        !actualData ||
+                        planData.length < 2 ||
+                        actualData.length < 2
+                    ) {
+                        console.warn(
+                            `${targetMonth} 계획/실제근무 자료 없음`
+                        );
+                        continue;
+                    }
+        
+                    const planHeaders =
+                        planData[0];
+        
+                    const actualHeaders =
+                        actualData[0];
+        
+                    const planWardIndex =
+                        findHeaderIndex(
+                            planHeaders,
+                            ['병동명', '병동']
+                        );
+        
+                    const planIdIndex =
+                        findHeaderIndex(
+                            planHeaders,
+                            ['면허번호']
+                        );
+        
+                    const planNameIndex =
+                        findHeaderIndex(
+                            planHeaders,
+                            ['성명', '이름']
+                        );
+        
+                    const actualIdIndex =
+                        findHeaderIndex(
+                            actualHeaders,
+                            ['면허번호']
+                        );
+        
+                    if (
+                        planWardIndex === -1 ||
+                        planIdIndex === -1 ||
+                        actualIdIndex === -1
+                    ) {
+                        console.warn(
+                            `${targetMonth} 필수 헤더 누락`
+                        );
+                        continue;
+                    }
+        
+                    const planDateColumns = [];
+        
+                    planHeaders.forEach(
+                        (header, index) => {
+                            const parsed =
+                                getHeaderMonthDay(
+                                    header
+                                );
+        
+                            if (parsed) {
+                                planDateColumns.push({
+                                    index,
+                                    month: parsed.month,
+                                    day: parsed.day
+                                });
+                            }
+                        }
+                    );
+        
+                    const actualDateMap =
+                        new Map();
+        
+                    actualHeaders.forEach(
+                        (header, index) => {
+                            const parsed =
+                                getHeaderMonthDay(
+                                    header
+                                );
+        
+                            if (parsed) {
+                                actualDateMap.set(
+                                    `${parsed.month}-${parsed.day}`,
+                                    index
+                                );
+                            }
+                        }
+                    );
+        
+                    const actualRowsById =
+                        new Map();
+        
+                    actualData
+                        .slice(1)
+                        .forEach(row => {
+                            const id =
+                                cleanId(
+                                    row[actualIdIndex]
+                                );
+        
+                            if (id) {
+                                actualRowsById.set(
+                                    id,
+                                    row
+                                );
+                            }
+                        });
+        
+                    planData
+                        .slice(1)
+                        .forEach(planRow => {
+                            const ward =
+                                cleanWard(
+                                    planRow[
+                                        planWardIndex
+                                    ]
+                                );
+        
+                            const id =
+                                cleanId(
+                                    planRow[
+                                        planIdIndex
+                                    ]
+                                );
+        
+                            if (
+                                !wardList.includes(ward) ||
+                                !id ||
+                                hnIds.has(id)
+                            ) {
+                                return;
+                            }
+        
+                            const actualRow =
+                                actualRowsById.get(id);
+        
+                            if (!actualRow) {
+                                return;
+                            }
+        
+                            planDateColumns.forEach(
+                                dateColumn => {
+                                    const actualIndex =
+                                        actualDateMap.get(
+                                            `${dateColumn.month}-${dateColumn.day}`
+                                        );
+        
+                                    if (
+                                        actualIndex ===
+                                        undefined
+                                    ) {
+                                        return;
+                                    }
+        
+                                    const planDuty =
+                                        String(
+                                            planRow[
+                                                dateColumn.index
+                                            ] || ''
+                                        ).trim();
+        
+                                    if (
+                                        isEmptyDuty(
+                                            planDuty
+                                        )
+                                    ) {
+                                        return;
+                                    }
+        
+                                    const actualDuty =
+                                        String(
+                                            actualRow[
+                                                actualIndex
+                                            ] || ''
+                                        ).trim();
+        
+                                    totDenom++;
+                                    wardTotals[ward]++;
+        
+                                    if (
+                                        planDuty ===
+                                        actualDuty
+                                    ) {
+                                        totA++;
+                                    } else {
+                                        wardChange[ward]++;
+                                    }
+                                }
+                            );
+                        });
+        
+                    if (
+                        vacancyData &&
+                        vacancyData.length > 1
+                    ) {
+                        const headers =
+                            vacancyData[0];
+        
+                        const wardIndex =
+                            findHeaderIndex(
+                                headers,
+                                ['병동명', '병동', '요청부서']
+                            );
+        
+                        const nameIndex =
+                            findHeaderIndex(
+                                headers,
+                                ['성명', '결원자명', '이름']
+                            );
+        
+                        const reasonIndex =
+                            findHeaderIndex(
+                                headers,
+                                ['결원사유', '사유']
+                            );
+        
+                        const replacementIndex =
+                            findHeaderIndex(
+                                headers,
+                                ['대체여부', '대체']
+                            );
+        
+                        vacancyData
+                            .slice(1)
+                            .forEach(row => {
+                                const ward =
+                                    wardIndex !== -1
+                                        ? cleanWard(
+                                            row[wardIndex]
+                                        )
+                                        : '';
+        
+                                const name =
+                                    nameIndex !== -1
+                                        ? String(
+                                            row[nameIndex] || ''
+                                        ).trim()
+                                        : '';
+        
+                                if (
+                                    !wardList.includes(ward) ||
+                                    !name
+                                ) {
+                                    return;
+                                }
+        
+                                const replacement =
+                                    replacementIndex !== -1
+                                        ? String(
+                                            row[
+                                                replacementIndex
+                                            ] || ''
+                                        )
+                                            .trim()
+                                            .toUpperCase()
+                                        : '';
+        
+                                const reason =
+                                    reasonIndex !== -1
+                                        ? String(
+                                            row[
+                                                reasonIndex
+                                            ] || ''
+                                        )
+                                            .replace(/\s/g, '')
+                                        : '';
+        
+                                totVacDays++;
+                                wardVac[ward]++;
+        
+                                if (
+                                    replacement === 'Y'
+                                ) {
+                                    totRepDays++;
+                                    wardRep[ward]++;
+        
+                                    if (
+                                        reason.includes(
+                                            '임신간호사발생'
+                                        ) ||
+                                        reason.includes('임신')
+                                    ) {
+                                        totC++;
+                                    }
+                                }
+                            });
+                    }
+        
+                    if (
+                        pregnancyData &&
+                        pregnancyData.length > 1
+                    ) {
+                        const headers =
+                            pregnancyData[0];
+        
+                        const wardIndex =
+                            findHeaderIndex(
+                                headers,
+                                ['병동명', '병동']
+                            );
+        
+                        const idIndex =
+                            findHeaderIndex(
+                                headers,
+                                ['면허번호']
+                            );
+        
+                        const nameIndex =
+                            findHeaderIndex(
+                                headers,
+                                ['성명', '이름']
+                            );
+        
+                        const noteIndex =
+                            findHeaderIndex(
+                                headers,
+                                ['비고']
+                            );
+        
+                        pregnancyData
+                            .slice(1)
+                            .forEach(row => {
+                                const note =
+                                    noteIndex !== -1
+                                        ? String(
+                                            row[noteIndex] || ''
+                                        )
+                                            .replace(/\s/g, '')
+                                        : '';
+        
+                                if (
+                                    noteIndex !== -1 &&
+                                    !note.includes('임신')
+                                ) {
+                                    return;
+                                }
+        
+                                let ward =
+                                    wardIndex !== -1
+                                        ? cleanWard(
+                                            row[wardIndex]
+                                        )
+                                        : '';
+        
+                                const id =
+                                    idIndex !== -1
+                                        ? cleanId(
+                                            row[idIndex]
+                                        )
+                                        : '';
+        
+                                const name =
+                                    nameIndex !== -1
+                                        ? String(
+                                            row[nameIndex] || ''
+                                        ).trim()
+                                        : '';
+        
+                                if (!ward && id) {
+                                    const planPerson =
+                                        planData
+                                            .slice(1)
+                                            .find(planRow =>
+                                                cleanId(
+                                                    planRow[
+                                                        planIdIndex
+                                                    ]
+                                                ) === id
+                                            );
+        
+                                    if (planPerson) {
+                                        ward =
+                                            cleanWard(
+                                                planPerson[
+                                                    planWardIndex
+                                                ]
+                                            );
+                                    }
+                                }
+        
+                                if (
+                                    !wardList.includes(ward)
+                                ) {
+                                    return;
+                                }
+        
+                                totB++;
+        
+                                pregnancyList.push({
+                                    month: targetMonth,
+                                    ward,
+                                    name:
+                                        name ||
+                                        id ||
+                                        '이름 없음'
+                                });
+                            });
+                    }
+                }
+        
+                const totD =
+                    totRepDays;
+        
+                const numerator =
+                    totA +
+                    totB -
+                    totC +
+                    totD;
+        
+                const complianceRate =
+                    totDenom > 0
+                        ? numerator /
+                          totDenom *
+                          100
+                        : 0;
+        
+                const replacementRate =
+                    totVacDays > 0
+                        ? totRepDays /
+                          totVacDays *
+                          100
+                        : 0;
+        
+                document
+                    .getElementById(
+                        'val-vac-days'
+                    )
+                    .innerText =
+                    `${totVacDays}일`;
+        
+                document
+                    .getElementById(
+                        'val-rep-days'
+                    )
+                    .innerText =
+                    `${totRepDays}일`;
+        
+                document
+                    .getElementById(
+                        'val-rep-rate'
+                    )
+                    .innerText =
+                    `${replacementRate.toFixed(2)}%`;
+        
+                document
+                    .getElementById(
+                        'val-denom'
+                    )
+                    .innerText =
+                    `${totDenom}일`;
+        
+                document
+                    .getElementById(
+                        'val-numer'
+                    )
+                    .innerText =
+                    `${numerator}일`;
+        
+                document
+                    .getElementById(
+                        'val-comp-rate'
+                    )
+                    .innerText =
+                    `${complianceRate.toFixed(2)}%`;
+        
+                document
+                    .getElementById('val-A')
+                    .innerText = totA;
+        
+                document
+                    .getElementById('val-B')
+                    .innerText = totB;
+        
+                document
+                    .getElementById('val-C')
+                    .innerText = totC;
+        
+                document
+                    .getElementById('val-D')
+                    .innerText = totD;
+        
+                renderMetricsInsights({
+                    wardChange,
+                    wardVac,
+                    wardRep,
+                    wardTotals,
+                    pregnancyList
+                });
+        
+                resultContainer.style.display =
+                    'block';
+        
+            } catch (error) {
+                console.error(
+                    '평가지표 분석 오류:',
+                    error
+                );
+        
+                alert(
+                    '평가지표 계산 중 오류가 발생했습니다.\n\n' +
+                    error.message
+                );
+        
             } finally {
-                document.getElementById('metrics-loading').style.display = 'none';
+                loading.style.display = 'none';
                 btn.disabled = false;
             }
         }
