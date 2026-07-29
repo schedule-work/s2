@@ -153,8 +153,73 @@
         <div id="page-request" class="page">
             <div class="content-wrap">
                 <div class="custom-title">결원 입력 (대체간호사 신청)</div>
-                <!-- 여기에 HTML <select>, <input> 태그들로 폼이 들어갑니다 -->
-                <p>데이터 로딩 중...</p>
+                
+                <!-- 필터 영역 -->
+                <h5 style="margin-bottom: 10px;">🗓️ 조회 연도 및 병동 선택</h5>
+                <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                    <select id="sel-year" style="padding: 8px; border-radius: 4px;">
+                        <option value="2025">2025</option>
+                        <option value="2026" selected>2026</option>
+                        <option value="2027">2027</option>
+                    </select>
+                    <select id="sel-month" style="padding: 8px; border-radius: 4px;">
+                        <!-- JS로 1~12월 채움 -->
+                    </select>
+                    <select id="sel-ward" style="padding: 8px; border-radius: 4px; flex-grow: 1;">
+                        <option value="">병동을 선택하세요</option>
+                        <option value="50W">50W</option><option value="51W">51W</option><option value="52W">52W</option>
+                        <option value="53W">53W</option><option value="65W">65W</option><option value="70W">70W</option>
+                        <option value="71W">71W</option><option value="72W">72W</option><option value="73W">73W</option>
+                        <option value="80W">80W</option><option value="81W">81W</option><option value="83W">83W</option>
+                        <option value="85W">85W</option><option value="91W">91W</option><option value="92W">92W</option>
+                        <option value="93W">93W</option><option value="100W">100W</option><option value="101W">101W</option>
+                    </select>
+                    <button onclick="loadScheduleData()" style="padding: 8px 15px; background-color: #8B0029; color: white; border: none; border-radius: 4px; cursor: pointer;">조회</button>
+                </div>
+
+                <div id="loading-spinner" style="display: none; color: #8B0029; font-weight: bold; margin-bottom: 15px;">
+                    ⏳ 구글 시트에서 데이터를 불러오는 중입니다...
+                </div>
+
+                <!-- 근무표 테이블 출력 영역 -->
+                <div id="table-container" style="width: 100%; overflow-x: auto; margin-bottom: 30px; border: 1px solid #eaeaea; border-radius: 8px; background: white;">
+                    <!-- JS로 테이블이 삽입됩니다 -->
+                </div>
+
+                <!-- 결원 신청 폼 (데이터 로드 전에는 숨김) -->
+                <div id="absence-form-container" style="display: none; padding: 20px; border: 1px solid #ddd; border-radius: 8px; background: #fdfdfd;">
+                    <h5 style="margin-bottom: 15px; color: #8B0029;">📝 <span id="form-ward-display"></span> 결원 신청 및 자동 배정</h5>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 15px;">
+                        <div>
+                            <label style="font-size: 13px; font-weight: bold;">결원 발생 일자</label>
+                            <input type="date" id="req-date" style="width: 100%; padding: 8px; margin-top: 5px;">
+                        </div>
+                        <div>
+                            <label style="font-size: 13px; font-weight: bold;">결원자 이름</label>
+                            <input type="text" id="req-name" placeholder="표에서 선택하세요" readonly style="width: 100%; padding: 8px; margin-top: 5px; background: #eee;">
+                        </div>
+                        <div>
+                            <label style="font-size: 13px; font-weight: bold;">변경될 근무</label>
+                            <select id="req-changed-duty" style="width: 100%; padding: 8px; margin-top: 5px;">
+                                <option value="D">D</option><option value="E">E</option><option value="N">N</option>
+                                <option value="교육">교육</option><option value="OFF">OFF</option><option value="S">S</option><option value="A">A</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label style="font-size: 13px; font-weight: bold;">결원 사유</label>
+                            <select id="req-reason" style="width: 100%; padding: 8px; margin-top: 5px;">
+                                <option value="1. 병가">1. 병가</option><option value="2. 조사">2. 조사</option>
+                                <option value="3. 사직">3. 사직</option><option value="4. 휴직">4. 휴직</option>
+                                <option value="5. 가족돌봄">5. 가족돌봄</option><option value="6. 임신간호사 발생">6. 임신간호사 발생</option>
+                                <option value="7. 기타">7. 기타</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button onclick="submitAbsenceRequest()" style="width: 100%; padding: 12px; background-color: #8B0029; color: white; font-weight: bold; border: none; border-radius: 4px; cursor: pointer;">
+                        💾 위 내용으로 결원 신청 및 자동 배정
+                    </button>
+                </div>
+
             </div>
         </div>
 
@@ -231,6 +296,120 @@
             } catch (err) {
                 console.error("통신 실패:", err);
             }
+        }
+
+        // 1~12월 드롭다운 세팅
+        window.onload = () => {
+            const monthSelect = document.getElementById('sel-month');
+            const currentMonth = new Date().getMonth() + 1;
+            for(let i=1; i<=12; i++) {
+                let opt = document.createElement('option');
+                opt.value = i;
+                opt.text = i + "월";
+                if(i === currentMonth) opt.selected = true;
+                monthSelect.appendChild(opt);
+            }
+        };
+
+        // 전역 데이터 보관용 (판다스의 df_plan 역할)
+        let currentPlanData = [];
+        let currentHeaders = [];
+
+        // 데이터 조회 함수
+        async function loadScheduleData() {
+            const year = document.getElementById('sel-year').value.slice(-2); // 2026 -> 26
+            const month = document.getElementById('sel-month').value.padStart(2, '0'); // 3 -> 03
+            const ward = document.getElementById('sel-ward').value;
+
+            if(!ward) {
+                alert("위 목록에서 부서를 먼저 선택해 주세요.");
+                return;
+            }
+
+            const sheetName = `${year}${month} 계획근무`; // ex) "2603 계획근무"
+            
+            document.getElementById('loading-spinner').style.display = 'block';
+            document.getElementById('table-container').innerHTML = '';
+            document.getElementById('absence-form-container').style.display = 'none';
+
+            // 1단계에서 만든 GAS API 호출
+            const sheetData = await fetchSheetData(sheetName);
+            document.getElementById('loading-spinner').style.display = 'none';
+
+            if(!sheetData || sheetData.length < 2) {
+                document.getElementById('table-container').innerHTML = '<p style="padding:20px; color:red;">해당 월의 등록된 계획 근무표가 없습니다.</p>';
+                return;
+            }
+
+            currentHeaders = sheetData[0]; // 첫 줄은 헤더
+            const targetWardNum = ward.replace('W', '');
+
+            // 파이썬의 df_plan = [df_plan['부서'] == target_ward_num] 와 완벽히 동일한 JS 로직
+            currentPlanData = sheetData.slice(1).filter(row => String(row[0]).trim() === targetWardNum);
+
+            if(currentPlanData.length === 0) {
+                document.getElementById('table-container').innerHTML = `<p style="padding:20px;">'${sheetName}'에 ${ward} 병동 데이터가 아직 없습니다.</p>`;
+                return;
+            }
+
+            renderTable(currentPlanData, currentHeaders);
+            
+            // 데이터 로드 완료 후 폼 표시
+            document.getElementById('absence-form-container').style.display = 'block';
+            document.getElementById('form-ward-display').innerText = ward;
+            document.getElementById('req-date').value = sessionState.target_date;
+        }
+
+        // HTML <table> 그리기 함수
+        function renderTable(dataRows, headers) {
+            let html = '<table style="width: 100%; border-collapse: collapse; min-width: 800px;">';
+            
+            // 헤더 생성 (이름, 면허번호 + 날짜들)
+            html += '<thead style="background-color: #f8f9fa; border-bottom: 2px solid #8B0029;"><tr>';
+            html += `<th style="padding: 10px; border: 1px solid #ddd;">이름</th>`;
+            html += `<th style="padding: 10px; border: 1px solid #ddd;">면허번호</th>`;
+            for(let i=3; i<headers.length; i++) {
+                if(headers[i]) html += `<th style="padding: 10px; border: 1px solid #ddd; font-size: 13px;">${headers[i]}</th>`;
+            }
+            html += '</tr></thead><tbody>';
+
+            // 데이터 행 생성
+            dataRows.forEach((row, index) => {
+                // 클릭 시 해당 간호사를 폼에 자동 입력하는 이벤트 연결
+                html += `<tr style="border-bottom: 1px solid #eee; cursor: pointer;" onclick="selectNurse('${row[2]}', '${row[1]}', this)" onmouseover="this.style.backgroundColor='#fff0f0'" onmouseout="this.style.backgroundColor='transparent'">`;
+                html += `<td style="padding: 10px; border: 1px solid #ddd; font-weight: bold; text-align: center;">${row[2]}</td>`; // 이름
+                html += `<td style="padding: 10px; border: 1px solid #ddd; text-align: center;">${row[1]}</td>`; // 사번/면허
+                
+                for(let i=3; i<row.length; i++) {
+                    html += `<td style="padding: 10px; border: 1px solid #ddd; text-align: center;">${row[i]}</td>`;
+                }
+                html += '</tr>';
+            });
+            html += '</tbody></table>';
+            
+            document.getElementById('table-container').innerHTML = html;
+        }
+
+        // 표에서 간호사 클릭 시 폼에 자동 세팅되는 함수
+        function selectNurse(name, id, trElement) {
+            document.getElementById('req-name').value = `${name} (${id})`;
+            
+            // 클릭된 행 강조 표시
+            const allTrs = trElement.parentNode.querySelectorAll('tr');
+            allTrs.forEach(tr => tr.style.backgroundColor = 'transparent');
+            trElement.style.backgroundColor = '#ffcccc';
+            trElement.onmouseout = null; // 선택된 행은 마우스 아웃 효과 제거
+        }
+
+        // 신청 버튼 클릭 시 (아직 백엔드 로직 미구현 상태)
+        function submitAbsenceRequest() {
+            const ward = document.getElementById('sel-ward').value;
+            const reqName = document.getElementById('req-name').value;
+            if(!reqName) {
+                alert("표에서 결원자(간호사)를 먼저 클릭하여 선택해 주세요.");
+                return;
+            }
+            alert(`[기능 테스트 중]\n${ward} 병동 ${reqName} 간호사의 결원 신청 로직을 GAS 서버로 전송할 준비가 되었습니다!`);
         }
     </script>
 </body>
