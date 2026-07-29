@@ -434,6 +434,21 @@
             return `${year}-${month}-${day}`;
         }
         
+        function normalizeWard(value) {
+            const text =
+                String(value || '')
+                    .trim()
+                    .toUpperCase();
+        
+            if (!text) {
+                return '';
+            }
+            
+            return text.endsWith('W')
+                ? text
+                : text + 'W';
+        }
+        
         const sessionState = {
             page: 'home',
             target_date: getTodayLocalString(),
@@ -450,26 +465,44 @@
                 );
 
         function parseLocalDate(dateString) {
-          const parts =
-            String(dateString)
-              .split('T')[0]
-              .split('-')
-              .map(Number);
+            if (
+                dateString === null ||
+                dateString === undefined ||
+                dateString === ''
+            ) {
+                return null;
+            }
         
-          if (
-            parts.length !== 3 ||
-            !parts[0] ||
-            !parts[1] ||
-            !parts[2]
-          ) {
+            const text =
+                String(dateString).trim();
+        
+            const isoMatch =
+                text.match(
+                    /^(\d{4})-(\d{1,2})-(\d{1,2})/
+                );
+        
+            if (isoMatch) {
+                return new Date(
+                    Number(isoMatch[1]),
+                    Number(isoMatch[2]) - 1,
+                    Number(isoMatch[3])
+                );
+            }
+        
+            const slashMatch =
+                text.match(
+                    /^(\d{4})[./]\s*(\d{1,2})[./]\s*(\d{1,2})/
+                );
+        
+            if (slashMatch) {
+                return new Date(
+                    Number(slashMatch[1]),
+                    Number(slashMatch[2]) - 1,
+                    Number(slashMatch[3])
+                );
+            }
+        
             return null;
-          }
-        
-          return new Date(
-            parts[0],
-            parts[1] - 1,
-            parts[2]
-          );
         }
 
         function getHeaderMonthDay(headerValue) {
@@ -750,9 +783,53 @@
         }
 
         async function loadScheduleData(filterName = null) {
-            const year = document.getElementById('sel-year').value.slice(-2);
-            const month = document.getElementById('sel-month').value.padStart(2, '0');
-            const ward = document.getElementById('sel-ward').value;
+            const fullYear =
+                Number(
+                    document
+                        .getElementById(
+                            'sel-year'
+                        )
+                        .value
+                );
+            
+            const fullMonth =
+                Number(
+                    document
+                        .getElementById(
+                            'sel-month'
+                        )
+                        .value
+                );
+            
+            const lastDay =
+                new Date(
+                    fullYear,
+                    fullMonth,
+                    0
+                ).getDate();
+            
+            const minDate =
+                `${fullYear}-${String(
+                    fullMonth
+                ).padStart(2, '0')}-01`;
+            
+            const maxDate =
+                `${fullYear}-${String(
+                    fullMonth
+                ).padStart(2, '0')}-${String(
+                    lastDay
+                ).padStart(2, '0')}`;
+            
+            const reqDateInput =
+                document.getElementById(
+                    'req-date'
+                );
+            
+            reqDateInput.min =
+                minDate;
+            
+            reqDateInput.max =
+                maxDate;
 
             if(!ward) { alert("부서를 선택해 주세요."); return; }
 
@@ -769,21 +846,28 @@
             }
 
             currentHeaders = data[0];
-            function normalizeWard(value) {
-                const text =
-                    String(value || '')
-                        .trim()
-                        .toUpperCase();
+            currentPlanData =
+                data
+                    .slice(1)
+                    .filter(
+                        row =>
+                            normalizeWard(row[0]) ===
+                            normalizeWard(ward)
+                    );
             
-                if (!text) {
-                    return '';
-                }
-            
-                return text.endsWith('W')
-                    ? text
-                    : text + 'W';
+            if (
+                typeof filterName === 'string' &&
+                filterName.trim() !== ''
+            ) {
+                currentPlanData =
+                    currentPlanData.filter(
+                        row =>
+                            String(
+                                row[2] || ''
+                            ).trim() ===
+                            filterName.trim()
+                    );
             }
-            
             if(typeof filterName === 'string') {
                 currentPlanData = currentPlanData.filter(row => String(row[2]).trim() === filterName);
             }
@@ -833,8 +917,30 @@
             document.getElementById('absence-form-container').style.display = 'block';
             document.getElementById('form-ward-display').innerText = ward;
             
-            if(typeof filterName === 'string' && currentPlanData.length === 1) {
-                document.getElementById('req-name').value = `${currentPlanData[0][2]} (${currentPlanData[0][1]})`;
+            if (
+                typeof filterName === 'string' &&
+                currentPlanData.length === 1
+            ) {
+                const selectedName =
+                    String(
+                        currentPlanData[0][2] || ''
+                    ).trim();
+            
+                const selectedId =
+                    String(
+                        currentPlanData[0][1] || ''
+                    ).trim();
+            
+                document
+                    .getElementById(
+                        'req-name'
+                    )
+                    .value =
+                    `${selectedName} (${selectedId})`;
+            
+                updateShiftDisplay(
+                    selectedName
+                );
             }
 
             // 부서별 신청 내역 하단에 표시
@@ -842,7 +948,33 @@
             if(reqHistoryData && reqHistoryData.length > 1) {
                 const hHeaders = reqHistoryData[0];
                 const hIdxWard = hHeaders.findIndex(h => h.includes("요청부서"));
-                const filteredHistory = reqHistoryData.slice(1).filter(row => String(row[hIdxWard]).trim() === ward);
+                let filteredHistory = [];
+                
+                if (hIdxWard !== -1) {
+                    filteredHistory =
+                        reqHistoryData
+                            .slice(1)
+                            .filter(
+                                row =>
+                                    normalizeWard(
+                                        row[hIdxWard]
+                                    ) ===
+                                    normalizeWard(ward)
+                            );
+                }
+
+                if (hIdxWard === -1) {
+                    document
+                        .getElementById(
+                            'ward-history-container'
+                        )
+                        .innerHTML =
+                        '<p style="padding:15px; color:red;">' +
+                        '신청내역에서 요청부서 열을 찾을 수 없습니다.' +
+                        '</p>';
+                
+                    return;
+                }
                 
                 let hHtml = '<table style="white-space: nowrap;"><thead style="background: #f1f3f5; position: sticky; top: 0;"><tr>';
                 hHeaders.forEach(h => hHtml += `<th>${h}</th>`);
@@ -866,7 +998,24 @@
             const reqDate = document.getElementById('req-date').value;
             if(!reqDate || !currentPlanData.length || !selectedName) return;
             
-            let d = parseLocalDate(reqDate), m = d.getMonth()+1, dt = d.getDate();
+            const d =
+                parseLocalDate(reqDate);
+            
+            if (!d) {
+                document
+                    .getElementById(
+                        'dynamic-shift-display'
+                    )
+                    .style.display = 'none';
+            
+                return;
+            }
+            
+            const m =
+                d.getMonth() + 1;
+            
+            const dt =
+                d.getDate();
             const colIdx =
                 findDateColumn(
                     currentHeaders,
@@ -1026,14 +1175,81 @@
         }
 
         async function loadAdminData() {
-            const btn = document.getElementById('btn-sync-admin');
-            btn.innerText = "⏳ 불러오는 중...";
-            const [reqRes, schRes] = await Promise.all([fetchSheetData('신청내역'), fetchSheetData('대체간호사 근무표')]);
-            if(reqRes) { adminHeadersData = reqRes[0]; adminReqData = reqRes.slice(1); }
-            if(schRes) adminSchData = schRes;
-            renderPendingCards();
-            renderAdminGrid();
-            btn.innerText = "🔄 시트 기준으로 동기화";
+            const btn =
+                document.getElementById(
+                    'btn-sync-admin'
+                );
+        
+            btn.disabled = true;
+            btn.innerText =
+                '⏳ 불러오는 중...';
+        
+            try {
+                const [
+                    reqRes,
+                    schRes
+                ] = await Promise.all([
+                    fetchSheetData(
+                        '신청내역'
+                    ),
+                    fetchSheetData(
+                        '대체간호사 근무표'
+                    )
+                ]);
+        
+                if (
+                    !reqRes ||
+                    reqRes.length === 0
+                ) {
+                    throw new Error(
+                        '신청내역을 불러오지 못했습니다.'
+                    );
+                }
+        
+                if (
+                    !schRes ||
+                    schRes.length === 0
+                ) {
+                    throw new Error(
+                        '대체간호사 근무표를 불러오지 못했습니다.'
+                    );
+                }
+        
+                adminHeadersData =
+                    reqRes[0];
+        
+                adminReqData =
+                    reqRes.slice(1);
+        
+                adminSchData =
+                    schRes;
+        
+                renderPendingCards();
+                renderAdminGrid();
+        
+            } catch (error) {
+                console.error(error);
+        
+                document
+                    .getElementById(
+                        'pending-list-container'
+                    )
+                    .innerHTML =
+                    `<p style="color:red;">${
+                        error.message
+                    }</p>`;
+        
+                document
+                    .getElementById(
+                        'admin-history-table'
+                    )
+                    .innerHTML = '';
+        
+            } finally {
+                btn.disabled = false;
+                btn.innerText =
+                    '🔄 시트 기준으로 동기화';
+            }
         }
 
         function renderPendingCards() {
@@ -1102,7 +1318,13 @@
             
                 return;
             }
-            const pendingList = adminReqData.filter(row => row[idxYn] === '대기중');
+            const pendingList =
+                adminReqData.filter(
+                    row =>
+                        String(
+                            row[idxYn] || ''
+                        ).trim() === '대기중'
+                );
             if (pendingList.length === 0) { container.innerHTML = '<p>대기 중인 건이 없습니다.</p>'; return; }
 
             const sHeaders =
@@ -1314,6 +1536,26 @@
                         })
                         .join('')
                     : `<option value="">❌ 대상 없음</option>`;
+                
+                const dateArg =
+                    JSON.stringify(
+                        reqDate
+                    );
+                
+                const nameArg =
+                    JSON.stringify(
+                        reqName
+                    );
+                
+                const idArg =
+                    JSON.stringify(
+                        reqId
+                    );
+                
+                const wardArg =
+                    JSON.stringify(
+                        reqWard
+                    );
 
                 container.insertAdjacentHTML('beforeend', `
                     <div style="border:1px solid #ddd; padding:15px; margin-bottom:15px; border-radius:8px; background:#fff;">
@@ -1321,7 +1563,19 @@
                         <div style="display:flex; gap:10px; align-items:flex-end;">
                             <div style="flex:1"><label>대체여부</label><select id="pend-yn-${idx}" class="form-control"><option value="Y">Y</option><option value="N">N</option></select></div>
                             <div style="flex:3"><label>대체간호사 선택</label><select id="pend-cand-${idx}" class="form-control">${optHtml}</select></div>
-                            <button class="btn-primary" onclick="submitManualAssign(event, ${idx}, '${reqDate}', '${reqName}', '${reqId}', '${reqWard}')">배정 저장</button>
+                            <button
+                                class="btn-primary"
+                                onclick='submitManualAssign(
+                                    event,
+                                    ${idx},
+                                    ${dateArg},
+                                    ${nameArg},
+                                    ${idArg},
+                                    ${wardArg}
+                                )'
+                            >
+                                배정 저장
+                            </button>
                         </div>
                     </div>
                 `);
@@ -1387,9 +1641,13 @@
                 html += '<tr>';
                 row.forEach((cell, cIdx) => {
                     let tdBg = [idxYn, idxName, idxId, idxDuty].includes(cIdx) ? '#fffcdc' : '#fff';
-                    let cHtml = cell;
+                    const safeCell =
+                        escapeHtml(cell);
+                    
+                    let cHtml =
+                        safeCell;
                     if(cIdx === idxYn) cHtml = `<select id="ed_${rIdx}_${cIdx}" class="form-control" style="padding:4px;"><option value="Y" ${cell==='Y'?'selected':''}>Y</option><option value="N" ${cell==='N'?'selected':''}>N</option><option value="대기중" ${cell==='대기중'?'selected':''}>대기중</option><option value="승인" ${cell==='승인'?'selected':''}>승인</option><option value="반려" ${cell==='반려'?'selected':''}>반려</option></select>`;
-                    else if(cIdx === idxName || cIdx === idxId) cHtml = `<input type="text" id="ed_${rIdx}_${cIdx}" value="${cell}" class="form-control" style="padding:4px;">`;
+                    else if(cIdx === idxName || cIdx === idxId) cHtml = `<input type="text" id="ed_${rIdx}_${cIdx}" value="${safeCell}" class="form-control" style="padding:4px;">`;
                     else if(cIdx === idxDuty) cHtml = `<select id="ed_${rIdx}_${cIdx}" class="form-control" style="padding:4px;"><option value=""></option><option value="D" ${cell==='D'?'selected':''}>D</option><option value="E" ${cell==='E'?'selected':''}>E</option><option value="N" ${cell==='N'?'selected':''}>N</option><option value="Dm" ${cell==='Dm'?'selected':''}>Dm</option><option value="Em" ${cell==='Em'?'selected':''}>Em</option><option value="Nm" ${cell==='Nm'?'selected':''}>Nm</option></select>`;
                     html += `<td style="background:${tdBg}; min-width: 100px;">${cHtml}</td>`;
                 });
@@ -1397,6 +1655,20 @@
             });
             html += '</tbody></table>';
             document.getElementById('admin-history-table').innerHTML = html;
+        }
+
+        function escapeHtml(value) {
+            return String(
+                value === null ||
+                value === undefined
+                    ? ''
+                    : value
+            )
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
         }
 
         async function saveAdminHistory(e) {
@@ -1410,7 +1682,22 @@
             const btn = e.target; btn.innerText = "⏳ 저장 중..."; btn.disabled = true;
             const res = await postToGAS({ action: 'saveAdminData', requestData: upData });
             if(res.success) { alert("✅ 저장 완료!"); loadAdminData(); }
-            else { alert("오류 발생"); }
+            if (res.success) {
+                alert(
+                    '✅ 저장 완료!'
+                );
+            
+                await loadAdminData();
+            
+            } else {
+                alert(
+                    '오류: ' +
+                    (
+                        res.error ||
+                        '저장에 실패했습니다.'
+                    )
+                );
+            }
             btn.innerText = "💾 전체 내역 수정사항 저장하기"; btn.disabled = false;
         }
 
@@ -1476,36 +1763,13 @@
                             );
                         
                         if (hRsn !== -1) {
-                            for (
-                                let i = 1;
-                                i < df_preg.length;
-                                i++
-                            ) {
-                                const reason =
-                                    String(
-                                        df_preg[i][hRsn] || ''
-                                    )
-                                        .replace(/\s/g, '');
-                        
-                                if (
-                                    reason.includes('임신')
-                                ) {
+                            for(let i=1; i<df_preg.length; i++) {
+                                if(String(df_preg[i][hRsn]).replace(/\s/g,'').includes('임신')) {
                                     tot_B++;
-                        
-                                    allPregDataList.push({
-                                        month: targetMonth,
-                                        row: df_preg[i]
-                                    });
+                                    allPregDataList.push({ month: targetMonth, row: df_preg[i] });
                                 }
                             }
                         }
-                        for(let i=1; i<df_preg.length; i++) {
-                            if(String(df_preg[i][hRsn]).replace(/\s/g,'').includes('임신')) {
-                                tot_B++;
-                                allPregDataList.push({ month: targetMonth, row: df_preg[i] });
-                            }
-                        }
-                    }
         
                     const pHeaders = df_plan[0];
                     const dateCols =
