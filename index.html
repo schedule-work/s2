@@ -35,7 +35,7 @@
         /* 페이지 컨테이너 */
         .page { display: none; padding-top: 70px; min-height: 100vh; padding-bottom: 50px; }
         .page.active { display: block; }
-        .content-wrap { padding: 40px; max-width: 1400px; margin: 0 auto; }
+        .content-wrap { padding: 40px; max-width: 100%; }
         .custom-title { border-left: 6px solid var(--primary-color); padding-left: 15px; font-size: 26px; font-weight: 800; margin-bottom: 30px; line-height: 1.2; }
 
         /* 홈 화면 전용 */
@@ -1740,20 +1740,17 @@
                         let sup = n.sup_row !== -1 ? String(adminSchData[n.sup_row][colIdx]).trim().toUpperCase() : "";
                         let isSupMatch = (sup.includes(reqWard.toUpperCase()) || reqWard.toUpperCase().includes(sup));
                         let altCount = 0;
-
-                        for (
-                          let c = 5;
-                          c < adminSchData[n.alt_row].length;
-                          c++
-                        ) {
-                          const value =
-                            String(
-                              adminSchData[n.alt_row][c]
-                            ).trim();
-                        
-                          if (value !== '') {
-                            altCount++;
-                          }
+                        for (let c = 5; c < adminSchData[n.alt_row].length; c++) {
+                            const value = String(adminSchData[n.alt_row][c]).trim();
+                            
+                            if (
+                                value !== '' && 
+                                value !== '-' && 
+                                value.toLowerCase() !== 'nan' && 
+                                value.toLowerCase() !== 'none'
+                            ) {
+                                altCount++;
+                            }
                         }
                         
                         validCands.push({
