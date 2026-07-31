@@ -271,6 +271,41 @@
                 flex: 1 1 100% !important;
             }
         }
+
+        .sticky-top-bar {
+            position: sticky;
+            top: 70px; /* 네비게이션 바 높이 */
+            background-color: var(--bg-color);
+            z-index: 998; /* 표(Table)보다 위에 오도록 설정 */
+            
+            /* 기존 패딩 여백을 계산하여 스크롤 시 글자가 비어있는 여백으로 비치지 않게 완벽 차단 */
+            padding-top: 40px;
+            padding-bottom: 15px;
+            margin-top: -40px;
+            margin-left: -40px;
+            margin-right: -40px;
+            padding-left: 40px;
+            padding-right: 40px;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 20px;
+        }
+        
+        @media (max-width: 1200px) {
+            .sticky-top-bar {
+                padding-top: 30px; margin-top: -30px;
+                margin-left: -20px; margin-right: -20px;
+                padding-left: 20px; padding-right: 20px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .sticky-top-bar {
+                top: 108px; /* 모바일용 네비게이션 바 높이에 맞춤 */
+                padding-top: 25px; margin-top: -25px;
+                margin-left: -15px; margin-right: -15px;
+                padding-left: 15px; padding-right: 15px;
+            }
+        }
     </style>
 </head>
 <body class="home-theme">
@@ -302,24 +337,26 @@
         <!-- 2. 결원 입력 화면 -->
         <div id="page-request" class="page">
             <div class="content-wrap">
-                <div class="custom-title">결원 입력 (대체간호사 신청)</div>
-                
-                <h5 style="margin-bottom: 10px;">🗓️ 조회 연도 및 병동 선택</h5>
-                <div style="display: flex; gap: 10px; margin-bottom: 20px;">
-                    <select id="sel-year" class="form-control" style="width: 100px;">
-                        <option value="2025">2025</option><option value="2026" selected>2026</option><option value="2027">2027</option>
-                    </select>
-                    <select id="sel-month" class="form-control" style="width: 100px;"></select>
-                    <select id="sel-ward" class="form-control" style="flex: 1;">
-                        <option value="">병동을 선택하세요</option>
-                        <option value="50W">50W</option><option value="51W">51W</option><option value="52W">52W</option>
-                        <option value="53W">53W</option><option value="65W">65W</option><option value="70W">70W</option>
-                        <option value="71W">71W</option><option value="72W">72W</option><option value="73W">73W</option>
-                        <option value="80W">80W</option><option value="81W">81W</option><option value="83W">83W</option>
-                        <option value="85W">85W</option><option value="91W">91W</option><option value="92W">92W</option>
-                        <option value="93W">93W</option><option value="100W">100W</option><option value="101W">101W</option>
-                    </select>
-                    <button class="btn-primary" onclick="loadScheduleData()">조회</button>
+                <div class="sticky-top-bar">
+                    <div class="custom-title" style="margin-bottom: 20px;">결원 입력 (대체간호사 신청)</div>
+                    
+                    <h5 style="margin-bottom: 10px;">🗓️ 조회 연도 및 병동 선택</h5>
+                    <div style="display: flex; gap: 10px; margin-bottom: 0;">
+                        <select id="sel-year" class="form-control" style="width: 100px;">
+                            <option value="2025">2025</option><option value="2026" selected>2026</option><option value="2027">2027</option>
+                        </select>
+                        <select id="sel-month" class="form-control" style="width: 100px;"></select>
+                        <select id="sel-ward" class="form-control" style="flex: 1;">
+                            <option value="">병동을 선택하세요</option>
+                            <option value="50W">50W</option><option value="51W">51W</option><option value="52W">52W</option>
+                            <option value="53W">53W</option><option value="65W">65W</option><option value="70W">70W</option>
+                            <option value="71W">71W</option><option value="72W">72W</option><option value="73W">73W</option>
+                            <option value="80W">80W</option><option value="81W">81W</option><option value="83W">83W</option>
+                            <option value="85W">85W</option><option value="91W">91W</option><option value="92W">92W</option>
+                            <option value="93W">93W</option><option value="100W">100W</option><option value="101W">101W</option>
+                        </select>
+                        <button class="btn-primary" onclick="loadScheduleData()">조회</button>
+                    </div>
                 </div>
 
                 <h5 style="margin-bottom: 10px;">🔎 직원 이름 검색</h5>
@@ -355,7 +392,7 @@
                         <div><label style="font-size: 13px; font-weight: bold;">대체 여부</label><select id="req-sub-yn" class="form-control"><option value="Y">Y</option><option value="N">N</option></select></div>
                         <div><label style="font-size: 13px; font-weight: bold;">비고</label><input type="text" id="req-note" class="form-control" placeholder="자유 기입"></div>
                     </div>
-                    <button class="btn-primary" style="width: 100%; padding: 12px;" onclick="submitAbsenceRequest(event)">💾 결원신청(자동배정) / 변동 저장</button>
+                    <button class="btn-primary" style="padding: 10px 20px;" onclick="submitAbsenceRequest(event)">💾 결원신청(자동배정) / 변동 저장</button>
                 </div>
 
                 <h5 style="margin-top: 30px; margin-bottom: 10px; color: var(--text-color);">📂 부서별 신청 내역</h5>
@@ -368,8 +405,10 @@
         <!-- 3. 근무표 화면 -->
         <div id="page-schedule" class="page">
             <div class="content-wrap">
-                <div class="custom-title">대체간호사 전체 근무표</div>
-                <button class="btn-primary" style="width: 100%; margin-bottom: 15px;" onclick="syncScheduleIframe()">🔄 새로고침</button>
+                <div class="custom-title">대체간호사 근무표</div>
+                <div style="display: flex; justify-content: flex-start; margin-bottom: 15px;">
+                    <button class="btn-primary" style="padding: 10px 20px;" onclick="syncScheduleIframe()">🔄 새로고침</button>
+                </div>
                 <iframe id="schedule-iframe" height="800" src="https://docs.google.com/spreadsheets/d/1tNobsqOTDzIKwAcF0VfUanRTSZCArqIF63n5AxKfDbc/htmlembed?gid=1622990971&single=true&widget=false&chrome=false"></iframe>
             </div>
         </div>
