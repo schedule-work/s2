@@ -306,6 +306,20 @@
                 padding-left: 15px; padding-right: 15px;
             }
         }
+        /* 💡 로딩 스피너 애니메이션 */
+        .loading-spinner {
+            display: inline-block;
+            width: 45px;
+            height: 45px;
+            border: 5px solid rgba(139, 0, 41, 0.15); /* 연한 배경 테두리 */
+            border-radius: 50%;
+            border-top-color: var(--primary-color); /* 돌아가는 메인 색상 */
+            animation: spin 1s ease-in-out infinite; /* 1초마다 무한 회전 */
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body class="home-theme">
@@ -520,8 +534,12 @@
                     </div>
                 </div>
 
-                <div id="metrics-loading" style="display: none; color: var(--primary-color); font-weight: bold; text-align: center; margin: 50px 0;">
-                    <span style="font-size: 40px;">👀</span><br><br>분석 중<br>
+                <div id="metrics-loading" style="display: none; text-align: center; margin: 50px 0;">
+                    <div class="loading-spinner"></div>
+                    
+                    <div style="color: var(--primary-color); font-weight: bold; margin-top: 15px; font-size: 1.1em;">
+                        데이터 분석 중...
+                    </div>
                 </div>
                 
                 <div id="metrics-result-container" style="display: none;">
@@ -1366,7 +1384,7 @@
             const reqNote = document.getElementById('req-note').value;
             const reqSubYn = document.getElementById('req-sub-yn').value;
 
-            if(!nameField) { alert("표에서 결원자를 클릭하세요."); return; }
+            if(!nameField) { alert("근무표에서 결원자를 선택하세요."); return; }
             if (!reqDate) {
                 alert(
                     '결원 발생 일자를 선택하세요.'
@@ -1408,7 +1426,7 @@
 
             if (colIdx === -1) {
                 alert(
-                    '계획 근무표에서 해당 날짜 열을 찾지 못했습니다.'
+                    '계획 근무표에서 해당 날짜를 찾지 못했습니다.'
                 );
                 return;
             }
@@ -1418,13 +1436,13 @@
 
             const payload = { action: 'submitAbsence', ward, reqDate, reqName, reqId, reqDuty, changedDuty, reqReason, reqNote, reqSubYn };
             
-            btn.innerText = "⏳ 배정 로직 실행 중..."; btn.disabled = true;
+            btn.innerText = "⏳ 대체근무 배정 확인중..."; btn.disabled = true;
             const res = await postToGAS(payload);
-            btn.innerText = "💾 위 내용으로 결원 신청 및 자동 배정"; btn.disabled = false;
+            btn.innerText = "💾 결원신청(자동배정) / 근무 변동 저장"; btn.disabled = false;
 
             if(res.success) {
                 alert(res.updatesMade ? `🎉 대체간호사(${res.assignedName}) 배정 완료!` : "⚠️ 대체간호사가 없어 대기 상태로 신청되었습니다.");
-                loadScheduleData(); // 데이터 갱신
+                loadScheduleData();
             } else alert("오류: " + res.error);
         }
 
@@ -1435,7 +1453,6 @@
             const iframe = document.getElementById('schedule-iframe');
             const baseUrl = "https://docs.google.com/spreadsheets/d/1tNobsqOTDzIKwAcF0VfUanRTSZCArqIF63n5AxKfDbc/htmlembed?gid=1622990971&single=true&widget=false&chrome=false";
             iframe.src = baseUrl + "&t=" + new Date().getTime();
-            alert("✅ 최신 데이터 동기화 완료!");
         }
 
         /* -------------------------------------------------------------
@@ -1565,7 +1582,7 @@
             } finally {
                 btn.disabled = false;
                 btn.innerText =
-                    '🔄 시트 기준으로 동기화';
+                    '🔄 동기화';
             }
         }
 
@@ -1921,7 +1938,7 @@
             
               } catch (error) {
                 alert(
-                  "후보자 정보를 읽을 수 없습니다."
+                  "정보를 읽을 수 없습니다."
                 );
                 return;
               }
@@ -2377,7 +2394,7 @@
                 selectedMonths.length === 0
             ) {
                 alert(
-                    '분석할 년월을 하나 이상 선택하세요.'
+                    '분석할 기간을 하나 이상 선택하세요.'
                 );
                 return;
             }
