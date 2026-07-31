@@ -369,7 +369,7 @@
         <div id="page-schedule" class="page">
             <div class="content-wrap">
                 <div class="custom-title">대체간호사 전체 근무표</div>
-                <button class="btn-primary" style="width: 100%; margin-bottom: 15px;" onclick="syncScheduleIframe()">🔄 근무표 실시간 동기화</button>
+                <button class="btn-primary" style="width: 100%; margin-bottom: 15px;" onclick="syncScheduleIframe()">🔄 새로고침</button>
                 <iframe id="schedule-iframe" height="800" src="https://docs.google.com/spreadsheets/d/1tNobsqOTDzIKwAcF0VfUanRTSZCArqIF63n5AxKfDbc/htmlembed?gid=1622990971&single=true&widget=false&chrome=false"></iframe>
             </div>
         </div>
@@ -388,17 +388,17 @@
                 <div id="admin-dashboard-container" style="display: none;">
                     <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
                         <button class="form-control" style="width: auto; cursor:pointer;" onclick="adminLogout()">로그아웃</button>
-                        <button class="form-control" style="width: auto; background:#f8f9fa; cursor:pointer;" onclick="syncAdminData()" id="btn-sync-admin">🔄 시트 기준으로 동기화</button>
+                        <button class="form-control" style="width: auto; background:#f8f9fa; cursor:pointer;" onclick="syncAdminData()" id="btn-sync-admin">🔄 동기화</button>
                     </div>
 
-                    <h4 style="margin-bottom: 15px; color: var(--primary-color);">🚨 미배정 신청 건 리스트</h4>
+                    <h4 style="margin-bottom: 15px; color: var(--primary-color);">🚨 미배정 대체 신청 리스트</h4>
                     <div id="pending-list-container"></div>
 
                     <hr style="margin: 40px 0; border: 0; border-top: 1px solid #eee;">
 
-                    <h4 style="margin-bottom: 15px;">📋 전체 신청 내역 수정 (Data Editor)</h4>
+                    <h4 style="margin-bottom: 15px;">📋 신청 내역 수정 (Data Editor)</h4>
                     <div id="admin-history-table" style="width: 100%; overflow-x: auto; max-height: 500px; border: 1px solid #ddd; margin-bottom: 20px;"></div>
-                    <button class="btn-primary" style="width: 100%; padding: 15px;" onclick="saveAdminHistory(event)">💾 전체 내역 수정사항 저장하기</button>
+                    <button class="btn-primary" style="width: 100%; padding: 15px;" onclick="saveAdminHistory(event)">💾 수정사항 저장</button>
                 </div>
             </div>
         </div>
@@ -426,7 +426,7 @@
                             onclick="runMetricsAnalysis(event)"
                             style="white-space: nowrap;"
                         >
-                            📊 데이터 분석 실행
+                            📊 분석 실행
                         </button>
                     </div>
                     
@@ -476,13 +476,13 @@
                             class="btn-primary"
                             onclick="runMetricsAnalysis(event)"
                         >
-                            📊 데이터 분석 실행
+                            📊 분석 실행
                         </button>
                     </div>
                 </div>
 
                 <div id="metrics-loading" style="display: none; color: var(--primary-color); font-weight: bold; text-align: center; margin: 50px 0;">
-                    <span style="font-size: 40px;">⏳</span><br><br>분석 중입니다.잠시만 기다려주세요. <br> (5~10초 소요)
+                    <span style="font-size: 40px;">👀</span><br><br>분석 중<br>
                 </div>
                 
                 <div id="metrics-result-container" style="display: none;">
