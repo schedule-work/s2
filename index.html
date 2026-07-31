@@ -324,18 +324,18 @@
 
                 <h5 style="margin-bottom: 10px;">🔎 직원 이름 검색</h5>
                 <div style="display: flex; gap: 10px; margin-bottom: 20px;">
-                    <input type="text" id="search-name" class="form-control" placeholder="이름을 입력하세요 (예: 홍길동)" style="flex: 1;" onkeypress="if(event.key==='Enter') searchNurseByName()">
+                    <input type="text" id="search-name" class="form-control" placeholder="이름을 입력하세요" style="flex: 1;" onkeypress="if(event.key==='Enter') searchNurseByName()">
                     <button class="btn-primary" style="background:#333;" onclick="searchNurseByName()">검색</button>
                 </div>
                 <div id="search-results-container" style="display: none; padding: 15px; border: 1px solid #ddd; background: #f9f9f9; margin-bottom: 20px; border-radius: 8px;"></div>
 
-                <div id="req-loading" style="display: none; color: var(--primary-color); font-weight: bold; margin-bottom: 15px;">⏳ 구글 시트에서 데이터를 불러오는 중입니다...</div>
+                <div id="req-loading" style="display: none; color: var(--primary-color); font-weight: bold; margin-bottom: 15px;">⏳ 계획근무 조회중</div>
                 <div id="dynamic-shift-display" style="display:none; align-items:center; justify-content:space-between; margin-bottom: 15px;">
-                    <div style="background-color: rgba(139, 0, 41, 0.05); border-left: 4px solid #8B0029; padding: 10px 15px; border-radius: 6px; flex: 1; margin-right: 15px; display: flex; justify-content: space-between; align-items: center;">
+                    <div style="background-color: rgba(139, 0, 41, 0.05); border-left: 4px solid #8B0029; padding: 10px 15px; border-radius: 6px; width: 300px; display: flex; justify-content: space-between; align-items: center;">
                         <span id="shift-date-text" style="font-size: 14px; font-weight: 600; color: #333; opacity: 0.8;"></span>
                         <span id="shift-val-text" style="font-size: 20px; font-weight: 900; color: #8B0029;"></span>
                     </div>
-                    <button class="btn-primary" style="background:#f8f9fa; color:#333; border:1px solid #ddd;" onclick="clearSearchAndReload()">🔄 전체 병동 보기</button>
+                    <button class="btn-primary" style="background:#f8f9fa; color:#333; border:1px solid #ddd;" onclick="clearSearchAndReload()">🔄 병동 근무표 조회</button>
                 </div>
                 <div id="table-container" style="width: 100%; overflow-x: auto; margin-bottom: 30px; border: 1px solid #eaeaea; border-radius: 8px; max-height: 500px;"></div>
 
@@ -355,7 +355,7 @@
                         <div><label style="font-size: 13px; font-weight: bold;">대체 여부</label><select id="req-sub-yn" class="form-control"><option value="Y">Y</option><option value="N">N</option></select></div>
                         <div><label style="font-size: 13px; font-weight: bold;">비고</label><input type="text" id="req-note" class="form-control" placeholder="자유 기입"></div>
                     </div>
-                    <button class="btn-primary" style="width: 100%; padding: 12px;" onclick="submitAbsenceRequest(event)">💾 위 내용으로 결원 신청 및 자동 배정</button>
+                    <button class="btn-primary" style="width: 100%; padding: 12px;" onclick="submitAbsenceRequest(event)">💾 결원신청(자동배정) / 변동 저장</button>
                 </div>
 
                 <h5 style="margin-top: 30px; margin-bottom: 10px; color: var(--text-color);">📂 부서별 신청 내역</h5>
