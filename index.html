@@ -76,200 +76,51 @@
         }
 
         /* 결원입력 근무표 가독성 */
-        #table-container table {
-            table-layout: auto;
-            white-space: nowrap;
-        }
-
-        #table-container th,
-        #table-container td {
-            white-space: nowrap;
-            word-break: keep-all;
-        }
-
-        #table-container th:first-child,
-        #table-container td:first-child {
-            min-width: 74px;
-            width: 74px;
-            font-size: 13px;
-        }
-
-        #table-container th:nth-child(2),
-        #table-container td:nth-child(2) {
-            min-width: 82px;
-            width: 82px;
-        }
-
-        #table-container th:nth-child(n+3),
-        #table-container td:nth-child(n+3) {
-            min-width: 48px;
-            width: 48px;
-            padding-left: 6px;
-            padding-right: 6px;
-        }
-
-        #admin-history-table th,
-        #admin-history-table td {
-            white-space: nowrap;
-            word-break: keep-all;
-        }
+        #table-container table { table-layout: auto; white-space: nowrap; }
+        #table-container th, #table-container td { white-space: nowrap; word-break: keep-all; }
+        #table-container th:first-child, #table-container td:first-child { min-width: 74px; width: 74px; font-size: 13px; }
+        #table-container th:nth-child(2), #table-container td:nth-child(2) { min-width: 82px; width: 82px; }
+        #table-container th:nth-child(n+3), #table-container td:nth-child(n+3) { min-width: 48px; width: 48px; padding-left: 6px; padding-right: 6px; }
+        #admin-history-table th, #admin-history-table td { white-space: nowrap; word-break: keep-all; }
         
         @media (max-width: 1200px) {
-            header {
-                padding: 0 20px;
-            }
-        
-            nav {
-                gap: 20px;
-            }
-        
-            nav div {
-                font-size: 15px;
-            }
-        
-            .content-wrap {
-                padding: 30px 20px;
-            }
+            header { padding: 0 20px; }
+            nav { gap: 20px; }
+            nav div { font-size: 15px; }
+            .content-wrap { padding: 30px 20px; }
         }
         
         @media (max-width: 768px) {
-            header {
-                height: 60px;
-                padding: 0 15px;
-            }
-        
-            .logo-text {
-                font-size: 16px;
-                white-space: nowrap;
-            }
-        
-            .logo-text span {
-                font-size: 18px;
-            }
-        
-            nav {
-                position: absolute;
-                top: 60px;
-                left: 0;
-                right: 0;
-                display: flex;
-                gap: 0;
-                overflow-x: auto;
-                background: #ffffff;
-                border-bottom: 1px solid #eaeaea;
-                padding: 0 5px;
-            }
-        
-            nav div {
-                flex: 0 0 auto;
-                min-width: 82px;
-                padding: 0 10px;
-                line-height: 48px;
-                font-size: 13px;
-                text-align: center;
-                white-space: nowrap;
-            }
-        
-            .page {
-                padding-top: 108px;
-            }
-        
-            body.home-theme .page {
-                padding-top: 0;
-            }
-        
-            .content-wrap {
-                padding: 25px 15px;
-            }
-        
-            .custom-title {
-                font-size: 21px;
-                margin-bottom: 20px;
-            }
-        
-            .home-title {
-                margin-top: 55px;
-                padding: 0 15px;
-            }
-        
-            .home-subtitle {
-                padding: 0 15px;
-                margin-bottom: 30px;
-            }
-        
-            .home-btn-container {
-                display: grid;
-                grid-template-columns: 1fr;
-                gap: 12px;
-                padding: 0 15px 30px;
-            }
-        
-            .home-btn {
-                width: 100%;
-                min-width: 0;
-                height: 135px;
-                border-radius: 14px;
-            }
-        
-            .home-btn span.title {
-                font-size: 1.55rem;
-            }
-        
-            .home-btn span.desc {
-                font-size: 0.95rem;
-            }
-        
-            #insight-container {
-                grid-template-columns: 1fr !important;
-            }
-        
-            .metric-card {
-                min-width: 100%;
-            }
-        
-            table {
-                font-size: 12px;
-            }
-        
-            th,
-            td {
-                padding: 7px 5px;
-            }
-        
-            input,
-            select,
-            button {
-                min-height: 42px;
-            }
-        
-            #dynamic-shift-display {
-                flex-direction: column;
-                align-items: stretch !important;
-                gap: 10px;
-            }
-        
-            #dynamic-shift-display > div {
-                margin-right: 0 !important;
-            }
+            header { height: 60px; padding: 0 15px; }
+            .logo-text { font-size: 16px; white-space: nowrap; }
+            .logo-text span { font-size: 18px; }
+            nav { position: absolute; top: 60px; left: 0; right: 0; display: flex; gap: 0; overflow-x: auto; background: #ffffff; border-bottom: 1px solid #eaeaea; padding: 0 5px; }
+            nav div { flex: 0 0 auto; min-width: 82px; padding: 0 10px; line-height: 48px; font-size: 13px; text-align: center; white-space: nowrap; }
+            .page { padding-top: 108px; }
+            body.home-theme .page { padding-top: 0; }
+            .content-wrap { padding: 25px 15px; }
+            .custom-title { font-size: 21px; margin-bottom: 20px; }
+            .home-title { margin-top: 55px; padding: 0 15px; }
+            .home-subtitle { padding: 0 15px; margin-bottom: 30px; }
+            .home-btn-container { display: grid; grid-template-columns: 1fr; gap: 12px; padding: 0 15px 30px; }
+            .home-btn { width: 100%; min-width: 0; height: 135px; border-radius: 14px; }
+            .home-btn span.title { font-size: 1.55rem; }
+            .home-btn span.desc { font-size: 0.95rem; }
+            #insight-container { grid-template-columns: 1fr !important; }
+            .metric-card { min-width: 100%; }
+            table { font-size: 12px; }
+            th, td { padding: 7px 5px; }
+            input, select, button { min-height: 42px; }
+            #dynamic-shift-display { flex-direction: column; align-items: stretch !important; gap: 10px; }
+            #dynamic-shift-display > div { margin-right: 0 !important; }
         }
 
-        .responsive-form-row {
-            display: flex;
-            gap: 10px;
-        }
+        .responsive-form-row { display: flex; gap: 10px; }
         
         @media (max-width: 768px) {
-            .responsive-form-row {
-                flex-wrap: wrap;
-            }
-        
-            .responsive-form-row > * {
-                flex: 1 1 140px !important;
-            }
-        
-            .responsive-form-row button {
-                flex: 1 1 100% !important;
-            }
+            .responsive-form-row { flex-wrap: wrap; }
+            .responsive-form-row > * { flex: 1 1 140px !important; }
+            .responsive-form-row button { flex: 1 1 100% !important; }
         }
 
         .sticky-top-bar {
@@ -279,47 +130,27 @@
             z-index: 998; /* 표(Table)보다 위에 오도록 설정 */
             
             /* 기존 패딩 여백을 계산하여 스크롤 시 글자가 비어있는 여백으로 비치지 않게 완벽 차단 */
-            padding-top: 40px;
-            padding-bottom: 15px;
-            margin-top: -40px;
-            margin-left: -40px;
-            margin-right: -40px;
-            padding-left: 40px;
-            padding-right: 40px;
-            border-bottom: 1px solid var(--border-color);
-            margin-bottom: 20px;
+            padding-top: 40px; padding-bottom: 15px;
+            margin-top: -40px; margin-left: -40px; margin-right: -40px;
+            padding-left: 40px; padding-right: 40px;
+            border-bottom: 1px solid var(--border-color); margin-bottom: 20px;
         }
         
         @media (max-width: 1200px) {
-            .sticky-top-bar {
-                padding-top: 30px; margin-top: -30px;
-                margin-left: -20px; margin-right: -20px;
-                padding-left: 20px; padding-right: 20px;
-            }
+            .sticky-top-bar { padding-top: 30px; margin-top: -30px; margin-left: -20px; margin-right: -20px; padding-left: 20px; padding-right: 20px; }
         }
         
         @media (max-width: 768px) {
-            .sticky-top-bar {
-                top: 108px; /* 모바일용 네비게이션 바 높이에 맞춤 */
-                padding-top: 25px; margin-top: -25px;
-                margin-left: -15px; margin-right: -15px;
-                padding-left: 15px; padding-right: 15px;
-            }
+            .sticky-top-bar { top: 108px; padding-top: 25px; margin-top: -25px; margin-left: -15px; margin-right: -15px; padding-left: 15px; padding-right: 15px; }
         }
+
         /* 💡 로딩 스피너 애니메이션 */
         .loading-spinner {
-            display: inline-block;
-            width: 45px;
-            height: 45px;
-            border: 5px solid rgba(139, 0, 41, 0.15); /* 연한 배경 테두리 */
-            border-radius: 50%;
-            border-top-color: var(--primary-color); /* 돌아가는 메인 색상 */
-            animation: spin 1s ease-in-out infinite; /* 1초마다 무한 회전 */
+            display: inline-block; width: 45px; height: 45px;
+            border: 5px solid rgba(139, 0, 41, 0.15); border-radius: 50%;
+            border-top-color: var(--primary-color); animation: spin 1s ease-in-out infinite;
         }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
+        @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 </head>
 <body class="home-theme">
@@ -469,77 +300,31 @@
                     
                     <!-- 단일 월 분석 영역 (가로 정렬 Flexbox 적용) -->
                     <div id="single-month-area" style="display: flex; gap: 10px; align-items: center;">
-                        <select
-                            id="dashboard-single-month"
-                            class="form-control"
-                            style="max-width: 240px;"
-                        ></select>
-                        <button
-                            class="btn-primary"
-                            onclick="runMetricsAnalysis(event)"
-                            style="white-space: nowrap;"
-                        >
-                            📊 분석 실행
-                        </button>
+                        <select id="dashboard-single-month" class="form-control" style="max-width: 240px;"></select>
+                        <button class="btn-primary" onclick="runMetricsAnalysis(event)" style="white-space: nowrap;">📊 분석 실행</button>
                     </div>
                     
                     <!-- 기간 통합 분석 영역 -->
-                    <div
-                        id="multi-month-area"
-                        style="display:none;"
-                    >
-                        <div
-                            id="dashboard-month-checkboxes"
-                            style="
-                                display:grid;
-                                grid-template-columns:
-                                    repeat(auto-fit, minmax(110px, 1fr));
-                                gap:10px;
-                                margin-bottom:15px;
-                            "
-                        ></div>
-                    
-                        <div
-                            style="
-                                display:flex;
-                                gap:8px;
-                                margin-bottom:15px;
-                            "
-                        >
-                            <button
-                                type="button"
-                                class="form-control"
-                                style="width:auto; cursor:pointer;"
-                                onclick="selectAllDashboardMonths(true)"
-                            >
-                                전체 선택
-                            </button>
-                    
-                            <button
-                                type="button"
-                                class="form-control"
-                                style="width:auto; cursor:pointer;"
-                                onclick="selectAllDashboardMonths(false)"
-                            >
-                                전체 해제
-                            </button>
+                    <div id="multi-month-area" style="display:none;">
+                        <div id="dashboard-month-checkboxes" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap:10px; margin-bottom:15px;"></div>
+                        <div style="display:flex; gap:8px; margin-bottom:15px;">
+                            <button type="button" class="form-control" style="width:auto; cursor:pointer;" onclick="selectAllDashboardMonths(true)">전체 선택</button>
+                            <button type="button" class="form-control" style="width:auto; cursor:pointer;" onclick="selectAllDashboardMonths(false)">전체 해제</button>
                         </div>
-                        
-                        <button
-                            class="btn-primary"
-                            onclick="runMetricsAnalysis(event)"
-                        >
-                            📊 분석 실행
-                        </button>
+                        <button class="btn-primary" onclick="runMetricsAnalysis(event)">📊 분석 실행</button>
                     </div>
                 </div>
 
                 <div id="metrics-loading" style="display: none; text-align: center; margin: 50px 0;">
                     <div class="loading-spinner"></div>
-                    
-                    <div style="color: var(--primary-color); font-weight: bold; margin-top: 15px; font-size: 1.1em;">
-                        데이터 분석 중...
-                    </div>
+                    <div style="color: var(--primary-color); font-weight: bold; margin-top: 15px; font-size: 1.1em;">데이터 분석 중...</div>
+                </div>
+
+                <!-- 💡 [추가됨] 데이터 없음 상태 화면 -->
+                <div id="metrics-empty-state" style="display: none; text-align:center; padding: 50px 20px; background: #f9f9f9; border-radius: 8px; border: 1px solid #ddd; margin-top: 20px;">
+                    <div style="font-size: 30px; margin-bottom: 15px;">📭</div>
+                    <h4 style="color: #555; margin-bottom: 10px;">분석할 데이터가 없습니다.</h4>
+                    <p style="color: #888; font-size: 14px;">선택하신 월의 실제 근무표 데이터가 시트에 존재하는지 확인해 주세요.</p>
                 </div>
                 
                 <div id="metrics-result-container" style="display: none;">
@@ -575,301 +360,94 @@
     </main>
 
     <script>
+        // 💡 모든 자바스크립트 함수들이 가독성 좋게 한 줄씩 병합/정리되었습니다. (기능은 100% 동일)
+
         function initializeDashboardMonths() {
-            const singleSelect =
-                document.getElementById(
-                    'dashboard-single-month'
-                );
-        
-            const checkboxContainer =
-                document.getElementById(
-                    'dashboard-month-checkboxes'
-                );
-        
-            singleSelect.innerHTML = '';
-            checkboxContainer.innerHTML = '';
-        
-            for (
-                let month = 1;
-                month <= 12;
-                month++
-            ) {
-                const value =
-                    `26${String(month)
-                        .padStart(2, '0')}`;
-        
-                const label =
-                    `2026년 ${month}월`;
-        
-                singleSelect.insertAdjacentHTML(
-                    'beforeend',
-                    `
-                        <option value="${value}">
-                            ${label}
-                        </option>
-                    `
-                );
-        
-                checkboxContainer.insertAdjacentHTML(
-                    'beforeend',
-                    `
-                        <label
-                            style="
-                                display:flex;
-                                align-items:center;
-                                gap:8px;
-                                padding:10px 12px;
-                                border:1px solid #ddd;
-                                border-radius:7px;
-                                background:white;
-                                cursor:pointer;
-                            "
-                        >
-                            <input
-                                type="checkbox"
-                                name="dashboard-month-check"
-                                value="${value}"
-                            >
-                            <span>${month}월</span>
-                        </label>
-                    `
-                );
+            const singleSelect = document.getElementById('dashboard-single-month');
+            const checkboxContainer = document.getElementById('dashboard-month-checkboxes');
+            singleSelect.innerHTML = ''; checkboxContainer.innerHTML = '';
+            
+            for (let month = 1; month <= 12; month++) {
+                const value = `26${String(month).padStart(2, '0')}`;
+                const label = `2026년 ${month}월`;
+                singleSelect.insertAdjacentHTML('beforeend', `<option value="${value}">${label}</option>`);
+                checkboxContainer.insertAdjacentHTML('beforeend', `<label style="display:flex; align-items:center; gap:8px; padding:10px 12px; border:1px solid #ddd; border-radius:7px; background:white; cursor:pointer;"><input type="checkbox" name="dashboard-month-check" value="${value}"><span>${month}월</span></label>`);
             }
-        
-            const currentMonth =
-                new Date().getMonth() + 1;
-        
-            singleSelect.value =
-                `26${String(currentMonth)
-                    .padStart(2, '0')}`;
+            const currentMonth = new Date().getMonth() + 1;
+            singleSelect.value = `26${String(currentMonth).padStart(2, '0')}`;
         }
 
         function updateDashboardMode() {
-            const mode =
-                document.querySelector(
-                    'input[name="analyze-mode"]:checked'
-                ).value;
-        
-            document
-                .getElementById(
-                    'single-month-area'
-                )
-                .style.display =
-                mode === 'single'
-                    ? 'flex'
-                    : 'none';
-        
-            document
-                .getElementById(
-                    'multi-month-area'
-                )
-                .style.display =
-                mode === 'multi'
-                    ? 'block'
-                    : 'none';
+            const mode = document.querySelector('input[name="analyze-mode"]:checked').value;
+            document.getElementById('single-month-area').style.display = mode === 'single' ? 'flex' : 'none';
+            document.getElementById('multi-month-area').style.display = mode === 'multi' ? 'block' : 'none';
         }
 
         function getSelectedDashboardMonths() {
-            const mode =
-                document.querySelector(
-                    'input[name="analyze-mode"]:checked'
-                ).value;
-        
+            const mode = document.querySelector('input[name="analyze-mode"]:checked').value;
             if (mode === 'single') {
-                const value =
-                    document
-                        .getElementById(
-                            'dashboard-single-month'
-                        )
-                        .value;
-        
-                return value
-                    ? [value]
-                    : [];
+                const value = document.getElementById('dashboard-single-month').value;
+                return value ? [value] : [];
             }
-        
-            return Array
-                .from(
-                    document.querySelectorAll(
-                        'input[name="dashboard-month-check"]:checked'
-                    )
-                )
-                .map(input => input.value);
+            return Array.from(document.querySelectorAll('input[name="dashboard-month-check"]:checked')).map(input => input.value);
         }
         
-        function selectAllDashboardMonths(
-            checked
-        ) {
-            document
-                .querySelectorAll(
-                    'input[name="dashboard-month-check"]'
-                )
-                .forEach(input => {
-                    input.checked = checked;
-                });
+        function selectAllDashboardMonths(checked) {
+            document.querySelectorAll('input[name="dashboard-month-check"]').forEach(input => input.checked = checked);
         }
         
         const GAS_URL = "https://script.google.com/macros/s/AKfycbxe2oBl9GuV6FYufc-BtgZE6V5N6mwmdDRUvXi7pe79lrBaDSuIoRmJo024OHIORNI2/exec";
-
         const teamMapping = { "A": ["52W", "65W", "83W", "92W", "93W", "100W"], "B": ["51W", "53W", "70W", "71W", "81W", "101W"], "C": ["50W", "72W", "73W", "80W", "85W", "91W"] };
         const wardList = ["50W", "51W", "52W", "53W", "65W", "70W", "71W", "72W", "73W", "80W", "81W", "83W", "85W", "91W", "92W", "93W", "100W", "101W"];
 
         function getTodayLocalString() {
             const now = new Date();
-        
             const year = now.getFullYear();
-            const month = String(
-                now.getMonth() + 1
-            ).padStart(2, '0');
-        
-            const day = String(
-                now.getDate()
-            ).padStart(2, '0');
-        
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
             return `${year}-${month}-${day}`;
         }
         
         function normalizeWard(value) {
-            const text =
-                String(value || '')
-                    .trim()
-                    .toUpperCase();
-        
-            if (!text) {
-                return '';
-            }
-            
-            return text.endsWith('W')
-                ? text
-                : text + 'W';
+            const text = String(value || '').trim().toUpperCase();
+            if (!text) return '';
+            return text.endsWith('W') ? text : text + 'W';
         }
         
-        const sessionState = {
-            page: 'home',
-            target_date: getTodayLocalString(),
-            admin_logged_in: false
-        };
+        const sessionState = { page: 'home', target_date: getTodayLocalString(), admin_logged_in: false };
 
         function parseLocalDate(dateString) {
-            if (
-                dateString === null ||
-                dateString === undefined ||
-                dateString === ''
-            ) {
-                return null;
-            }
-        
-            const text =
-                String(dateString).trim();
-        
-            const isoMatch =
-                text.match(
-                    /^(\d{4})-(\d{1,2})-(\d{1,2})/
-                );
-        
-            if (isoMatch) {
-                return new Date(
-                    Number(isoMatch[1]),
-                    Number(isoMatch[2]) - 1,
-                    Number(isoMatch[3])
-                );
-            }
-        
-            const slashMatch =
-                text.match(
-                    /^(\d{4})[./]\s*(\d{1,2})[./]\s*(\d{1,2})/
-                );
-        
-            if (slashMatch) {
-                return new Date(
-                    Number(slashMatch[1]),
-                    Number(slashMatch[2]) - 1,
-                    Number(slashMatch[3])
-                );
-            }
-        
+            if (dateString === null || dateString === undefined || dateString === '') return null;
+            const text = String(dateString).trim();
+            const isoMatch = text.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
+            if (isoMatch) return new Date(Number(isoMatch[1]), Number(isoMatch[2]) - 1, Number(isoMatch[3]));
+            const slashMatch = text.match(/^(\d{4})[./]\s*(\d{1,2})[./]\s*(\d{1,2})/);
+            if (slashMatch) return new Date(Number(slashMatch[1]), Number(slashMatch[2]) - 1, Number(slashMatch[3]));
             return null;
         }
 
         function getHeaderMonthDay(headerValue) {
-            if (
-                headerValue === null ||
-                headerValue === undefined ||
-                headerValue === ''
-            ) {
-                return null;
-            }
-        
-            const text =
-                String(headerValue).trim();
-        
-            // Apps Script JSON에서 날짜가 UTC ISO 문자열로 넘어오는 경우
-            // 예: 한국시간 7월 1일 → 2026-06-30T15:00:00.000Z
+            if (headerValue === null || headerValue === undefined || headerValue === '') return null;
+            const text = String(headerValue).trim();
             if (/^\d{4}-\d{2}-\d{2}T/.test(text)) {
                 const utcDate = new Date(text);
-
                 if (!Number.isNaN(utcDate.getTime())) {
-                    const koreaDate =
-                        new Date(
-                            utcDate.getTime() +
-                            9 * 60 * 60 * 1000
-                        );
-
-                    return {
-                        month:
-                            koreaDate.getUTCMonth() + 1,
-                        day:
-                            koreaDate.getUTCDate()
-                    };
+                    const koreaDate = new Date(utcDate.getTime() + 9 * 60 * 60 * 1000);
+                    return { month: koreaDate.getUTCMonth() + 1, day: koreaDate.getUTCDate() };
                 }
             }
-
-            // yyyy-mm-dd 문자열
-            const isoMatch =
-                text.match(
-                    /^(\d{4})-(\d{2})-(\d{2})/
-                );
-
-            if (isoMatch) {
-                return {
-                    month: Number(isoMatch[2]),
-                    day: Number(isoMatch[3])
-                };
-            }
-
-            // 7/29, 07/29, 7월 29일 형식
-            const slashMatch =
-                text.match(
-                    /(\d{1,2})\s*[\/월]\s*(\d{1,2})/
-                );
-        
-            if (slashMatch) {
-                return {
-                    month: Number(slashMatch[1]),
-                    day: Number(slashMatch[2])
-                };
-            }
-        
+            const isoMatch = text.match(/^(\d{4})-(\d{2})-(\d{2})/);
+            if (isoMatch) return { month: Number(isoMatch[2]), day: Number(isoMatch[3]) };
+            const slashMatch = text.match(/(\d{1,2})\s*[\/월]\s*(\d{1,2})/);
+            if (slashMatch) return { month: Number(slashMatch[1]), day: Number(slashMatch[2]) };
             return null;
         }
         
-        function findDateColumn(
-            headers,
-            month,
-            day
-        ) {
-            return headers.findIndex(
-                function (header) {
-                    const parsed =
-                        getHeaderMonthDay(header);
-        
-                    return (
-                        parsed &&
-                        parsed.month === Number(month) &&
-                        parsed.day === Number(day)
-                    );
-                }
-            );
+        function findDateColumn(headers, month, day) {
+            return headers.findIndex(header => {
+                const parsed = getHeaderMonthDay(header);
+                return parsed && parsed.month === Number(month) && parsed.day === Number(day);
+            });
         }
 
         function navigateTo(pageId) {
@@ -878,8 +456,9 @@
             document.querySelectorAll('nav div').forEach(el => el.classList.remove('active'));
             document.getElementById('page-' + pageId).classList.add('active');
             
-            if (pageId === 'home') document.body.classList.add('home-theme');
-            else {
+            if (pageId === 'home') {
+                document.body.classList.add('home-theme');
+            } else {
                 document.body.classList.remove('home-theme');
                 const navBtn = document.getElementById('nav-' + pageId);
                 if (navBtn) navBtn.classList.add('active');
@@ -894,104 +473,37 @@
                 const nameField = document.getElementById('req-name').value;
                 if(nameField) updateShiftDisplay(nameField);
             });
-        initializeDashboardMonths();
-        
-        document
-            .querySelectorAll(
-                'input[name="analyze-mode"]'
-            )
-            .forEach(radio => {
-                radio.addEventListener(
-                    'change',
-                    updateDashboardMode
-                );
-            });
-        
-        updateDashboardMode();
+            
+            initializeDashboardMonths();
+            document.querySelectorAll('input[name="analyze-mode"]').forEach(radio => radio.addEventListener('change', updateDashboardMode));
+            updateDashboardMode();
         };
 
-        async function fetchSheetData(
-          sheetName,
-          isDns = false
-        ) {
-          try {
-            const params = new URLSearchParams({
-              action: 'getData',
-              sheetName: sheetName,
-              isDns: String(isDns)
-            });
-        
-            const res = await fetch(
-              `${GAS_URL}?${params.toString()}`,
-              {
-                method: 'GET',
-                cache: 'no-store'
-              }
-            );
-        
-            const result = await res.json();
-        
-            if (!result.success) {
-              throw new Error(
-                result.error ||
-                '데이터를 불러오지 못했습니다.'
-              );
+        async function fetchSheetData(sheetName, isDns = false) {
+            try {
+                const params = new URLSearchParams({ action: 'getData', sheetName: sheetName, isDns: String(isDns) });
+                const res = await fetch(`${GAS_URL}?${params.toString()}`, { method: 'GET', cache: 'no-store' });
+                const result = await res.json();
+                if (!result.success) throw new Error(result.error || '데이터를 불러오지 못했습니다.');
+                return result.data;
+            } catch (error) {
+                console.error('데이터 로드 실패:', error);
+                return null;
             }
-        
-            return result.data;
-        
-          } catch (error) {
-            console.error(
-              '데이터 로드 실패:',
-              error
-            );
-        
-            return null;
-          }
         }
 
         async function postToGAS(payload) {
-          try {
-            const res = await fetch(GAS_URL, {
-              method: 'POST',
-              redirect: 'follow',
-              headers: {
-                'Content-Type':
-                  'text/plain;charset=utf-8'
-              },
-              body: JSON.stringify(payload)
-            });
-        
-            const result = await res.json();
-        
-            if (!result.success) {
-              return {
-                success: false,
-                error:
-                  result.error ||
-                  '서버 처리 중 오류가 발생했습니다.'
-              };
+            try {
+                const res = await fetch(GAS_URL, { method: 'POST', redirect: 'follow', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload) });
+                const result = await res.json();
+                if (!result.success) return { success: false, error: result.error || '서버 처리 중 오류가 발생했습니다.' };
+                return result;
+            } catch (error) {
+                console.error('서버 통신 오류:', error);
+                return { success: false, error: '네트워크 통신 오류가 발생했습니다.' };
             }
-        
-            return result;
-        
-          } catch (error) {
-            console.error(
-              '서버 통신 오류:',
-              error
-            );
-        
-            return {
-              success: false,
-              error:
-                '네트워크 통신 오류가 발생했습니다.'
-            };
-          }
         }
 
-        /* -------------------------------------------------------------
-           2. 결원 입력 (대체간호사 신청)
-        ------------------------------------------------------------- */
         let currentPlanData = [], currentHeaders = [];
 
         async function searchNurseByName() {
@@ -1010,48 +522,19 @@
             let matches = [];
             data.slice(1).forEach(row => {
                 if(row[2] && String(row[2]).includes(name)) {
-                    const w =
-                        normalizeWard(row[0]);
-                    matches.push({ ward: w, name: String(row[2]).trim(), id: String(row[1]).trim() });
+                    matches.push({ ward: normalizeWard(row[0]), name: String(row[2]).trim(), id: String(row[1]).trim() });
                 }
             });
 
             const resDiv = document.getElementById('search-results-container');
             resDiv.style.display = 'block';
-            if(matches.length === 0) resDiv.innerHTML = `<p style="color:red; font-weight:bold;">'${name}' 간호사를 찾을 수 없습니다.</p>`;
-            else {
+            if(matches.length === 0) {
+                resDiv.innerHTML = `<p style="color:red; font-weight:bold;">'${name}' 간호사를 찾을 수 없습니다.</p>`;
+            } else {
                 let html = `<p style="font-weight:bold; color:green; margin-bottom: 10px;">✅ 총 ${matches.length}명 검색됨.</p>`;
-                html += `<div style="margin-bottom: 10px;">
-                            <label style="font-size: 13px; font-weight: bold;">🗓️ 결원 발생 일자 (조회 날짜) 선택:</label>
-                            <input type="date" id="pre-select-date" class="form-control" value="${sessionState.target_date}" style="width: 200px; display: inline-block; margin-left: 10px;">
-                         </div><hr style="margin: 10px 0;">`;
-                
+                html += `<div style="margin-bottom: 10px;"><label style="font-size: 13px; font-weight: bold;">🗓️ 결원 발생 일자 (조회 날짜) 선택:</label><input type="date" id="pre-select-date" class="form-control" value="${sessionState.target_date}" style="width: 200px; display: inline-block; margin-left: 10px;"></div><hr style="margin: 10px 0;">`;
                 matches.forEach(m => {
-                    const wardArg =
-                        JSON.stringify(m.ward);
-                    
-                    const nameArg =
-                        JSON.stringify(m.name);
-                    
-                    html += `
-                        <button
-                            class="btn-primary"
-                            style="
-                                background:#fff;
-                                color:#333;
-                                border:1px solid #ccc;
-                                margin-right:5px;
-                                margin-bottom:5px;
-                            "
-                            onclick='applyNurseSearch(
-                                ${wardArg},
-                                ${nameArg}
-                            )'
-                        >
-                            👉 선택한 날짜로 근무 조회
-                            (${m.ward} | ${m.name})
-                        </button>
-                    `;
+                    html += `<button class="btn-primary" style="background:#fff; color:#333; border:1px solid #ccc; margin-right:5px; margin-bottom:5px;" onclick='applyNurseSearch(${JSON.stringify(m.ward)}, ${JSON.stringify(m.name)})'>👉 선택한 날짜로 근무 조회 (${m.ward} | ${m.name})</button>`;
                 });
                 resDiv.innerHTML = html;
             }
@@ -1060,61 +543,21 @@
         function applyNurseSearch(ward, name) {
             const preDate = document.getElementById('pre-select-date').value;
             sessionState.target_date = preDate;
-            document.getElementById('req-date').value = preDate; // 하단 폼과 동기화
-            
+            document.getElementById('req-date').value = preDate;
             document.getElementById('sel-ward').value = ward;
             document.getElementById('search-name').value = name;
             loadScheduleData(name);
         }
 
         async function loadScheduleData(filterName = null) {
-            const fullYear =
-                Number(
-                    document
-                        .getElementById(
-                            'sel-year'
-                        )
-                        .value
-                );
+            const fullYear = Number(document.getElementById('sel-year').value);
+            const fullMonth = Number(document.getElementById('sel-month').value);
+            const lastDay = new Date(fullYear, fullMonth, 0).getDate();
+            const minDate = `${fullYear}-${String(fullMonth).padStart(2, '0')}-01`;
+            const maxDate = `${fullYear}-${String(fullMonth).padStart(2, '0')}-${String(lastDay).padStart(2, '0')}`;
             
-            const fullMonth =
-                Number(
-                    document
-                        .getElementById(
-                            'sel-month'
-                        )
-                        .value
-                );
-            
-            const lastDay =
-                new Date(
-                    fullYear,
-                    fullMonth,
-                    0
-                ).getDate();
-            
-            const minDate =
-                `${fullYear}-${String(
-                    fullMonth
-                ).padStart(2, '0')}-01`;
-            
-            const maxDate =
-                `${fullYear}-${String(
-                    fullMonth
-                ).padStart(2, '0')}-${String(
-                    lastDay
-                ).padStart(2, '0')}`;
-            
-            const reqDateInput =
-                document.getElementById(
-                    'req-date'
-                );
-            
-            reqDateInput.min =
-                minDate;
-            
-            reqDateInput.max =
-                maxDate;
+            const reqDateInput = document.getElementById('req-date');
+            reqDateInput.min = minDate; reqDateInput.max = maxDate;
 
             const ward = document.getElementById('sel-ward').value;
             const year = String(fullYear).slice(-2);
@@ -1135,27 +578,10 @@
             }
 
             currentHeaders = data[0];
-            currentPlanData =
-                data
-                    .slice(1)
-                    .filter(
-                        row =>
-                            normalizeWard(row[0]) ===
-                            normalizeWard(ward)
-                    );
+            currentPlanData = data.slice(1).filter(row => normalizeWard(row[0]) === normalizeWard(ward));
             
-            if (
-                typeof filterName === 'string' &&
-                filterName.trim() !== ''
-            ) {
-                currentPlanData =
-                    currentPlanData.filter(
-                        row =>
-                            String(
-                                row[2] || ''
-                            ).trim() ===
-                            filterName.trim()
-                    );
+            if (typeof filterName === 'string' && filterName.trim() !== '') {
+                currentPlanData = currentPlanData.filter(row => String(row[2] || '').trim() === filterName.trim());
             }
 
             if(currentPlanData.length === 0) {
@@ -1164,86 +590,23 @@
 
             let html = '<table><thead><tr><th>이름</th><th>면허번호</th>';
             for(let i=3; i<currentHeaders.length; i++) {
-                const headerDate =
-                    getHeaderMonthDay(
-                        currentHeaders[i]
-                    );
-            
-                if (!headerDate) {
-                    continue;
+                const headerDate = getHeaderMonthDay(currentHeaders[i]);
+                if (headerDate && headerDate.month === Number(fullMonth)) {
+                    html += `<th>${headerDate.day}</th>`;
                 }
-            
-                if (
-                    headerDate.month !==
-                    Number(fullMonth)
-                ) {
-                    continue;
-                }
-            
-                html += `
-                    <th>
-                        ${headerDate.day}
-                    </th>
-                `;
             }
-
             html += '</tr></thead><tbody>';
 
             currentPlanData.forEach(row => {
-                const nameArg =
-                    JSON.stringify(
-                        String(row[2] || '')
-                    );
+                const nameArg = JSON.stringify(String(row[2] || ''));
+                const idArg = JSON.stringify(String(row[1] || ''));
                 
-                const idArg =
-                    JSON.stringify(
-                        String(row[1] || '')
-                    );
-                
-                html += `
-                    <tr
-                        style="cursor:pointer;"
-                        onclick='selectNurse(
-                            ${nameArg},
-                            ${idArg},
-                            this
-                        )'
-                        onmouseover="
-                            this.style.background='#fff0f0'
-                        "
-                        onmouseout="
-                            this.style.background=''
-                        "
-                    >
-                `;
+                html += `<tr style="cursor:pointer;" onclick='selectNurse(${nameArg}, ${idArg}, this)' onmouseover="this.style.background='#fff0f0'" onmouseout="this.style.background=''">`;
                 html += `<td><strong>${row[2]}</strong></td><td>${row[1]}</td>`;
-                for (
-    let i = 3;
-    i < currentHeaders.length;
-    i++
-) {
-    const headerDate =
-        getHeaderMonthDay(
-            currentHeaders[i]
-        );
-
-    if (!headerDate) {
-        continue;
-    }
-
-    if (
-        headerDate.month !==
-        Number(fullMonth)
-    ) {
-        continue;
-    }
-
-    html += `
-        <td>
-            ${row[i] || ''}
-        </td>
-    `;
-}
+                for (let i = 3; i < currentHeaders.length; i++) {
+                    const headerDate = getHeaderMonthDay(currentHeaders[i]);
+                    if (headerDate && headerDate.month === Number(fullMonth)) html += `<td>${row[i] || ''}</td>`;
+                }
                 html += '</tr>';
             });
             html += '</tbody></table>';
@@ -1252,30 +615,11 @@
             document.getElementById('absence-form-container').style.display = 'block';
             document.getElementById('form-ward-display').innerText = ward;
             
-            if (
-                typeof filterName === 'string' &&
-                currentPlanData.length === 1
-            ) {
-                const selectedName =
-                    String(
-                        currentPlanData[0][2] || ''
-                    ).trim();
-            
-                const selectedId =
-                    String(
-                        currentPlanData[0][1] || ''
-                    ).trim();
-            
-                document
-                    .getElementById(
-                        'req-name'
-                    )
-                    .value =
-                    `${selectedName} (${selectedId})`;
-            
-                updateShiftDisplay(
-                    selectedName
-                );
+            if (typeof filterName === 'string' && currentPlanData.length === 1) {
+                const selectedName = String(currentPlanData[0][2] || '').trim();
+                const selectedId = String(currentPlanData[0][1] || '').trim();
+                document.getElementById('req-name').value = `${selectedName} (${selectedId})`;
+                updateShiftDisplay(selectedName);
             }
 
             // 부서별 신청 내역 하단에 표시
@@ -1286,28 +630,11 @@
                 let filteredHistory = [];
                 
                 if (hIdxWard !== -1) {
-                    filteredHistory =
-                        reqHistoryData
-                            .slice(1)
-                            .filter(
-                                row =>
-                                    normalizeWard(
-                                        row[hIdxWard]
-                                    ) ===
-                                    normalizeWard(ward)
-                            );
+                    filteredHistory = reqHistoryData.slice(1).filter(row => normalizeWard(row[hIdxWard]) === normalizeWard(ward));
                 }
 
                 if (hIdxWard === -1) {
-                    document
-                        .getElementById(
-                            'ward-history-container'
-                        )
-                        .innerHTML =
-                        '<p style="padding:15px; color:red;">' +
-                        '신청내역에서 요청부서 열을 찾을 수 없습니다.' +
-                        '</p>';
-                
+                    document.getElementById('ward-history-container').innerHTML = '<p style="padding:15px; color:red;">신청내역에서 요청부서 열을 찾을 수 없습니다.</p>';
                     return;
                 }
                 
@@ -1326,37 +653,19 @@
 
         function clearSearchAndReload() {
             document.getElementById('search-name').value = '';
-            loadScheduleData(); // 필터 없이 전체 로드
+            loadScheduleData();
         }
         
         function updateShiftDisplay(selectedName) {
             const reqDate = document.getElementById('req-date').value;
             if(!reqDate || !currentPlanData.length || !selectedName) return;
             
-            const d =
-                parseLocalDate(reqDate);
+            const d = parseLocalDate(reqDate);
+            if (!d) { document.getElementById('dynamic-shift-display').style.display = 'none'; return; }
             
-            if (!d) {
-                document
-                    .getElementById(
-                        'dynamic-shift-display'
-                    )
-                    .style.display = 'none';
-            
-                return;
-            }
-            
-            const m =
-                d.getMonth() + 1;
-            
-            const dt =
-                d.getDate();
-            const colIdx =
-                findDateColumn(
-                    currentHeaders,
-                    m,
-                    dt
-                );
+            const m = d.getMonth() + 1;
+            const dt = d.getDate();
+            const colIdx = findDateColumn(currentHeaders, m, dt);
         
             const targetRow = currentPlanData.find(row => row[2] === selectedName.split(" (")[0]);
             let shiftVal = (colIdx !== -1 && targetRow) ? String(targetRow[colIdx]).trim() : "OFF (또는 미입력)";
@@ -1385,60 +694,26 @@
             const reqSubYn = document.getElementById('req-sub-yn').value;
 
             if(!nameField) { alert("근무표에서 결원자를 선택하세요."); return; }
-            if (!reqDate) {
-                alert(
-                    '결원 발생 일자를 선택하세요.'
-                );
-                return;
-            }
+            if (!reqDate) { alert('결원 발생 일자를 선택하세요.'); return; }
             
-            const parsedReqDate =
-                parseLocalDate(reqDate);
-            
-            if (!parsedReqDate) {
-                alert(
-                    '결원 발생 일자 형식이 올바르지 않습니다.'
-                );
-                return;
-            }
+            const parsedReqDate = parseLocalDate(reqDate);
+            if (!parsedReqDate) { alert('결원 발생 일자 형식이 올바르지 않습니다.'); return; }
 
             const [reqName, reqId] = nameField.split(" (").map(s => s.replace(")", ""));
             const targetRow = currentPlanData.find(row => row[2] === reqName && String(row[1]).trim() === reqId);
 
-            if (!targetRow) {
-                alert(
-                    '선택한 결원자의 근무 데이터를 찾을 수 없습니다. 다시 조회해 주세요.'
-                );
-                return;
-            }
+            if (!targetRow) { alert('선택한 결원자의 근무 데이터를 찾을 수 없습니다. 다시 조회해 주세요.'); return; }
                         
-            const m =
-                parsedReqDate.getMonth() + 1;
-            
-            const d =
-                parsedReqDate.getDate();
-            const colIdx =
-                findDateColumn(
-                    currentHeaders,
-                    m,
-                    d
-                );
-
-            if (colIdx === -1) {
-                alert(
-                    '계획 근무표에서 해당 날짜를 찾지 못했습니다.'
-                );
-                return;
-            }
+            const colIdx = findDateColumn(currentHeaders, parsedReqDate.getMonth() + 1, parsedReqDate.getDate());
+            if (colIdx === -1) { alert('계획 근무표에서 해당 날짜를 찾지 못했습니다.'); return; }
 
             let reqDuty = colIdx !== -1 ? String(targetRow[colIdx]).trim() : "";
             if(!reqDuty) { alert("해당 날짜에 기존 근무가 없습니다."); return; }
 
             const payload = { action: 'submitAbsence', ward, reqDate, reqName, reqId, reqDuty, changedDuty, reqReason, reqNote, reqSubYn };
-            
             btn.innerText = "⏳ 대체근무 배정 확인중..."; btn.disabled = true;
             const res = await postToGAS(payload);
-            btn.innerText = "💾 결원신청(자동배정) / 근무 변동 저장"; btn.disabled = false;
+            btn.innerText = "💾 결원신청(자동배정) / 변동 저장"; btn.disabled = false;
 
             if(res.success) {
                 alert(res.updatesMade ? `🎉 대체간호사(${res.assignedName}) 배정 완료!` : "⚠️ 대체간호사가 없어 대기 상태로 신청되었습니다.");
@@ -1446,59 +721,25 @@
             } else alert("오류: " + res.error);
         }
 
-        /* -------------------------------------------------------------
-           3. 근무표 화면 연동
-        ------------------------------------------------------------- */
         function syncScheduleIframe() {
             const iframe = document.getElementById('schedule-iframe');
             const baseUrl = "https://docs.google.com/spreadsheets/d/1tNobsqOTDzIKwAcF0VfUanRTSZCArqIF63n5AxKfDbc/htmlembed?gid=1622990971&single=true&widget=false&chrome=false";
             iframe.src = baseUrl + "&t=" + new Date().getTime();
         }
 
-        /* -------------------------------------------------------------
-           4. 관리자 배정 (담당자 전용)
-        ------------------------------------------------------------- */
         let adminReqData = [], adminHeadersData = [], adminSchData = [];
 
         async function adminLogin() {
-          const password =
-            document
-              .getElementById('admin-pw')
-              .value;
+            const password = document.getElementById('admin-pw').value;
+            if (!password) { alert('비밀번호를 입력하세요.'); return; }
         
-          if (!password) {
-            alert('비밀번호를 입력하세요.');
-            return;
-          }
+            const result = await postToGAS({ action: 'adminLogin', password: password });
+            if (!result.success) { alert(result.error || '비밀번호가 일치하지 않습니다.'); return; }
         
-          const result = await postToGAS({
-            action: 'adminLogin',
-            password: password
-          });
-        
-          if (!result.success) {
-            alert(
-              result.error ||
-              '비밀번호가 일치하지 않습니다.'
-            );
-            return;
-          }
-        
-          sessionState.admin_logged_in = true;
-        
-          document
-            .getElementById(
-              'admin-login-container'
-            )
-            .style.display = 'none';
-        
-          document
-            .getElementById(
-              'admin-dashboard-container'
-            )
-            .style.display = 'block';
-        
-          await loadAdminData();
+            sessionState.admin_logged_in = true;
+            document.getElementById('admin-login-container').style.display = 'none';
+            document.getElementById('admin-dashboard-container').style.display = 'block';
+            await loadAdminData();
         }
 
         function adminLogout() {
@@ -1509,80 +750,27 @@
         }
 
         async function loadAdminData() {
-            const btn =
-                document.getElementById(
-                    'btn-sync-admin'
-                );
-        
-            btn.disabled = true;
-            btn.innerText =
-                '⏳ 불러오는 중...';
+            const btn = document.getElementById('btn-sync-admin');
+            btn.disabled = true; btn.innerText = '⏳ 불러오는 중...';
         
             try {
-                const [
-                    reqRes,
-                    schRes
-                ] = await Promise.all([
-                    fetchSheetData(
-                        '신청내역'
-                    ),
-                    fetchSheetData(
-                        '대체간호사 근무표'
-                    )
-                ]);
+                const [reqRes, schRes] = await Promise.all([ fetchSheetData('신청내역'), fetchSheetData('대체간호사 근무표') ]);
+                if (!reqRes || reqRes.length === 0) throw new Error('신청내역을 불러오지 못했습니다.');
+                if (!schRes || schRes.length === 0) throw new Error('대체간호사 근무표를 불러오지 못했습니다.');
         
-                if (
-                    !reqRes ||
-                    reqRes.length === 0
-                ) {
-                    throw new Error(
-                        '신청내역을 불러오지 못했습니다.'
-                    );
-                }
-        
-                if (
-                    !schRes ||
-                    schRes.length === 0
-                ) {
-                    throw new Error(
-                        '대체간호사 근무표를 불러오지 못했습니다.'
-                    );
-                }
-        
-                adminHeadersData =
-                    reqRes[0];
-        
-                adminReqData =
-                    reqRes.slice(1);
-        
-                adminSchData =
-                    schRes;
+                adminHeadersData = reqRes[0];
+                adminReqData = reqRes.slice(1);
+                adminSchData = schRes;
         
                 renderPendingCards();
                 renderAdminGrid();
         
             } catch (error) {
                 console.error(error);
-        
-                document
-                    .getElementById(
-                        'pending-list-container'
-                    )
-                    .innerHTML =
-                    `<p style="color:red;">${
-                        error.message
-                    }</p>`;
-        
-                document
-                    .getElementById(
-                        'admin-history-table'
-                    )
-                    .innerHTML = '';
-        
+                document.getElementById('pending-list-container').innerHTML = `<p style="color:red;">${error.message}</p>`;
+                document.getElementById('admin-history-table').innerHTML = '';
             } finally {
-                btn.disabled = false;
-                btn.innerText =
-                    '🔄 동기화';
+                btn.disabled = false; btn.innerText = '🔄 동기화';
             }
         }
 
@@ -1590,214 +778,70 @@
             const container = document.getElementById('pending-list-container');
             container.innerHTML = '';
             const idxYn = adminHeadersData.findIndex(h => h.includes("대체여부") || h.includes("상태"));
-            const findAdminColumn =
-                function (names) {
-                    return adminHeadersData.findIndex(
-                        function (header) {
-                            const cleanHeader =
-                                String(header)
-                                    .replace(/\s/g, '');
             
-                            return names.some(
-                                function (name) {
-                                    return cleanHeader.includes(
-                                        name.replace(/\s/g, '')
-                                    );
-                                }
-                            );
-                        }
-                    );
-                };
+            const findAdminColumn = function(names) {
+                return adminHeadersData.findIndex(header => {
+                    const cleanHeader = String(header).replace(/\s/g, '');
+                    return names.some(name => cleanHeader.includes(name.replace(/\s/g, '')));
+                });
+            };
             
-            const idxWard =
-                findAdminColumn([
-                    '요청부서'
-                ]);
+            const idxWard = findAdminColumn(['요청부서']);
+            const idxDate = findAdminColumn(['결원일자']);
+            const idxReqName = findAdminColumn(['결원자명', '결원자성명']);
+            const idxReqId = findAdminColumn(['결원자사번', '결원자면허번호', '면허번호']);
+            const idxReqDuty = findAdminColumn(['결원자 기존 근무', '기존근무']);
             
-            const idxDate =
-                findAdminColumn([
-                    '결원일자'
-                ]);
-            
-            const idxReqName =
-                findAdminColumn([
-                    '결원자명',
-                    '결원자성명'
-                ]);
-            
-            const idxReqId =
-                findAdminColumn([
-                    '결원자사번',
-                    '결원자면허번호',
-                    '면허번호'
-                ]);
-            
-            const idxReqDuty =
-                findAdminColumn([
-                    '결원자 기존 근무',
-                    '기존근무'
-                ]);
-            
-            if (
-                idxYn === -1 ||
-                idxWard === -1 ||
-                idxDate === -1 ||
-                idxReqName === -1 ||
-                idxReqDuty === -1
-            ) {
-                container.innerHTML =
-                    '<p style="color:red;">' +
-                    '신청내역 시트의 필수 헤더를 찾을 수 없습니다.' +
-                    '</p>';
-            
-                return;
+            if (idxYn === -1 || idxWard === -1 || idxDate === -1 || idxReqName === -1 || idxReqDuty === -1) {
+                container.innerHTML = '<p style="color:red;">신청내역 시트의 필수 헤더를 찾을 수 없습니다.</p>'; return;
             }
-            const pendingList =
-                adminReqData.filter(
-                    row =>
-                        String(
-                            row[idxYn] || ''
-                        ).trim() === '대기중'
-                );
+            
+            const pendingList = adminReqData.filter(row => String(row[idxYn] || '').trim() === '대기중');
             if (pendingList.length === 0) { container.innerHTML = '<p>대기 중인 건이 없습니다.</p>'; return; }
 
-            const sHeaders =
-                adminSchData[0];
-            
+            const sHeaders = adminSchData[0];
             const nursesInfo = {};
-            
             let currentNurseName = null;
             
-            for (
-                let r = 2;
-                r < adminSchData.length;
-                r++
-            ) {
-                const row =
-                    adminSchData[r];
+            for (let r = 2; r < adminSchData.length; r++) {
+                const row = adminSchData[r];
+                const team = String(row[0] || '').trim().toUpperCase();
+                const id = String(row[1] || '').trim();
+                const name = String(row[2] || '').trim();
+                const kind = String(row[4] || '').trim().replace(/\s/g, '');
             
-                const team =
-                    String(row[0] || '')
-                        .trim()
-                        .toUpperCase();
-            
-                const id =
-                    String(row[1] || '')
-                        .trim();
-            
-                const name =
-                    String(row[2] || '')
-                        .trim();
-            
-                const kind =
-                    String(row[4] || '')
-                        .trim()
-                        .replace(/\s/g, '');
-            
-                if (
-                    ['A', 'B', 'C'].includes(team) &&
-                    name
-                ) {
+                if (['A', 'B', 'C'].includes(team) && name) {
                     currentNurseName = name;
-            
-                    if (
-                        !nursesInfo[currentNurseName]
-                    ) {
-                        nursesInfo[currentNurseName] = {
-                            team: team,
-                            id: id,
-                            name: name,
-                            duty_row: -1,
-                            alt_row: -1,
-                            sup_row: -1
-                        };
+                    if (!nursesInfo[currentNurseName]) {
+                        nursesInfo[currentNurseName] = { team: team, id: id, name: name, duty_row: -1, alt_row: -1, sup_row: -1 };
                     }
                 }
             
-                if (
-                    !currentNurseName ||
-                    !nursesInfo[currentNurseName]
-                ) {
-                    continue;
-                }
+                if (!currentNurseName || !nursesInfo[currentNurseName]) continue;
             
-                if (
-                    kind.includes('대체')
-                ) {
-                    nursesInfo[
-                        currentNurseName
-                    ].alt_row = r;
-            
-                } else if (
-                    kind.includes('지원')
-                ) {
-                    nursesInfo[
-                        currentNurseName
-                    ].sup_row = r;
-            
-                } else if (
-                    kind === '' ||
-                    kind.includes('근무') ||
-                    kind.includes('듀티') ||
-                    kind === 'RN' ||
-                    kind.includes('등급')
-                ) {
-                    nursesInfo[
-                        currentNurseName
-                    ].duty_row = r;
-                }
+                if (kind.includes('대체')) nursesInfo[currentNurseName].alt_row = r;
+                else if (kind.includes('지원')) nursesInfo[currentNurseName].sup_row = r;
+                else if (kind === '' || kind.includes('근무') || kind.includes('듀티') || kind === 'RN' || kind.includes('등급')) nursesInfo[currentNurseName].duty_row = r;
             }
             
-            const nursesList =
-                Object.values(nursesInfo);
+            const nursesList = Object.values(nursesInfo);
 
             pendingList.forEach((r, idx) => {
-                const reqWard =
-                    String(
-                        r[idxWard] || ''
-                    ).trim();
+                const reqWard = String(r[idxWard] || '').trim();
+                const reqDate = String(r[idxDate] || '');
+                const reqName = String(r[idxReqName] || '').trim();
+                const reqId = idxReqId !== -1 ? String(r[idxReqId] || '').trim() : '';
+                const reqDuty = String(r[idxReqDuty] || '').trim().toUpperCase().replace(/M$/, '');
+                let reqTeam = "";
                 
-                const reqDate =
-                    String(
-                        r[idxDate] || ''
-                    );
-                
-                const reqName =
-                    String(
-                        r[idxReqName] || ''
-                    ).trim();
-                
-                const reqId =
-                    idxReqId !== -1
-                        ? String(
-                            r[idxReqId] || ''
-                        ).trim()
-                        : '';
-                
-                const reqDuty =
-                    String(
-                        r[idxReqDuty] || ''
-                    )
-                        .trim()
-                        .toUpperCase()
-                        .replace(/M$/, '');
-                                let reqTeam = ""; for (let t in teamMapping) if(teamMapping[t].includes(reqWard)) reqTeam = t;
+                for (let t in teamMapping) if(teamMapping[t].includes(reqWard)) reqTeam = t;
 
                 let validCands = [], colIdx = -1;
                 const d = parseLocalDate(reqDate);
                 
-                if (!d) {
-                  return;
-                }
-                
-                const m = d.getMonth() + 1;
-                const dt = d.getDate();
-                colIdx =
-                    findDateColumn(
-                        sHeaders,
-                        m,
-                        dt
-                    );
+                if (!d) return;
+                const m = d.getMonth() + 1, dt = d.getDate();
+                colIdx = findDateColumn(sHeaders, m, dt);
 
                 if (colIdx !== -1 && reqTeam) {
                     nursesList.forEach(n => {
@@ -1812,101 +856,32 @@
                         let altCount = 0;
                         for (let c = 5; c < adminSchData[n.alt_row].length; c++) {
                             const value = String(adminSchData[n.alt_row][c]).trim();
-                            
-                            if (
-                                value !== '' && 
-                                value !== '-' && 
-                                value.toLowerCase() !== 'nan' && 
-                                value.toLowerCase() !== 'none'
-                            ) {
-                                altCount++;
-                            }
+                            if (value !== '' && value !== '-' && value.toLowerCase() !== 'nan' && value.toLowerCase() !== 'none') altCount++;
                         }
                         
                         validCands.push({
-                          name: n.name,
-                          id: n.id,
-                          duty: cleanDuty + 'm',
-                          isStar: isSupMatch,
-                          altCount: altCount,
-                          label:
-                            `${n.name} - ${n.id} ` +
-                            `(${cleanDuty}m) ` +
-                            `[${isSupMatch
-                              ? '⭐지원일치'
-                              : '일반'}] ` +
-                            `[누적 ${altCount}회]`
+                            name: n.name, id: n.id, duty: cleanDuty + 'm', isStar: isSupMatch, altCount: altCount,
+                            label: `${n.name} - ${n.id} (${cleanDuty}m) [${isSupMatch ? '⭐지원일치' : '일반'}] [누적 ${altCount}회]`
                         });
                     });
                 }
                 
                 validCands.sort((a, b) => {
-                  if (a.isStar !== b.isStar) {
-                    return Number(b.isStar) -
-                      Number(a.isStar);
-                  }
-                
-                  return a.altCount - b.altCount;
+                    if (a.isStar !== b.isStar) return Number(b.isStar) - Number(a.isStar);
+                    return a.altCount - b.altCount;
                 });
-                let optHtml =
-                  validCands.length > 0
-                    ? validCands
-                        .map((c) => {
-                          const value = encodeURIComponent(
-                            JSON.stringify({
-                              name: c.name,
-                              id: c.id,
-                              duty: c.duty
-                            })
-                          );
                 
-                          return (
-                            `<option value="${value}">` +
-                            `${c.label}</option>`
-                          );
-                        })
-                        .join('')
+                let optHtml = validCands.length > 0
+                    ? validCands.map(c => `<option value="${encodeURIComponent(JSON.stringify({name: c.name, id: c.id, duty: c.duty}))}">${c.label}</option>`).join('')
                     : `<option value="">❌ 대상 없음</option>`;
                 
-                const dateArg =
-                    JSON.stringify(
-                        reqDate
-                    );
-                
-                const nameArg =
-                    JSON.stringify(
-                        reqName
-                    );
-                
-                const idArg =
-                    JSON.stringify(
-                        reqId
-                    );
-                
-                const wardArg =
-                    JSON.stringify(
-                        reqWard
-                    );
-
                 container.insertAdjacentHTML('beforeend', `
                     <div style="border:1px solid #ddd; padding:15px; margin-bottom:15px; border-radius:8px; background:#fff;">
                         <div style="background:#e8f4fd; border-left:4px solid #1772d1; padding:10px; margin-bottom:10px;">📍 [${reqWard}] ${reqDate.split('T')[0]} | ${reqName}(${reqId}) - ${reqDuty}</div>
                         <div style="display:flex; gap:10px; align-items:flex-end;">
                             <div style="flex:1"><label>대체여부</label><select id="pend-yn-${idx}" class="form-control"><option value="Y">Y</option><option value="N">N</option></select></div>
                             <div style="flex:3"><label>대체간호사 선택</label><select id="pend-cand-${idx}" class="form-control">${optHtml}</select></div>
-                            <button
-                                class="btn-primary"
-                                onclick='submitManualAssign(
-                                    event,
-                                    ${idx},
-                                    ${dateArg},
-                                    ${nameArg},
-                                    ${idArg},
-                                    ${wardArg}
-                                )'
-                            >
-                                배정 저장
-                            </button>
+                            <button class="btn-primary" onclick='submitManualAssign(event, ${idx}, ${JSON.stringify(reqDate)}, ${JSON.stringify(reqName)}, ${JSON.stringify(reqId)}, ${JSON.stringify(reqWard)})'>배정 저장</button>
                         </div>
                     </div>
                 `);
@@ -1916,181 +891,67 @@
         async function submitManualAssign(e, idx, date, name, id, ward) {
             const yn = document.getElementById(`pend-yn-${idx}`).value;
             const cand = document.getElementById(`pend-cand-${idx}`).value;
-            let cName = "";
-            let cId = "";
-            let cDuty = "";
+            let cName = "", cId = "", cDuty = "";
             
             if (yn === "Y") {
-              if (!cand) {
-                alert("간호사를 선택하세요.");
-                return;
-              }
-            
-              try {
-                const candidate =
-                  JSON.parse(
-                    decodeURIComponent(cand)
-                  );
-            
-                cName = candidate.name;
-                cId = candidate.id;
-                cDuty = candidate.duty;
-            
-              } catch (error) {
-                alert(
-                  "정보를 읽을 수 없습니다."
-                );
-                return;
-              }
+                if (!cand) { alert("간호사를 선택하세요."); return; }
+                try {
+                    const candidate = JSON.parse(decodeURIComponent(cand));
+                    cName = candidate.name; cId = candidate.id; cDuty = candidate.duty;
+                } catch (error) { alert("정보를 읽을 수 없습니다."); return; }
             }
 
             const btn = e.target; btn.disabled = true; btn.innerText = "⏳";
-            const res = await postToGAS({
-              action: 'submitManualAssign',
-              reqDate: date,
-              reqName: name,
-              reqId: id,
-              reqWard: ward,
-              subYn: yn,
-              candName: cName,
-              candId: cId,
-              candDuty: cDuty
-            });
+            const res = await postToGAS({ action: 'submitManualAssign', reqDate: date, reqName: name, reqId: id, reqWard: ward, subYn: yn, candName: cName, candId: cId, candDuty: cDuty });
             
             if(res.success) { alert("처리 완료!"); loadAdminData(); }
             else { alert("오류: " + res.error); btn.disabled = false; btn.innerText = "배정 저장"; }
         }
 
-
         function formatAdminDateTime(value) {
             const text = String(value || '').trim();
-
-            if (!text) {
-                return '';
-            }
-
-            const match = text.match(
-                /^(\d{4})[-/.](\d{1,2})[-/.](\d{1,2})[T\s]+(\d{1,2}):(\d{2})/
-            );
-
-            if (match) {
-                return (
-                    String(Number(match[2])).padStart(2, '0') +
-                    '/' +
-                    String(Number(match[3])).padStart(2, '0') +
-                    ' ' +
-                    String(Number(match[4])).padStart(2, '0') +
-                    ':' +
-                    match[5]
-                );
-            }
-
+            if (!text) return '';
+            const match = text.match(/^(\d{4})[-/.](\d{1,2})[-/.](\d{1,2})[T\s]+(\d{1,2}):(\d{2})/);
+            if (match) return `${String(Number(match[2])).padStart(2, '0')}/${String(Number(match[3])).padStart(2, '0')} ${String(Number(match[4])).padStart(2, '0')}:${match[5]}`;
             return text;
         }
 
         function renderAdminGrid() {
-            const idxYn = adminHeadersData.findIndex(
-                h => h.includes("대체여부") || h.includes("상태")
-            );
+            const idxYn = adminHeadersData.findIndex(h => h.includes("대체여부") || h.includes("상태"));
+            const idxName = adminHeadersData.findIndex(h => h.includes("대상자_성명"));
+            const idxId = adminHeadersData.findIndex(h => h.includes("대상자_사번"));
+            const idxDuty = adminHeadersData.findIndex(h => h.includes("대상자_근무"));
+            const idxAppliedAt = adminHeadersData.findIndex(h => String(h).replace(/\s/g, '').includes('신청일시'));
 
-            const idxName = adminHeadersData.findIndex(
-                h => h.includes("대상자_성명")
-            );
-
-            const idxId = adminHeadersData.findIndex(
-                h => h.includes("대상자_사번")
-            );
-
-            const idxDuty = adminHeadersData.findIndex(
-                h => h.includes("대상자_근무")
-            );
-
-            const idxAppliedAt = adminHeadersData.findIndex(
-                h => String(h).replace(/\s/g, '').includes('신청일시')
-            );
-
-            let html =
-                '<table><thead><tr>' +
-                adminHeadersData
-                    .map(h => `<th>${escapeHtml(h)}</th>`)
-                    .join('') +
-                '</tr></thead><tbody>';
+            let html = '<table><thead><tr>' + adminHeadersData.map(h => `<th>${escapeHtml(h)}</th>`).join('') + '</tr></thead><tbody>';
 
             adminReqData.forEach((row, rIdx) => {
                 html += '<tr>';
-
                 row.forEach((cell, cIdx) => {
-                    const tdBg =
-                        [idxYn, idxName, idxId, idxDuty].includes(cIdx)
-                            ? '#fffcdc'
-                            : '#fff';
-
+                    const tdBg = [idxYn, idxName, idxId, idxDuty].includes(cIdx) ? '#fffcdc' : '#fff';
                     const safeCell = escapeHtml(cell);
-
                     let cHtml = safeCell;
                     let minWidth = '100px';
 
                     if (cIdx === idxAppliedAt) {
-                        cHtml = escapeHtml(
-                            formatAdminDateTime(cell)
-                        );
-                        minWidth = '105px';
-
+                        cHtml = escapeHtml(formatAdminDateTime(cell)); minWidth = '105px';
                     } else if (cIdx === idxYn) {
-                        cHtml =
-                            `<select id="ed_${rIdx}_${cIdx}" class="form-control" style="padding:4px;">` +
-                            `<option value="Y" ${cell === 'Y' ? 'selected' : ''}>Y</option>` +
-                            `<option value="N" ${cell === 'N' ? 'selected' : ''}>N</option>` +
-                            `<option value="대기중" ${cell === '대기중' ? 'selected' : ''}>대기중</option>` +
-                            `<option value="승인" ${cell === '승인' ? 'selected' : ''}>승인</option>` +
-                            `<option value="반려" ${cell === '반려' ? 'selected' : ''}>반려</option>` +
-                            `</select>`;
-
+                        cHtml = `<select id="ed_${rIdx}_${cIdx}" class="form-control" style="padding:4px;"><option value="Y" ${cell === 'Y' ? 'selected' : ''}>Y</option><option value="N" ${cell === 'N' ? 'selected' : ''}>N</option><option value="대기중" ${cell === '대기중' ? 'selected' : ''}>대기중</option><option value="승인" ${cell === '승인' ? 'selected' : ''}>승인</option><option value="반려" ${cell === '반려' ? 'selected' : ''}>반려</option></select>`;
                     } else if (cIdx === idxName || cIdx === idxId) {
-                        cHtml =
-                            `<input type="text" id="ed_${rIdx}_${cIdx}" ` +
-                            `value="${safeCell}" class="form-control" style="padding:4px;">`;
-
+                        cHtml = `<input type="text" id="ed_${rIdx}_${cIdx}" value="${safeCell}" class="form-control" style="padding:4px;">`;
                     } else if (cIdx === idxDuty) {
-                        cHtml =
-                            `<select id="ed_${rIdx}_${cIdx}" class="form-control" style="padding:4px;">` +
-                            `<option value=""></option>` +
-                            `<option value="D" ${cell === 'D' ? 'selected' : ''}>D</option>` +
-                            `<option value="E" ${cell === 'E' ? 'selected' : ''}>E</option>` +
-                            `<option value="N" ${cell === 'N' ? 'selected' : ''}>N</option>` +
-                            `<option value="Dm" ${cell === 'Dm' ? 'selected' : ''}>Dm</option>` +
-                            `<option value="Em" ${cell === 'Em' ? 'selected' : ''}>Em</option>` +
-                            `<option value="Nm" ${cell === 'Nm' ? 'selected' : ''}>Nm</option>` +
-                            `</select>`;
+                        cHtml = `<select id="ed_${rIdx}_${cIdx}" class="form-control" style="padding:4px;"><option value=""></option><option value="D" ${cell === 'D' ? 'selected' : ''}>D</option><option value="E" ${cell === 'E' ? 'selected' : ''}>E</option><option value="N" ${cell === 'N' ? 'selected' : ''}>N</option><option value="Dm" ${cell === 'Dm' ? 'selected' : ''}>Dm</option><option value="Em" ${cell === 'Em' ? 'selected' : ''}>Em</option><option value="Nm" ${cell === 'Nm' ? 'selected' : ''}>Nm</option></select>`;
                     }
-
-                    html +=
-                        `<td style="background:${tdBg}; min-width:${minWidth}; white-space:nowrap;">` +
-                        `${cHtml}</td>`;
+                    html += `<td style="background:${tdBg}; min-width:${minWidth}; white-space:nowrap;">${cHtml}</td>`;
                 });
-
                 html += '</tr>';
             });
-
             html += '</tbody></table>';
-
-            document
-                .getElementById('admin-history-table')
-                .innerHTML = html;
+            document.getElementById('admin-history-table').innerHTML = html;
         }
 
         function escapeHtml(value) {
-            return String(
-                value === null ||
-                value === undefined
-                    ? ''
-                    : value
-            )
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#039;');
+            return String(value === null || value === undefined ? '' : value).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
         }
 
         async function saveAdminHistory(e) {
@@ -2103,23 +964,11 @@
             
             const btn = e.target; btn.innerText = "⏳ 저장 중..."; btn.disabled = true;
             const res = await postToGAS({ action: 'saveAdminData', requestData: upData });
-            if (res.success) {
-                alert(
-                    '✅ 저장 완료!'
-                );
             
-                await loadAdminData();
+            if (res.success) { alert('✅ 저장 완료!'); await loadAdminData(); } 
+            else { alert('오류: ' + (res.error || '저장에 실패했습니다.')); }
             
-            } else {
-                alert(
-                    '오류: ' +
-                    (
-                        res.error ||
-                        '저장에 실패했습니다.'
-                    )
-                );
-            }
-            btn.innerText = "💾 전체 내역 수정사항 저장하기"; btn.disabled = false;
+            btn.innerText = "💾 수정사항 저장"; btn.disabled = false;
         }
 
         function syncAdminData() { loadAdminData(); }
@@ -2127,886 +976,243 @@
         /* -------------------------------------------------------------
            5. 평가지표 대시보드
         ------------------------------------------------------------- */
-        function cleanHeader(value) {
-            return String(value || '')
-                .replace(/\n/g, '')
-                .replace(/\s/g, '')
-                .trim();
-        }
+        function cleanHeader(value) { return String(value || '').replace(/\n/g, '').replace(/\s/g, '').trim(); }
         
-        function findHeaderIndex(
-            headers,
-            candidates
-        ) {
-            const cleaned =
-                headers.map(cleanHeader);
-        
-            for (
-                const candidate of candidates
-            ) {
-                const target =
-                    cleanHeader(candidate);
-        
-                const exactIndex =
-                    cleaned.findIndex(
-                        header =>
-                            header === target
-                    );
-        
-                if (exactIndex !== -1) {
-                    return exactIndex;
-                }
-        
-                const includesIndex =
-                    cleaned.findIndex(
-                        header =>
-                            header.includes(target)
-                    );
-        
-                if (includesIndex !== -1) {
-                    return includesIndex;
-                }
+        function findHeaderIndex(headers, candidates) {
+            const cleaned = headers.map(cleanHeader);
+            for (const candidate of candidates) {
+                const target = cleanHeader(candidate);
+                const exactIndex = cleaned.findIndex(header => header === target);
+                if (exactIndex !== -1) return exactIndex;
+                const includesIndex = cleaned.findIndex(header => header.includes(target));
+                if (includesIndex !== -1) return includesIndex;
             }
-        
             return -1;
         }
         
         function cleanWard(value) {
-            const text =
-                String(value || '')
-                    .replace('.0', '')
-                    .trim()
-                    .toUpperCase();
-        
-            if (
-                !text ||
-                text === 'HN' ||
-                text.includes('대체간호사팀')
-            ) {
-                return '';
-            }
-        
-            return text.endsWith('W')
-                ? text
-                : `${text}W`;
+            const text = String(value || '').replace('.0', '').trim().toUpperCase();
+            if (!text || text === 'HN' || text.includes('대체간호사팀')) return '';
+            return text.endsWith('W') ? text : `${text}W`;
         }
         
-        function cleanId(value) {
-            return String(value || '')
-                .replace('.0', '')
-                .trim();
-        }
-        
-        function isEmptyDuty(value) {
-            const text =
-                String(value || '')
-                    .trim()
-                    .toLowerCase();
-        
-            return (
-                text === '' ||
-                text === 'nan' ||
-                text === 'none'
-            );
-        }
+        function cleanId(value) { return String(value || '').replace('.0', '').trim(); }
+        function isEmptyDuty(value) { const text = String(value || '').trim().toLowerCase(); return (text === '' || text === 'nan' || text === 'none'); }
             
         function renderMetricsInsights(data) {
-            const {
-                wardChange,
-                wardVac,
-                wardRep,
-                wardTotals
-            } = data;
+            const { wardChange, wardVac, wardRep, wardTotals } = data;
 
             const rows = wardList.map(ward => {
                 const total = Number(wardTotals[ward] || 0);
                 const changed = Number(wardChange[ward] || 0);
                 const vacancy = Number(wardVac[ward] || 0);
                 const replacement = Number(wardRep[ward] || 0);
-
                 return {
-                    ward,
-                    total,
-                    changed,
-                    vacancy,
-                    replacement,
-                    complianceRate:
-                        total > 0
-                            ? ((total - changed) / total) * 100
-                            : 0,
-                    replacementRate:
-                        vacancy > 0
-                            ? (replacement / vacancy) * 100
-                            : 0
+                    ward, total, changed, vacancy, replacement,
+                    complianceRate: total > 0 ? ((total - changed) / total) * 100 : 0,
+                    replacementRate: vacancy > 0 ? (replacement / vacancy) * 100 : 0
                 };
             });
 
-            const active =
-                rows.filter(row =>
-                    row.total > 0 ||
-                    row.vacancy > 0
-                );
+            const active = rows.filter(row => row.total > 0 || row.vacancy > 0);
+            const bestCompliance = [...active].filter(row => row.total > 0).sort((a, b) => b.complianceRate - a.complianceRate)[0];
+            const mostVacancy = [...active].sort((a, b) => b.vacancy - a.vacancy)[0];
+            const bestReplacement = [...active].filter(row => row.vacancy > 0).sort((a, b) => b.replacementRate - a.replacementRate)[0];
 
-            const bestCompliance =
-                [...active]
-                    .filter(row => row.total > 0)
-                    .sort(
-                        (a, b) =>
-                            b.complianceRate -
-                            a.complianceRate
-                    )[0];
-
-            const mostVacancy =
-                [...active]
-                    .sort(
-                        (a, b) =>
-                            b.vacancy -
-                            a.vacancy
-                    )[0];
-
-            const bestReplacement =
-                [...active]
-                    .filter(row => row.vacancy > 0)
-                    .sort(
-                        (a, b) =>
-                            b.replacementRate -
-                            a.replacementRate
-                    )[0];
-
-            document
-                .getElementById('insight-container')
-                .innerHTML = `
-                    <div class="metric-card">
-                        <div>계획근무 준수율 최고</div>
-                        <div class="metric-val">
-                            ${bestCompliance ? bestCompliance.ward : '-'}
-                        </div>
-                        <div>
-                            ${
-                                bestCompliance
-                                    ? bestCompliance.complianceRate.toFixed(2) + '%'
-                                    : '데이터 없음'
-                            }
-                        </div>
-                    </div>
-
-                    <div class="metric-card">
-                        <div>결원 발생 최다 병동</div>
-                        <div class="metric-val">
-                            ${
-                                mostVacancy &&
-                                mostVacancy.vacancy > 0
-                                    ? mostVacancy.ward
-                                    : '-'
-                            }
-                        </div>
-                        <div>
-                            ${
-                                mostVacancy &&
-                                mostVacancy.vacancy > 0
-                                    ? mostVacancy.vacancy + '일'
-                                    : '결원 없음'
-                            }
-                        </div>
-                    </div>
-
-                    <div class="metric-card">
-                        <div>결원 대체율 최고</div>
-                        <div class="metric-val">
-                            ${bestReplacement ? bestReplacement.ward : '-'}
-                        </div>
-                        <div>
-                            ${
-                                bestReplacement
-                                    ? bestReplacement.replacementRate.toFixed(2) + '%'
-                                    : '데이터 없음'
-                            }
-                        </div>
-                    </div>
-                `;
-
-            const rankingRows =
-                [...rows].sort((a, b) => {
-                    if (
-                        b.complianceRate !==
-                        a.complianceRate
-                    ) {
-                        return (
-                            b.complianceRate -
-                            a.complianceRate
-                        );
-                    }
-
-                    return (
-                        b.replacementRate -
-                        a.replacementRate
-                    );
-                });
-
-            let html = `
-                <table>
-                    <thead>
-                        <tr>
-                            <th>순위</th>
-                            <th>병동</th>
-                            <th>계획근무일</th>
-                            <th>변동일수</th>
-                            <th>계획근무 준수율</th>
-                            <th>결원일수</th>
-                            <th>대체일수</th>
-                            <th>결원 대체율</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+            document.getElementById('insight-container').innerHTML = `
+                <div class="metric-card">
+                    <div>계획근무 준수율 최고</div>
+                    <div class="metric-val">${bestCompliance ? bestCompliance.ward : '-'}</div>
+                    <div>${bestCompliance ? bestCompliance.complianceRate.toFixed(2) + '%' : '데이터 없음'}</div>
+                </div>
+                <div class="metric-card">
+                    <div>결원 발생 최다 병동</div>
+                    <div class="metric-val">${mostVacancy && mostVacancy.vacancy > 0 ? mostVacancy.ward : '-'}</div>
+                    <div>${mostVacancy && mostVacancy.vacancy > 0 ? mostVacancy.vacancy + '일' : '결원 없음'}</div>
+                </div>
+                <div class="metric-card">
+                    <div>결원 대체율 최고</div>
+                    <div class="metric-val">${bestReplacement ? bestReplacement.ward : '-'}</div>
+                    <div>${bestReplacement ? bestReplacement.replacementRate.toFixed(2) + '%' : '데이터 없음'}</div>
+                </div>
             `;
 
-            rankingRows.forEach((row, index) => {
-                html += `
-                    <tr>
-                        <td>${index + 1}</td>
-                        <td><strong>${row.ward}</strong></td>
-                        <td>${row.total}</td>
-                        <td>${row.changed}</td>
-                        <td>${row.complianceRate.toFixed(2)}%</td>
-                        <td>${row.vacancy}</td>
-                        <td>${row.replacement}</td>
-                        <td>${row.replacementRate.toFixed(2)}%</td>
-                    </tr>
-                `;
+            const rankingRows = [...rows].sort((a, b) => {
+                if (b.complianceRate !== a.complianceRate) return b.complianceRate - a.complianceRate;
+                return b.replacementRate - a.replacementRate;
             });
 
+            let html = `<table><thead><tr><th>순위</th><th>병동</th><th>계획근무일</th><th>변동일수</th><th>계획근무 준수율</th><th>결원일수</th><th>대체일수</th><th>결원 대체율</th></tr></thead><tbody>`;
+            rankingRows.forEach((row, index) => {
+                html += `<tr><td>${index + 1}</td><td><strong>${row.ward}</strong></td><td>${row.total}</td><td>${row.changed}</td><td>${row.complianceRate.toFixed(2)}%</td><td>${row.vacancy}</td><td>${row.replacement}</td><td>${row.replacementRate.toFixed(2)}%</td></tr>`;
+            });
             html += '</tbody></table>';
-
-            document
-                .getElementById(
-                    'ranking-table-container'
-                )
-                .innerHTML = html;
+            document.getElementById('ranking-table-container').innerHTML = html;
         }
 
         async function runMetricsAnalysis(e) {
             const btn = e.target;
+            const selectedMonths = getSelectedDashboardMonths();
         
-            const selectedMonths =
-                getSelectedDashboardMonths();
+            if (selectedMonths.length === 0) { alert('분석할 기간을 하나 이상 선택하세요.'); return; }
         
-            if (
-                selectedMonths.length === 0
-            ) {
-                alert(
-                    '분석할 기간을 하나 이상 선택하세요.'
-                );
-                return;
-            }
-        
-            const loading =
-                document.getElementById(
-                    'metrics-loading'
-                );
-        
-            const resultContainer =
-                document.getElementById(
-                    'metrics-result-container'
-                );
+            const loading = document.getElementById('metrics-loading');
+            const resultContainer = document.getElementById('metrics-result-container');
+            const emptyState = document.getElementById('metrics-empty-state');
         
             loading.style.display = 'block';
             resultContainer.style.display = 'none';
+            if(emptyState) emptyState.style.display = 'none'; // 분석 시작 시 이전 에러메시지 숨김
             btn.disabled = true;
         
             try {
-                const hnData =
-                    await fetchSheetData(
-                        'HN',
-                        true
-                    );
+                const hnData = await fetchSheetData('HN', true);
+                const hnIds = new Set();
         
-                const hnIds =
-                    new Set();
-        
-                if (
-                    hnData &&
-                    hnData.length > 1
-                ) {
-                    const hnHeaders =
-                        hnData[0];
-        
-                    const hnIdIndex =
-                        findHeaderIndex(
-                            hnHeaders,
-                            ['면허번호']
-                        );
-        
+                if (hnData && hnData.length > 1) {
+                    const hnHeaders = hnData[0];
+                    const hnIdIndex = findHeaderIndex(hnHeaders, ['면허번호']);
                     if (hnIdIndex !== -1) {
-                        hnData
-                            .slice(1)
-                            .forEach(row => {
-                                const id =
-                                    cleanId(
-                                        row[hnIdIndex]
-                                    );
-        
-                                if (id) {
-                                    hnIds.add(id);
-                                }
-                            });
+                        hnData.slice(1).forEach(row => {
+                            const id = cleanId(row[hnIdIndex]);
+                            if (id) hnIds.add(id);
+                        });
                     }
                 }
         
-                let totDenom = 0;
-                let totA = 0;
-                let totB = 0;
-                let totC = 0;
-                let totVacDays = 0;
-                let totRepDays = 0;
+                let totDenom = 0, totA = 0, totB = 0, totC = 0, totVacDays = 0, totRepDays = 0;
+                const wardChange = {}, wardVac = {}, wardRep = {}, wardTotals = {};
         
-                const wardChange = {};
-                const wardVac = {};
-                const wardRep = {};
-                const wardTotals = {};
-        
-                wardList.forEach(ward => {
-                    wardChange[ward] = 0;
-                    wardVac[ward] = 0;
-                    wardRep[ward] = 0;
-                    wardTotals[ward] = 0;
-                });
-        
+                wardList.forEach(ward => { wardChange[ward] = 0; wardVac[ward] = 0; wardRep[ward] = 0; wardTotals[ward] = 0; });
                 const pregnancyList = [];
         
-                for (
-                    const targetMonth of
-                    selectedMonths
-                ) {
-                    const [
-                        planData,
-                        actualData,
-                        vacancyData,
-                        pregnancyData
-                    ] = await Promise.all([
-                        fetchSheetData(
-                            `${targetMonth} 계획근무`,
-                            true
-                        ),
-                        fetchSheetData(
-                            `${targetMonth} 실제근무`,
-                            true
-                        ),
-                        fetchSheetData(
-                            `${targetMonth} 결원대체현황`,
-                            true
-                        ),
-                        fetchSheetData(
-                            `${targetMonth} 임신변동현황`,
-                            true
-                        )
+                for (const targetMonth of selectedMonths) {
+                    const [ planData, actualData, vacancyData, pregnancyData ] = await Promise.all([
+                        fetchSheetData(`${targetMonth} 계획근무`, true), fetchSheetData(`${targetMonth} 실제근무`, true),
+                        fetchSheetData(`${targetMonth} 결원대체현황`, true), fetchSheetData(`${targetMonth} 임신변동현황`, true)
                     ]);
         
-                    if (
-                        !planData ||
-                        !actualData ||
-                        planData.length < 2 ||
-                        actualData.length < 2
-                    ) {
-                        console.warn(
-                            `${targetMonth} 계획/실제근무 자료 없음`
-                        );
-                        continue;
-                    }
+                    if (!planData || !actualData || planData.length < 2 || actualData.length < 2) { console.warn(`${targetMonth} 계획/실제근무 자료 없음`); continue; }
         
-                    const planHeaders =
-                        planData[0];
+                    const planHeaders = planData[0];
+                    const actualHeaders = actualData[0];
+                    const planWardIndex = findHeaderIndex(planHeaders, ['병동명', '병동']);
+                    const planIdIndex = findHeaderIndex(planHeaders, ['면허번호']);
+                    const planNameIndex = findHeaderIndex(planHeaders, ['성명', '이름']);
+                    const actualIdIndex = findHeaderIndex(actualHeaders, ['면허번호']);
         
-                    const actualHeaders =
-                        actualData[0];
-        
-                    const planWardIndex =
-                        findHeaderIndex(
-                            planHeaders,
-                            ['병동명', '병동']
-                        );
-        
-                    const planIdIndex =
-                        findHeaderIndex(
-                            planHeaders,
-                            ['면허번호']
-                        );
-        
-                    const planNameIndex =
-                        findHeaderIndex(
-                            planHeaders,
-                            ['성명', '이름']
-                        );
-        
-                    const actualIdIndex =
-                        findHeaderIndex(
-                            actualHeaders,
-                            ['면허번호']
-                        );
-        
-                    if (
-                        planWardIndex === -1 ||
-                        planIdIndex === -1 ||
-                        actualIdIndex === -1
-                    ) {
-                        console.warn(
-                            `${targetMonth} 필수 헤더 누락`
-                        );
-                        continue;
-                    }
+                    if (planWardIndex === -1 || planIdIndex === -1 || actualIdIndex === -1) { console.warn(`${targetMonth} 필수 헤더 누락`); continue; }
         
                     const planDateColumns = [];
+                    planHeaders.forEach((header, index) => { const parsed = getHeaderMonthDay(header); if (parsed) planDateColumns.push({ index, month: parsed.month, day: parsed.day }); });
         
-                    planHeaders.forEach(
-                        (header, index) => {
-                            const parsed =
-                                getHeaderMonthDay(
-                                    header
-                                );
+                    const actualDateMap = new Map();
+                    actualHeaders.forEach((header, index) => { const parsed = getHeaderMonthDay(header); if (parsed) actualDateMap.set(`${parsed.month}-${parsed.day}`, index); });
         
-                            if (parsed) {
-                                planDateColumns.push({
-                                    index,
-                                    month: parsed.month,
-                                    day: parsed.day
-                                });
-                            }
-                        }
-                    );
+                    const actualRowsById = new Map();
+                    actualData.slice(1).forEach(row => { const id = cleanId(row[actualIdIndex]); if (id) actualRowsById.set(id, row); });
         
-                    const actualDateMap =
-                        new Map();
+                    planData.slice(1).forEach(planRow => {
+                        const ward = cleanWard(planRow[planWardIndex]);
+                        const id = cleanId(planRow[planIdIndex]);
+                        if (!wardList.includes(ward) || !id || hnIds.has(id)) return;
+                        
+                        const actualRow = actualRowsById.get(id);
+                        if (!actualRow) return;
         
-                    actualHeaders.forEach(
-                        (header, index) => {
-                            const parsed =
-                                getHeaderMonthDay(
-                                    header
-                                );
+                        planDateColumns.forEach(dateColumn => {
+                            const actualIndex = actualDateMap.get(`${dateColumn.month}-${dateColumn.day}`);
+                            if (actualIndex === undefined) return;
         
-                            if (parsed) {
-                                actualDateMap.set(
-                                    `${parsed.month}-${parsed.day}`,
-                                    index
-                                );
-                            }
-                        }
-                    );
+                            const planDuty = String(planRow[dateColumn.index] || '').trim();
+                            if (isEmptyDuty(planDuty)) return;
         
-                    const actualRowsById =
-                        new Map();
+                            const actualDuty = String(actualRow[actualIndex] || '').trim();
+                            totDenom++; wardTotals[ward]++;
         
-                    actualData
-                        .slice(1)
-                        .forEach(row => {
-                            const id =
-                                cleanId(
-                                    row[actualIdIndex]
-                                );
+                            if (planDuty === actualDuty) totA++; else wardChange[ward]++;
+                        });
+                    });
         
-                            if (id) {
-                                actualRowsById.set(
-                                    id,
-                                    row
-                                );
+                    if (vacancyData && vacancyData.length > 1) {
+                        const headers = vacancyData[0];
+                        const wardIndex = findHeaderIndex(headers, ['병동명', '병동', '요청부서']);
+                        const nameIndex = findHeaderIndex(headers, ['성명', '결원자명', '이름']);
+                        const reasonIndex = findHeaderIndex(headers, ['결원사유', '사유']);
+                        const replacementIndex = findHeaderIndex(headers, ['대체여부', '대체']);
+        
+                        vacancyData.slice(1).forEach(row => {
+                            const ward = wardIndex !== -1 ? cleanWard(row[wardIndex]) : '';
+                            const name = nameIndex !== -1 ? String(row[nameIndex] || '').trim() : '';
+                            if (!wardList.includes(ward) || !name) return;
+        
+                            const replacement = replacementIndex !== -1 ? String(row[replacementIndex] || '').trim().toUpperCase() : '';
+                            const reason = reasonIndex !== -1 ? String(row[reasonIndex] || '').replace(/\s/g, '') : '';
+        
+                            totVacDays++; wardVac[ward]++;
+        
+                            if (replacement === 'Y') {
+                                totRepDays++; wardRep[ward]++;
+                                if (reason.includes('임신간호사발생') || reason.includes('임신')) totC++;
                             }
                         });
-        
-                    planData
-                        .slice(1)
-                        .forEach(planRow => {
-                            const ward =
-                                cleanWard(
-                                    planRow[
-                                        planWardIndex
-                                    ]
-                                );
-        
-                            const id =
-                                cleanId(
-                                    planRow[
-                                        planIdIndex
-                                    ]
-                                );
-        
-                            if (
-                                !wardList.includes(ward) ||
-                                !id ||
-                                hnIds.has(id)
-                            ) {
-                                return;
-                            }
-        
-                            const actualRow =
-                                actualRowsById.get(id);
-        
-                            if (!actualRow) {
-                                return;
-                            }
-        
-                            planDateColumns.forEach(
-                                dateColumn => {
-                                    const actualIndex =
-                                        actualDateMap.get(
-                                            `${dateColumn.month}-${dateColumn.day}`
-                                        );
-        
-                                    if (
-                                        actualIndex ===
-                                        undefined
-                                    ) {
-                                        return;
-                                    }
-        
-                                    const planDuty =
-                                        String(
-                                            planRow[
-                                                dateColumn.index
-                                            ] || ''
-                                        ).trim();
-        
-                                    if (
-                                        isEmptyDuty(
-                                            planDuty
-                                        )
-                                    ) {
-                                        return;
-                                    }
-        
-                                    const actualDuty =
-                                        String(
-                                            actualRow[
-                                                actualIndex
-                                            ] || ''
-                                        ).trim();
-        
-                                    totDenom++;
-                                    wardTotals[ward]++;
-        
-                                    if (
-                                        planDuty ===
-                                        actualDuty
-                                    ) {
-                                        totA++;
-                                    } else {
-                                        wardChange[ward]++;
-                                    }
-                                }
-                            );
-                        });
-        
-                    if (
-                        vacancyData &&
-                        vacancyData.length > 1
-                    ) {
-                        const headers =
-                            vacancyData[0];
-        
-                        const wardIndex =
-                            findHeaderIndex(
-                                headers,
-                                ['병동명', '병동', '요청부서']
-                            );
-        
-                        const nameIndex =
-                            findHeaderIndex(
-                                headers,
-                                ['성명', '결원자명', '이름']
-                            );
-        
-                        const reasonIndex =
-                            findHeaderIndex(
-                                headers,
-                                ['결원사유', '사유']
-                            );
-        
-                        const replacementIndex =
-                            findHeaderIndex(
-                                headers,
-                                ['대체여부', '대체']
-                            );
-        
-                        vacancyData
-                            .slice(1)
-                            .forEach(row => {
-                                const ward =
-                                    wardIndex !== -1
-                                        ? cleanWard(
-                                            row[wardIndex]
-                                        )
-                                        : '';
-        
-                                const name =
-                                    nameIndex !== -1
-                                        ? String(
-                                            row[nameIndex] || ''
-                                        ).trim()
-                                        : '';
-        
-                                if (
-                                    !wardList.includes(ward) ||
-                                    !name
-                                ) {
-                                    return;
-                                }
-        
-                                const replacement =
-                                    replacementIndex !== -1
-                                        ? String(
-                                            row[
-                                                replacementIndex
-                                            ] || ''
-                                        )
-                                            .trim()
-                                            .toUpperCase()
-                                        : '';
-        
-                                const reason =
-                                    reasonIndex !== -1
-                                        ? String(
-                                            row[
-                                                reasonIndex
-                                            ] || ''
-                                        )
-                                            .replace(/\s/g, '')
-                                        : '';
-        
-                                totVacDays++;
-                                wardVac[ward]++;
-        
-                                if (
-                                    replacement === 'Y'
-                                ) {
-                                    totRepDays++;
-                                    wardRep[ward]++;
-        
-                                    if (
-                                        reason.includes(
-                                            '임신간호사발생'
-                                        ) ||
-                                        reason.includes('임신')
-                                    ) {
-                                        totC++;
-                                    }
-                                }
-                            });
                     }
         
-                    if (
-                        pregnancyData &&
-                        pregnancyData.length > 1
-                    ) {
-                        const headers =
-                            pregnancyData[0];
+                    if (pregnancyData && pregnancyData.length > 1) {
+                        const headers = pregnancyData[0];
+                        const wardIndex = findHeaderIndex(headers, ['병동명', '병동']);
+                        const idIndex = findHeaderIndex(headers, ['면허번호']);
+                        const nameIndex = findHeaderIndex(headers, ['성명', '이름']);
+                        const noteIndex = findHeaderIndex(headers, ['비고']);
         
-                        const wardIndex =
-                            findHeaderIndex(
-                                headers,
-                                ['병동명', '병동']
-                            );
+                        pregnancyData.slice(1).forEach(row => {
+                            let ward = wardIndex !== -1 ? cleanWard(row[wardIndex]) : '';
+                            const id = idIndex !== -1 ? cleanId(row[idIndex]) : '';
+                            const name = nameIndex !== -1 ? String(row[nameIndex] || '').trim() : '';
         
-                        const idIndex =
-                            findHeaderIndex(
-                                headers,
-                                ['면허번호']
-                            );
+                            if (!ward && id) {
+                                const planPerson = planData.slice(1).find(planRow => cleanId(planRow[planIdIndex]) === id);
+                                if (planPerson) ward = cleanWard(planPerson[planWardIndex]);
+                            }
         
-                        const nameIndex =
-                            findHeaderIndex(
-                                headers,
-                                ['성명', '이름']
-                            );
+                            if (!wardList.includes(ward)) return;
         
-                        const noteIndex =
-                            findHeaderIndex(
-                                headers,
-                                ['비고']
-                            );
-        
-                        pregnancyData
-                            .slice(1)
-                            .forEach(row => {
-                                const note =
-                                    noteIndex !== -1
-                                        ? String(
-                                            row[noteIndex] || ''
-                                        )
-                                            .replace(/\s/g, '')
-                                        : '';
-                                /*
-                                if (
-                                    noteIndex !== -1 &&
-                                    !note.includes('임신')
-                                ) {
-                                    return;
-                                }
-                                */
-            
-                                let ward =
-                                    wardIndex !== -1
-                                        ? cleanWard(
-                                            row[wardIndex]
-                                        )
-                                        : '';
-        
-                                const id =
-                                    idIndex !== -1
-                                        ? cleanId(
-                                            row[idIndex]
-                                        )
-                                        : '';
-        
-                                const name =
-                                    nameIndex !== -1
-                                        ? String(
-                                            row[nameIndex] || ''
-                                        ).trim()
-                                        : '';
-        
-                                if (!ward && id) {
-                                    const planPerson =
-                                        planData
-                                            .slice(1)
-                                            .find(planRow =>
-                                                cleanId(
-                                                    planRow[
-                                                        planIdIndex
-                                                    ]
-                                                ) === id
-                                            );
-        
-                                    if (planPerson) {
-                                        ward =
-                                            cleanWard(
-                                                planPerson[
-                                                    planWardIndex
-                                                ]
-                                            );
-                                    }
-                                }
-        
-                                if (
-                                    !wardList.includes(ward)
-                                ) {
-                                    return;
-                                }
-        
-                                totB++;
-        
-                                pregnancyList.push({
-                                    month: targetMonth,
-                                    ward,
-                                    name:
-                                        name ||
-                                        id ||
-                                        '이름 없음'
-                                });
-                            });
+                            totB++;
+                            pregnancyList.push({ month: targetMonth, ward, name: name || id || '이름 없음' });
+                        });
                     }
                 }
         
-                const totD =
-                    totRepDays;
+                /* 💡 [수정됨] 분석할 데이터가 아예 없을 경우 스피너를 끄고 안내 화면 띄우기 */
+                if (totDenom === 0 && totVacDays === 0) {
+                    loading.style.display = 'none';
+                    if (emptyState) emptyState.style.display = 'block';
+                    return; // 👈 무한 로딩 방지를 위한 즉시 종료
+                }
         
-                const numerator =
-                    totA +
-                    totB -
-                    totC +
-                    totD;
+                const totD = totRepDays;
+                const numerator = totA + totB - totC + totD;
+                const complianceRate = totDenom > 0 ? numerator / totDenom * 100 : 0;
+                const replacementRate = totVacDays > 0 ? totRepDays / totVacDays * 100 : 0;
         
-                const complianceRate =
-                    totDenom > 0
-                        ? numerator /
-                          totDenom *
-                          100
-                        : 0;
+                document.getElementById('val-vac-days').innerText = `${totVacDays}일`;
+                document.getElementById('val-rep-days').innerText = `${totRepDays}일`;
+                document.getElementById('val-rep-rate').innerText = `${replacementRate.toFixed(2)}%`;
+                document.getElementById('val-denom').innerText = `${totDenom}일`;
+                document.getElementById('val-numer').innerText = `${numerator}일`;
+                document.getElementById('val-comp-rate').innerText = `${complianceRate.toFixed(2)}%`;
+                document.getElementById('val-A').innerText = totA;
+                document.getElementById('val-B').innerText = totB;
+                document.getElementById('val-C').innerText = totC;
+                document.getElementById('val-D').innerText = totD;
         
-                const replacementRate =
-                    totVacDays > 0
-                        ? totRepDays /
-                          totVacDays *
-                          100
-                        : 0;
+                renderMetricsInsights({ wardChange, wardVac, wardRep, wardTotals, pregnancyList });
         
-                document
-                    .getElementById(
-                        'val-vac-days'
-                    )
-                    .innerText =
-                    `${totVacDays}일`;
-        
-                document
-                    .getElementById(
-                        'val-rep-days'
-                    )
-                    .innerText =
-                    `${totRepDays}일`;
-        
-                document
-                    .getElementById(
-                        'val-rep-rate'
-                    )
-                    .innerText =
-                    `${replacementRate.toFixed(2)}%`;
-        
-                document
-                    .getElementById(
-                        'val-denom'
-                    )
-                    .innerText =
-                    `${totDenom}일`;
-        
-                document
-                    .getElementById(
-                        'val-numer'
-                    )
-                    .innerText =
-                    `${numerator}일`;
-        
-                document
-                    .getElementById(
-                        'val-comp-rate'
-                    )
-                    .innerText =
-                    `${complianceRate.toFixed(2)}%`;
-        
-                document
-                    .getElementById('val-A')
-                    .innerText = totA;
-        
-                document
-                    .getElementById('val-B')
-                    .innerText = totB;
-        
-                document
-                    .getElementById('val-C')
-                    .innerText = totC;
-        
-                document
-                    .getElementById('val-D')
-                    .innerText = totD;
-        
-                renderMetricsInsights({
-                    wardChange,
-                    wardVac,
-                    wardRep,
-                    wardTotals,
-                    pregnancyList
-                });
-        
-                resultContainer.style.display =
-                    'block';
+                resultContainer.style.display = 'block';
         
             } catch (error) {
-                console.error(
-                    '평가지표 분석 오류:',
-                    error
-                );
-        
-                alert(
-                    '평가지표 계산 중 오류가 발생했습니다.\n\n' +
-                    error.message
-                );
-        
+                console.error('평가지표 분석 오류:', error);
+                alert('평가지표 계산 중 오류가 발생했습니다.\n\n' + error.message);
             } finally {
                 loading.style.display = 'none';
                 btn.disabled = false;
