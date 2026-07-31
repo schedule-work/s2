@@ -468,7 +468,7 @@
                 </div>
 
                 <div id="metrics-loading" style="display: none; color: var(--primary-color); font-weight: bold; text-align: center; margin: 50px 0;">
-                    <span style="font-size: 40px;">⏳</span><br><br>교대제 DNS 시트에서 수천 건의 데이터를 읽고 판다스(Pandas) 병합 연산을 수행 중입니다.<br>잠시만 기다려주세요 (약 5~10초 소요)...
+                    <span style="font-size: 40px;">⏳</span><br><br>분석 중입니다.<br>잠시만 기다려주세요 (약 5~10초 소요)...
                 </div>
                 
                 <div id="metrics-result-container" style="display: none;">
@@ -2762,14 +2762,15 @@
                                         )
                                             .replace(/\s/g, '')
                                         : '';
-        
+                                /*
                                 if (
                                     noteIndex !== -1 &&
                                     !note.includes('임신')
                                 ) {
                                     return;
                                 }
-        
+                                */
+            
                                 let ward =
                                     wardIndex !== -1
                                         ? cleanWard(
