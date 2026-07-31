@@ -1112,6 +1112,8 @@
         
                     const actualRowsById = new Map();
                     actualData.slice(1).forEach(row => { const id = cleanId(row[actualIdIndex]); if (id) actualRowsById.set(id, row); });
+
+                    const evaluatedIds = new Set();
         
                     planData.slice(1).forEach(planRow => {
                         const ward = cleanWard(planRow[planWardIndex]);
