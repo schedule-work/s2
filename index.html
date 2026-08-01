@@ -444,7 +444,7 @@
             return text.endsWith('W') ? text : text + 'W';
         }
         
-        const sessionState = { page: 'home', target_date: getTodayLocalString(), admin_logged_in: false };
+        const sessionState = { page: 'home', target_date: getTodayLocalString(), admin_logged_in: false, general_logged_in: false };
 
         function parseLocalDate(dateString) {
             if (dateString === null || dateString === undefined || dateString === '') return null;
@@ -481,6 +481,22 @@
         }
 
         function navigateTo(pageId) {
+            // 💡 4자리 비밀번호 설정
+            const protectedPages = ['request', 'schedule', 'dashboard'];
+            const SECRET_PIN = "2626"; 
+
+            if (protectedPages.includes(pageId) && !sessionState.general_logged_in) {
+                const inputPin = prompt("🔒 비밀번호 입력");
+                
+                if (inputPin === null) {return; }
+                
+                if (inputPin === SECRET_PIN) {sessionState.general_logged_in = true;
+                } else {
+                    alert("❌ 비밀번호가 일치하지 않습니다.");
+                    return;
+                }
+            }
+            
             sessionState.page = pageId;
             document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('nav div').forEach(el => el.classList.remove('active'));
