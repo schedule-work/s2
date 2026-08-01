@@ -95,17 +95,17 @@
             .logo-text { font-size: 16px; white-space: nowrap; }
             .logo-text span { font-size: 18px; }
             nav { position: absolute; top: 60px; left: 0; right: 0; display: flex; gap: 0; overflow-x: auto; background: #ffffff; border-bottom: 1px solid #eaeaea; padding: 0 5px; }
-            nav div { flex: 0 0 auto; min-width: 82px; padding: 0 10px; line-height: 48px; font-size: 13px; text-align: center; white-space: nowrap; }
+            nav div { flex: 0 0 auto; min-width: 60px; padding: 0 8px; line-height: 48px; font-size: 13px; text-align: center; white-space: nowrap; }
             .page { padding-top: 108px; }
             body.home-theme .page { padding-top: 0; }
             .content-wrap { padding: 25px 15px; }
             .custom-title { font-size: 21px; margin-bottom: 20px; }
-            .home-title { margin-top: 55px; padding: 0 15px; }
+            .home-title { margin-top: 20px; padding: 0 15px; }
             .home-subtitle { padding: 0 15px; margin-bottom: 30px; }
-            .home-btn-container { display: grid; grid-template-columns: 1fr; gap: 12px; padding: 0 15px 30px; }
-            .home-btn { width: 100%; min-width: 0; height: 85px; border-radius: 14px; }
-            .home-btn span.title { font-size: 1.25rem; margin-bottom: 3px; }
-            .home-btn span.desc { font-size: 0.85rem; }
+            .home-btn-container { display: grid; grid-template-columns: 1fr; gap: 12px; padding: 0 20px 30px; width: 100%; }
+            .home-btn { width: 100%; min-width: 0; height: 85px; border-radius: 12px; }
+            .home-btn span.title { font-size: 1.1rem; margin-bottom: 3px; }
+            .home-btn span.desc { font-size: 0.8rem; }
             #insight-container { grid-template-columns: 1fr !important; }
             .metric-card { min-width: 100%; }
             table { font-size: 12px; }
@@ -294,9 +294,13 @@
                 <div class="custom-title">제2차 교대제 : 평가지표</div>
                 
                 <div style="background: #f9f9f9; padding: 20px; border-radius: 8px; border: 1px solid #ddd; margin-bottom: 30px;">
-                    <div style="margin-bottom: 15px; font-weight: bold;">
-                        <label style="margin-right: 20px;"><input type="radio" name="analyze-mode" value="single" checked> 단일 월 분석</label>
-                        <label><input type="radio" name="analyze-mode" value="multi"> 기간 통합 분석</label>
+                    <div style="display: flex; align-items: center; margin-bottom: 15px; font-weight: bold; flex-wrap: wrap; gap: 15px;">
+                        <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                            <input type="radio" name="analyze-mode" value="single" checked style="margin: 0;"> 단일 월 분석
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                            <input type="radio" name="analyze-mode" value="multi" style="margin: 0;"> 기간 통합 분석
+                        </label>
                     </div>
                     
                     <!-- 단일 월 분석 영역 (가로 정렬 Flexbox 적용) -->
