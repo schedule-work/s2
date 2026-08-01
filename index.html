@@ -572,8 +572,11 @@
         let currentPlanData = [], currentHeaders = [];
 
         async function searchNurseByName() {
-            const name = document.getElementById('search-name').value.trim();
-            if(!name) { alert("이름을 입력하세요."); return; }
+            const searchInput = document.getElementById('search-name');
+            const name = searchInput.value.trim();
+            if(!name) { alert("이름 입력"); return; }
+            
+            searchInput.blur();
             
             const year = document.getElementById('sel-year').value.slice(-2);
             const month = document.getElementById('sel-month').value.padStart(2, '0');
@@ -582,28 +585,49 @@
             document.getElementById('req-loading').style.display = 'block';
             const data = await fetchSheetData(sheetName);
             document.getElementById('req-loading').style.display = 'none';
-            if(!data) { alert("해당 월의 계획 근무표가 없습니다."); return; }
+            
+            if(!data) { alert("대상 기간의 계획 근무표가 없습니다."); return; }
 
             let matches = [];
             data.slice(1).forEach(row => {
                 if(row[2] && String(row[2]).includes(name)) {
-                    matches.push({ ward: normalizeWard(row[0]), name: String(row[2]).trim(), id: String(row[1]).trim() });
+                    const w = normalizeWard(row[0]);
+                    matches.push({ ward: w, name: String(row[2]).trim(), id: String(row[1]).trim() });
                 }
             });
 
             const resDiv = document.getElementById('search-results-container');
             resDiv.style.display = 'block';
+            
             if(matches.length === 0) {
-                resDiv.innerHTML = `<p style="color:red; font-weight:bold;">'${name}'대상자를 찾을 수 없습니다.</p>`;
+                resDiv.innerHTML = `<p style="color:red; font-weight:bold;">'${name}' 대상자를 찾을 수 없습니다.</p>`;
             } else {
                 let html = `<p style="font-weight:bold; color:green; margin-bottom: 10px;">✅ 총 ${matches.length}명 검색됨.</p>`;
-                html += `<div style="margin-bottom: 10px;"><label style="font-size: 13px; font-weight: bold;">🗓️ 결원 발생 일자 (조회 날짜) 선택:</label><input type="date" id="pre-select-date" class="form-control" value="${sessionState.target_date}" style="width: 200px; display: inline-block; margin-left: 10px;"></div><hr style="margin: 10px 0;">`;
+                html += `<div style="margin-bottom: 10px;">
+                            <label style="font-size: 13px; font-weight: bold;">🗓️ 결원 발생 일자 (조회 날짜) 선택:</label>
+                            <input type="date" id="pre-select-date" class="form-control" value="${sessionState.target_date}" style="width: 200px; display: inline-block; margin-left: 10px;">
+                         </div><hr style="margin: 10px 0;">`;
+                
                 matches.forEach(m => {
-                    html += `<button class="btn-primary" style="background:#fff; color:#333; border:1px solid #ccc; margin-right:5px; margin-bottom:5px;" onclick='applyNurseSearch(${JSON.stringify(m.ward)}, ${JSON.stringify(m.name)})'>👉 선택한 날짜로 근무 조회 (${m.ward} | ${m.name})</button>`;
+                    const wardArg = JSON.stringify(m.ward);
+                    const nameArg = JSON.stringify(m.name);
+                    
+                    html += `
+                        <button
+                            class="btn-primary"
+                            style="background:#fff; color:#333; border:1px solid #ccc; margin-right:5px; margin-bottom:5px;"
+                            onclick='applyNurseSearch(${wardArg}, ${nameArg})'
+                        >
+                            👉 선택한 날짜로 근무 조회 (${m.ward} | ${m.name})
+                        </button>
+                    `;
                 });
                 resDiv.innerHTML = html;
             }
-            window.scrollTo(0, 0);
+
+            setTimeout(() => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }, 150);
         }
 
         function applyNurseSearch(ward, name) {
