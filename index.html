@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>제2차 교대제 : 간호부</title>
+    <title>제2차 교대제 > 간호부</title>
 
     <link rel="icon" type="image/png" href="tiger_sunglasses_2.png">
     <link rel="apple-touch-icon" href="tiger_sunglasses_2.png">
@@ -22,7 +22,6 @@
         body { background-color: var(--bg-color); color: var(--text-color); }
         button, select, input { font-family: inherit; }
 
-        /* 네비게이션 바 */
         header {
             display: flex; justify-content: space-between; align-items: center; padding: 0 40px;
             height: 70px; background-color: rgba(255, 255, 255, 0.95); border-bottom: 1px solid var(--border-color);
@@ -36,13 +35,11 @@
         nav div { color: #666; font-weight: 500; font-size: 17px; cursor: pointer; line-height: 70px; transition: 0.2s; }
         nav div:hover, nav div.active { color: var(--primary-color); font-weight: 800; }
 
-        /* 페이지 컨테이너 */
         .page { display: none; padding-top: 70px; min-height: 100vh; padding-bottom: 50px; }
         .page.active { display: block; }
         .content-wrap { padding: 40px; max-width: 100%; }
         .custom-title { border-left: 6px solid var(--primary-color); padding-left: 15px; font-size: 26px; font-weight: 800; margin-bottom: 30px; line-height: 1.2; }
 
-        /* 홈 화면 전용 */
         body.home-theme { background: radial-gradient(circle, #330000 0%, #1a0000 50%, #000000 100%); overflow: hidden; height: 100vh; margin: 0; }
         body.home-theme header { display: none; }
         body.home-theme .page.active { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; padding-top: 0; }
@@ -54,7 +51,6 @@
         .home-btn span.title { font-size: 1.2rem; font-weight: 800; margin-bottom: 10px; line-height: 1.1; }
         .home-btn span.desc { font-size: 1.05rem; color: rgba(255, 255, 255, 0.75); }
 
-        /* 테이블 및 UI 요소 */
         table { width: 100%; border-collapse: collapse; min-width: 800px; font-size: 14px; }
         th { background: #f8f9fa; border: 1px solid #ddd; padding: 10px; text-align: center; position: sticky; top: 0; }
         td { border: 1px solid #ddd; padding: 8px; text-align: center; }
@@ -62,7 +58,6 @@
         .btn-primary { background: var(--primary-color); color: white; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; }
         .btn-primary:disabled { background: #aaa; cursor: not-allowed; }
         
-        /* 평가지표 전용 스타일 */
         .metric-card { border: 1px solid #ddd; padding: 20px; border-radius: 8px; text-align: center; background: #fff; flex: 1; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
         .metric-val { font-size: 28px; font-weight: 900; color: var(--primary-color); margin: 10px 0; }
         .ward-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 8px; }
@@ -75,7 +70,6 @@
             border-radius: 8px;
         }
 
-        /* 결원입력 근무표 가독성 */
         #table-container table { table-layout: auto; white-space: nowrap; }
         #table-container th, #table-container td { white-space: nowrap; word-break: keep-all; }
         #table-container th:first-child, #table-container td:first-child { min-width: 74px; width: 74px; font-size: 13px; }
@@ -126,11 +120,10 @@
 
         .sticky-top-bar {
             position: sticky;
-            top: 70px; /* 네비게이션 바 높이 */
+            top: 70px;
             background-color: var(--bg-color);
             z-index: 998; /* 표(Table)보다 위에 오도록 설정 */
             
-            /* 기존 패딩 여백을 계산하여 스크롤 시 글자가 비어있는 여백으로 비치지 않게 완벽 차단 */
             padding-top: 40px; padding-bottom: 15px;
             margin-top: -40px; margin-left: -40px; margin-right: -40px;
             padding-left: 40px; padding-right: 40px;
@@ -145,7 +138,6 @@
             .sticky-top-bar { top: 108px; padding-top: 25px; margin-top: -25px; margin-left: -15px; margin-right: -15px; padding-left: 15px; padding-right: 15px; }
         }
 
-        /* 💡 로딩 스피너 애니메이션 */
         .loading-spinner {
             display: inline-block; width: 45px; height: 45px;
             border: 5px solid rgba(139, 0, 41, 0.15); border-radius: 50%;
@@ -153,7 +145,6 @@
         }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* 💡 1. 평가지표 테이블 열 고정 및 정렬(클릭) 스타일 추가 */
         #ranking-table-container table {
             border-collapse: separate !important; border-spacing: 0; min-width: 800px;
         }
@@ -165,15 +156,12 @@
         }
         #ranking-table-container th:hover { background: #e9ecef; }
         
-        /* 1열(순위) 고정 */
         #ranking-table-container th:nth-child(1), #ranking-table-container td:nth-child(1) {
             position: sticky; left: 0; z-index: 2; min-width: 45px; text-align: center;
         }
-        /* 2열(병동) 고정 (1열 너비 45px 반영) 및 경계선 그림자 */
         #ranking-table-container th:nth-child(2), #ranking-table-container td:nth-child(2) {
             position: sticky; left: 45px; z-index: 2; min-width: 60px; border-right: 2px solid #aaa; box-shadow: 2px 0 5px -2px rgba(0,0,0,0.1);
         }
-        /* 상단 헤더가 스크롤 시 아래 셀들에 가려지지 않도록 z-index 최상위 설정 */
         #ranking-table-container th:nth-child(1), #ranking-table-container th:nth-child(2) {
             z-index: 3; background: #f8f9fa;
         }
@@ -218,7 +206,7 @@
                         </select>
                         <select id="sel-month" class="form-control" style="width: 100px;"></select>
                         <select id="sel-ward" class="form-control" style="flex: 1;">
-                            <option value="">병동을 선택하세요</option>
+                            <option value="">병동 선택</option>
                             <option value="50W">50W</option><option value="51W">51W</option><option value="52W">52W</option>
                             <option value="53W">53W</option><option value="65W">65W</option><option value="70W">70W</option>
                             <option value="71W">71W</option><option value="72W">72W</option><option value="73W">73W</option>
@@ -232,12 +220,12 @@
 
                 <h5 style="margin-bottom: 10px;">🔎 직원 이름 검색</h5>
                 <div style="display: flex; gap: 10px; margin-bottom: 20px;">
-                    <input type="text" id="search-name" class="form-control" placeholder="이름을 입력하세요" style="flex: 1;" onkeypress="if(event.key==='Enter') searchNurseByName()">
+                    <input type="text" id="search-name" class="form-control" placeholder="이름 입력" style="flex: 1;" onkeypress="if(event.key==='Enter') searchNurseByName()">
                     <button class="btn-primary" style="background:#333;" onclick="searchNurseByName()">검색</button>
                 </div>
                 <div id="search-results-container" style="display: none; padding: 15px; border: 1px solid #ddd; background: #f9f9f9; margin-bottom: 20px; border-radius: 8px;"></div>
 
-                <div id="req-loading" style="display: none; color: var(--primary-color); font-weight: bold; margin-bottom: 15px;">⏳ 계획근무 조회중</div>
+                <div id="req-loading" style="display: none; color: var(--primary-color); font-weight: bold; margin-bottom: 15px;">⏳ 계획 근무 조회중</div>
                 <div id="dynamic-shift-display" style="display:none; align-items:center; justify-content:space-between; margin-bottom: 15px;">
                     <div style="background-color: rgba(139, 0, 41, 0.05); border-left: 4px solid #8B0029; padding: 10px 15px; border-radius: 6px; width: 300px; display: flex; justify-content: space-between; align-items: center;">
                         <span id="shift-date-text" style="font-size: 14px; font-weight: 600; color: #333; opacity: 0.8;"></span>
@@ -263,7 +251,7 @@
                         <div><label style="font-size: 13px; font-weight: bold;">대체 여부</label><select id="req-sub-yn" class="form-control"><option value="Y">Y</option><option value="N">N</option></select></div>
                         <div><label style="font-size: 13px; font-weight: bold;">비고</label><input type="text" id="req-note" class="form-control" placeholder="자유 기입"></div>
                     </div>
-                    <button class="btn-primary" style="padding: 10px 20px;" onclick="submitAbsenceRequest(event)">💾 결원신청(자동배정) / 변동 저장</button>
+                    <button class="btn-primary" style="padding: 10px 20px;" onclick="submitAbsenceRequest(event)">💾 결원신청(자동배정) / 근무변동 저장</button>
                 </div>
 
                 <h5 style="margin-top: 30px; margin-bottom: 10px; color: var(--text-color);">📂 부서별 신청 내역</h5>
@@ -301,7 +289,7 @@
                         <button class="form-control" style="width: auto; background:#f8f9fa; cursor:pointer;" onclick="syncAdminData()" id="btn-sync-admin">🔄 동기화</button>
                     </div>
 
-                    <h4 style="margin-bottom: 15px; color: var(--primary-color);">🚨 미배정 대체 신청 리스트</h4>
+                    <h4 style="margin-bottom: 15px; color: var(--primary-color);">🚨 미배정 대체 신청 내역</h4>
                     <div id="pending-list-container"></div>
 
                     <hr style="margin: 40px 0; border: 0; border-top: 1px solid #eee;">
@@ -316,7 +304,7 @@
         <!-- 5. 평가지표 화면 -->
         <div id="page-dashboard" class="page">
             <div class="content-wrap">
-                <div class="custom-title">제2차 교대제 : 평가지표</div>
+                <div class="custom-title">평가지표</div>
                 
                 <div style="background: #f9f9f9; padding: 20px; border-radius: 8px; border: 1px solid #ddd; margin-bottom: 30px;">
                     <div style="display: flex; align-items: center; margin-bottom: 15px; font-weight: bold; flex-wrap: wrap; gap: 15px;">
@@ -328,13 +316,11 @@
                         </label>
                     </div>
                     
-                    <!-- 단일 월 분석 영역 (가로 정렬 Flexbox 적용) -->
                     <div id="single-month-area" style="display: flex; gap: 10px; align-items: center;">
                         <select id="dashboard-single-month" class="form-control" style="max-width: 240px;"></select>
                         <button class="btn-primary" onclick="runMetricsAnalysis(event)" style="white-space: nowrap;">📊 분석 실행</button>
                     </div>
                     
-                    <!-- 기간 통합 분석 영역 -->
                     <div id="multi-month-area" style="display:none;">
                         <div id="dashboard-month-checkboxes" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap:10px; margin-bottom:15px;"></div>
                         <div style="display:flex; gap:8px; margin-bottom:15px;">
@@ -350,11 +336,10 @@
                     <div style="color: var(--primary-color); font-weight: bold; margin-top: 15px; font-size: 1.1em;">데이터 분석 중...</div>
                 </div>
 
-                <!-- 💡 [추가됨] 데이터 없음 상태 화면 -->
                 <div id="metrics-empty-state" style="display: none; text-align:center; padding: 50px 20px; background: #f9f9f9; border-radius: 8px; border: 1px solid #ddd; margin-top: 20px;">
                     <div style="font-size: 30px; margin-bottom: 15px;">📭</div>
                     <h4 style="color: #555; margin-bottom: 10px;">분석할 데이터가 없습니다.</h4>
-                    <p style="color: #888; font-size: 14px;">선택하신 월의 실제 근무표 데이터가 시트에 존재하는지 확인해 주세요.</p>
+                    <p style="color: #888; font-size: 14px;">조회 대상 기간 데이터가 없습니다.</p>
                 </div>
                 
                 <div id="metrics-result-container" style="display: none;">
@@ -392,9 +377,8 @@
         <div style="background: white; padding: 30px; border-radius: 12px; width: 90%; max-width: 320px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
             <div style="font-size: 40px; margin-bottom: 10px;">🔒</div>
             <h3 style="margin-bottom: 10px; color: var(--text-color);">비밀번호 입력</h3>
-            <p style="font-size: 13px; color: #666; margin-bottom: 20px;">4자리를 입력해 주세요.</p>
             
-            <input type="password" id="general-pw-input" class="form-control" style="text-align: center; font-size: 24px; letter-spacing: 10px; margin-bottom: 20px;" placeholder="****" maxlength="4" onkeypress="if(event.key==='Enter') verifyGeneralPassword()">
+            <input type="password" id="general-pw-input" class="form-control" style="text-align: center; font-size: 24px; letter-spacing: 10px; margin-bottom: 20px;" maxlength="4" onkeypress="if(event.key==='Enter') verifyGeneralPassword()">
             
             <div style="display: flex; gap: 10px;">
                 <button class="btn-primary" style="flex: 1; background: #f1f3f5; color: #333; border: 1px solid #ddd;" onclick="closePasswordModal()">취소</button>
@@ -607,7 +591,7 @@
             const resDiv = document.getElementById('search-results-container');
             resDiv.style.display = 'block';
             if(matches.length === 0) {
-                resDiv.innerHTML = `<p style="color:red; font-weight:bold;">'${name}' 간호사를 찾을 수 없습니다.</p>`;
+                resDiv.innerHTML = `<p style="color:red; font-weight:bold;">'${name}'대상자를 찾을 수 없습니다.</p>`;
             } else {
                 let html = `<p style="font-weight:bold; color:green; margin-bottom: 10px;">✅ 총 ${matches.length}명 검색됨.</p>`;
                 html += `<div style="margin-bottom: 10px;"><label style="font-size: 13px; font-weight: bold;">🗓️ 결원 발생 일자 (조회 날짜) 선택:</label><input type="date" id="pre-select-date" class="form-control" value="${sessionState.target_date}" style="width: 200px; display: inline-block; margin-left: 10px;"></div><hr style="margin: 10px 0;">`;
@@ -700,7 +684,6 @@
                 updateShiftDisplay(selectedName);
             }
 
-            // 부서별 신청 내역 하단에 표시
             const reqHistoryData = await fetchSheetData('신청내역');
             if(reqHistoryData && reqHistoryData.length > 1) {
                 const hHeaders = reqHistoryData[0];
@@ -791,7 +774,7 @@
             const payload = { action: 'submitAbsence', ward, reqDate, reqName, reqId, reqDuty, changedDuty, reqReason, reqNote, reqSubYn };
             btn.innerText = "⏳ 대체근무 배정 확인중..."; btn.disabled = true;
             const res = await postToGAS(payload);
-            btn.innerText = "💾 결원신청(자동배정) / 변동 저장"; btn.disabled = false;
+            btn.innerText = "💾 결원신청(자동배정) / 근무변동 저장"; btn.disabled = false;
 
             if(res.success) {
                 alert(res.updatesMade ? `🎉 대체간호사(${res.assignedName}) 배정 완료!` : "⚠️ 대체간호사가 없어 대기 상태로 신청되었습니다.");
@@ -1094,7 +1077,6 @@
 
             const active = rows.filter(row => row.total > 0 || row.vacancy > 0);
 
-            // 💡 1. 계획근무 준수율 최고 (최고 점수 찾은 뒤, 해당 점수를 가진 모든 병동 가져오기)
             const compCands = active.filter(row => row.total > 0);
             let bestCompVal = 0, bestCompWards = '-';
             if (compCands.length > 0) {
@@ -1102,7 +1084,6 @@
                 bestCompWards = compCands.filter(r => r.complianceRate === bestCompVal).map(r => r.ward).join(', ');
             }
 
-            // 💡 2. 결원 발생 최다 (최고 점수 찾은 뒤, 해당 점수를 가진 모든 병동 가져오기)
             let mostVacVal = 0, mostVacWards = '-';
             if (active.length > 0) {
                 mostVacVal = Math.max(...active.map(r => r.vacancy));
@@ -1111,7 +1092,6 @@
                 }
             }
 
-            // 💡 3. 결원 대체율 최고 (최고 점수 찾은 뒤, 해당 점수를 가진 모든 병동 가져오기)
             const repCands = active.filter(row => row.vacancy > 0);
             let bestRepVal = 0, bestRepWards = '-';
             if (repCands.length > 0) {
@@ -1119,7 +1099,6 @@
                 bestRepWards = repCands.filter(r => r.replacementRate === bestRepVal).map(r => r.ward).join(', ');
             }
 
-            // HTML 카드에 데이터 삽입 (동점자가 많아 글자가 길어지면 자동으로 폰트 크기가 줄어들도록 style 적용)
             document.getElementById('insight-container').innerHTML = `
                 <div class="metric-card">
                     <div>계획근무 준수율 최고</div>
@@ -1138,7 +1117,6 @@
                 </div>
             `;
 
-            // 하단 순위 표 생성
             const rankingRows = [...rows].sort((a, b) => {
                 if (b.complianceRate !== a.complianceRate) return b.complianceRate - a.complianceRate;
                 return b.replacementRate - a.replacementRate;
@@ -1174,7 +1152,7 @@
         
             loading.style.display = 'block';
             resultContainer.style.display = 'none';
-            if(emptyState) emptyState.style.display = 'none'; // 분석 시작 시 이전 에러메시지 숨김
+            if(emptyState) emptyState.style.display = 'none';
             btn.disabled = true;
         
             try {
@@ -1297,11 +1275,10 @@
                     }
                 }
         
-                /* 💡 [수정됨] 분석할 데이터가 아예 없을 경우 스피너를 끄고 안내 화면 띄우기 */
                 if (totDenom === 0 && totVacDays === 0) {
                     loading.style.display = 'none';
                     if (emptyState) emptyState.style.display = 'block';
-                    return; // 👈 무한 로딩 방지를 위한 즉시 종료
+                    return;
                 }
         
                 const totD = totRepDays;
@@ -1332,9 +1309,9 @@
                 btn.disabled = false;
             }
         }
-        // 💡 3. 평가지표 테이블 정렬 함수
+        
         let currentSortCol = -1;
-        let currentSortAsc = false; // 기본은 내림차순(높은 값이 위로)
+        let currentSortAsc = false;
 
         function sortRankingTable(colIdx) {
             const table = document.querySelector('#ranking-table-container table');
@@ -1343,7 +1320,6 @@
             const rows = Array.from(tbody.querySelectorAll('tr'));
             const headers = table.querySelectorAll('th');
 
-            // 1) 정렬 방향 토글 (같은 열 누르면 반대로, 다른 열 누르면 내림차순부터)
             if (currentSortCol === colIdx) {
                 currentSortAsc = !currentSortAsc;
             } else {
@@ -1351,29 +1327,24 @@
                 currentSortAsc = false; 
             }
 
-            // 2) 헤더 아이콘 업데이트 (▲ / ▼ / ↕)
             headers.forEach((th, idx) => {
                 let text = th.innerText.replace(' ▲', '').replace(' ▼', '').replace(' ↕', '');
                 th.innerText = text + (idx === colIdx ? (currentSortAsc ? ' ▲' : ' ▼') : ' ↕');
             });
 
-            // 3) 데이터 정렬 처리 (%와 같은 특수문자 제거 후 숫자 비교)
             rows.sort((trA, trB) => {
                 let valA = trA.cells[colIdx].innerText.replace(/[^0-9.-]/g, '');
                 let valB = trB.cells[colIdx].innerText.replace(/[^0-9.-]/g, '');
 
-                // 만약 숫자가 아닌 병동 이름 같은 텍스트라면 가나다순 비교
                 if (valA === '' || isNaN(valA)) {
                     valA = trA.cells[colIdx].innerText;
                     valB = trB.cells[colIdx].innerText;
                     return currentSortAsc ? valA.localeCompare(valB) : valB.localeCompare(valA);
                 }
 
-                // 숫자 비교
                 return currentSortAsc ? parseFloat(valA) - parseFloat(valB) : parseFloat(valB) - parseFloat(valA);
             });
 
-            // 4) 정렬된 순서대로 테이블에 다시 붙이기
             rows.forEach(row => tbody.appendChild(row));
         }
     </script>
