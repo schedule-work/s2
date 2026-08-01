@@ -1061,16 +1061,24 @@
         function isEmptyDuty(value) { const text = String(value || '').trim().toLowerCase(); return (text === '' || text === 'nan' || text === 'none'); }
             
         function renderMetricsInsights(data) {
-            const { wardChange, wardVac, wardRep, wardTotals } = data;
+            const { wardChange, wardVac, wardRep, wardTotals, wardB, wardC } = data;
 
             const rows = wardList.map(ward => {
                 const total = Number(wardTotals[ward] || 0);
                 const changed = Number(wardChange[ward] || 0);
                 const vacancy = Number(wardVac[ward] || 0);
                 const replacement = Number(wardRep[ward] || 0);
+
+                const A = total - changed;
+                const B = Number(wardB && wardB[ward] ? wardB[ward] : 0);
+                const C = Number(wardC && wardC[ward] ? wardC[ward] : 0);
+                const D = replacement; 
+
+                const numerator = A + B - C + D;
+
                 return {
                     ward, total, changed, vacancy, replacement,
-                    complianceRate: total > 0 ? ((total - changed) / total) * 100 : 0,
+                    complianceRate: total > 0 ? (numerator / total) * 100 : 0,
                     replacementRate: vacancy > 0 ? (replacement / vacancy) * 100 : 0
                 };
             });
@@ -1173,7 +1181,7 @@
                 let totDenom = 0, totA = 0, totB = 0, totC = 0, totVacDays = 0, totRepDays = 0;
                 const wardChange = {}, wardVac = {}, wardRep = {}, wardTotals = {};
         
-                wardList.forEach(ward => { wardChange[ward] = 0; wardVac[ward] = 0; wardRep[ward] = 0; wardTotals[ward] = 0; });
+                wardList.forEach(ward => { wardChange[ward] = 0; wardVac[ward] = 0; wardRep[ward] = 0; wardTotals[ward] = 0; wardB[ward] = 0; wardC[ward] = 0; });
                 const pregnancyList = [];
         
                 for (const targetMonth of selectedMonths) {
@@ -1245,7 +1253,7 @@
         
                             if (replacement === 'Y') {
                                 totRepDays++; wardRep[ward]++;
-                                if (reason.includes('임신간호사발생') || reason.includes('임신')) totC++;
+                                if (reason.includes('임신간호사발생') || reason.includes('임신')) totC++; wardC[ward]++;
                             }
                         });
                     }
@@ -1269,7 +1277,7 @@
         
                             if (!wardList.includes(ward)) return;
         
-                            totB++;
+                            totB++; wardB[ward]++;
                             pregnancyList.push({ month: targetMonth, ward, name: name || id || '이름 없음' });
                         });
                     }
@@ -1297,7 +1305,7 @@
                 document.getElementById('val-C').innerText = totC;
                 document.getElementById('val-D').innerText = totD;
         
-                renderMetricsInsights({ wardChange, wardVac, wardRep, wardTotals, pregnancyList });
+                renderMetricsInsights({ wardChange, wardVac, wardRep, wardTotals, wardB, wardC, pregnancyList });
         
                 resultContainer.style.display = 'block';
         
