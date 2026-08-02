@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>제2차 교대제 > 간호부</title>
+    <title>DNS > 제2차 교대제</title>
 
     <link rel="icon" type="image/png" href="IMG_064.png">
     <link rel="apple-touch-icon" href="IMG_064.png">
@@ -1148,8 +1148,11 @@
                             totVacDays++; wardVac[ward]++;
         
                             if (replacement === 'Y') {
-                                totRepDays++; wardRep[ward]++;
-                                if (reason.includes('임신간호사발생') || reason.includes('임신')) totC++; wardC[ward]++;
+                                totRepDays++; 
+                                wardRep[ward]++;
+                                if (reason.includes('임신간호사발생') || reason.includes('임신')) {
+                                    totC++; wardC[ward]++;
+                                }
                             }
                         });
                     }
