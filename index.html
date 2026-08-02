@@ -602,6 +602,7 @@
             if(!name) { alert("이름 입력"); return; }
             
             searchInput.blur();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
             
             const year = document.getElementById('sel-year').value.slice(-2);
             const month = document.getElementById('sel-month').value.padStart(2, '0');
@@ -625,7 +626,7 @@
             resDiv.style.display = 'block';
             
             if(matches.length === 0) {
-                resDiv.innerHTML = `<p style="color:red; font-weight:bold;">'${name}' 대상자를 찾을 수 없습니다.</p>`;
+                resDiv.innerHTML = `<p style="color:blue; font-weight:bold;">'${name}' 대상자를 찾을 수 없습니다.</p>`;
             } else {
                 let html = `<p style="font-weight:bold; color:green; margin-bottom: 10px;">✅ 총 ${matches.length}명 검색됨.</p>`;
                 html += `<div style="margin-bottom: 10px;">
@@ -649,10 +650,6 @@
                 });
                 resDiv.innerHTML = html;
             }
-
-            setTimeout(() => {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            }, 150);
         }
 
         function applyNurseSearch(ward, name) {
