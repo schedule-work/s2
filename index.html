@@ -1088,114 +1088,41 @@
            5. 평가지표 대시보드
         ------------------------------------------------------------- */
         function cleanHeader(value) { return String(value || '').replace(/\n/g, '').replace(/\s/g, '').trim(); }
-        
-        function findHeaderIndex(headers, candidates) {
-            const cleaned = headers.map(cleanHeader);
-            for (const candidate of candidates) {
-                const target = cleanHeader(candidate);
-                const exactIndex = cleaned.findIndex(header => header === target);
-                if (exactIndex !== -1) return exactIndex;
-                const includesIndex = cleaned.findIndex(header => header.includes(target));
-                if (includesIndex !== -1) return includesIndex;
-            }
-            return -1;
-        }
-        
-        function cleanWard(value) {
-            const text = String(value || '').replace('.0', '').trim().toUpperCase();
-            if (!text || text === 'HN' || text.includes('대체간호사팀')) return '';
-            return text.endsWith('W') ? text : `${text}W`;
-        }
-        
+        function findHeaderIndex(headers, candidates) { const cleaned = headers.map(cleanHeader); for (const candidate of candidates) { const target = cleanHeader(candidate); const exactIndex = cleaned.findIndex(header => header === target); if (exactIndex !== -1) return exactIndex; const includesIndex = cleaned.findIndex(header => header.includes(target)); if (includesIndex !== -1) return includesIndex; } return -1; }
+        function cleanWard(value) { const text = String(value || '').replace('.0', '').trim().toUpperCase(); if (!text || text === 'HN' || text.includes('대체간호사팀')) return ''; return text.endsWith('W') ? text : `${text}W`; }
         function cleanId(value) { return String(value || '').replace('.0', '').trim(); }
         function isEmptyDuty(value) { const text = String(value || '').trim().toLowerCase(); return (text === '' || text === 'nan' || text === 'none'); }
             
         function renderMetricsInsights(data) {
             const { wardChange, wardVac, wardRep, wardTotals, wardB, wardC } = data;
-
             const rows = wardList.map(ward => {
-                const total = Number(wardTotals[ward] || 0);
-                const changed = Number(wardChange[ward] || 0);
-                const vacancy = Number(wardVac[ward] || 0);
-                const replacement = Number(wardRep[ward] || 0);
-
-                const A = total - changed;
-                const B = Number(wardB && wardB[ward] ? wardB[ward] : 0);
-                const C = Number(wardC && wardC[ward] ? wardC[ward] : 0);
-                const D = replacement; 
-
-                const numerator = A + B - C + D;
-
-                return {
-                    ward, total, changed, vacancy, replacement,
-                    complianceRate: total > 0 ? (numerator / total) * 100 : 0,
-                    replacementRate: vacancy > 0 ? (replacement / vacancy) * 100 : 0
-                };
+                const total = Number(wardTotals[ward] || 0), changed = Number(wardChange[ward] || 0), vacancy = Number(wardVac[ward] || 0), replacement = Number(wardRep[ward] || 0);
+                const A = total - changed, B = Number(wardB && wardB[ward] ? wardB[ward] : 0), C = Number(wardC && wardC[ward] ? wardC[ward] : 0), D = replacement; 
+                return { ward, total, changed, vacancy, replacement, B, C, nonPregChange: Math.max(0, changed - B), complianceRate: total > 0 ? ((A + B - C + D) / total) * 100 : 0, replacementRate: vacancy > 0 ? (replacement / vacancy) * 100 : 0 };
             });
 
             const active = rows.filter(row => row.total > 0 || row.vacancy > 0);
-
             const compCands = active.filter(row => row.total > 0);
             let bestCompVal = 0, bestCompWards = '-';
-            if (compCands.length > 0) {
-                bestCompVal = Math.max(...compCands.map(r => r.complianceRate));
-                bestCompWards = compCands.filter(r => r.complianceRate === bestCompVal).map(r => r.ward).join(', ');
-            }
-
+            if (compCands.length > 0) { bestCompVal = Math.max(...compCands.map(r => r.complianceRate)); bestCompWards = compCands.filter(r => r.complianceRate === bestCompVal).map(r => r.ward).join(', '); }
+            
             let mostVacVal = 0, mostVacWards = '-';
-            if (active.length > 0) {
-                mostVacVal = Math.max(...active.map(r => r.vacancy));
-                if (mostVacVal > 0) {
-                    mostVacWards = active.filter(r => r.vacancy === mostVacVal).map(r => r.ward).join(', ');
-                }
-            }
-
+            if (active.length > 0) { mostVacVal = Math.max(...active.map(r => r.vacancy)); if (mostVacVal > 0) mostVacWards = active.filter(r => r.vacancy === mostVacVal).map(r => r.ward).join(', '); }
+            
             const repCands = active.filter(row => row.vacancy > 0);
             let bestRepVal = 0, bestRepWards = '-';
-            if (repCands.length > 0) {
-                bestRepVal = Math.max(...repCands.map(r => r.replacementRate));
-                bestRepWards = repCands.filter(r => r.replacementRate === bestRepVal).map(r => r.ward).join(', ');
-            }
+            if (repCands.length > 0) { bestRepVal = Math.max(...repCands.map(r => r.replacementRate)); bestRepWards = repCands.filter(r => r.replacementRate === bestRepVal).map(r => r.ward).join(', '); }
 
             document.getElementById('insight-container').innerHTML = `
-                <div class="metric-card">
-                    <div>계획근무 준수율 최고</div>
-                    <div class="metric-val" style="font-size: clamp(16px, 3vw, 28px); word-break: keep-all; line-height: 1.3;">${bestCompWards}</div>
-                    <div>${compCands.length > 0 ? bestCompVal.toFixed(2) + '%' : '데이터 없음'}</div>
-                </div>
-                <div class="metric-card">
-                    <div>결원 발생 최다 병동</div>
-                    <div class="metric-val" style="font-size: clamp(16px, 3vw, 28px); word-break: keep-all; line-height: 1.3;">${mostVacWards}</div>
-                    <div>${mostVacVal > 0 ? mostVacVal + '일' : '결원 없음'}</div>
-                </div>
-                <div class="metric-card">
-                    <div>결원 대체율 최고</div>
-                    <div class="metric-val" style="font-size: clamp(16px, 3vw, 28px); word-break: keep-all; line-height: 1.3;">${bestRepWards}</div>
-                    <div>${repCands.length > 0 ? bestRepVal.toFixed(2) + '%' : '데이터 없음'}</div>
-                </div>
-            `;
+                <div class="metric-card"><div>계획근무 준수율 최고</div><div class="metric-val" style="font-size: clamp(16px, 3vw, 28px); word-break: keep-all; line-height: 1.3;">${bestCompWards}</div><div>${compCands.length > 0 ? bestCompVal.toFixed(2) + '%' : '데이터 없음'}</div></div>
+                <div class="metric-card"><div>결원 발생 최다 병동</div><div class="metric-val" style="font-size: clamp(16px, 3vw, 28px); word-break: keep-all; line-height: 1.3;">${mostVacWards}</div><div>${mostVacVal > 0 ? mostVacVal + '일' : '결원 없음'}</div></div>
+                <div class="metric-card"><div>결원 대체율 최고</div><div class="metric-val" style="font-size: clamp(16px, 3vw, 28px); word-break: keep-all; line-height: 1.3;">${bestRepWards}</div><div>${repCands.length > 0 ? bestRepVal.toFixed(2) + '%' : '데이터 없음'}</div></div>`;
 
-            const rankingRows = [...rows].sort((a, b) => {
-                if (b.complianceRate !== a.complianceRate) return b.complianceRate - a.complianceRate;
-                return b.replacementRate - a.replacementRate;
-            });
-
-            let html = `<table><thead><tr>
-                <th onclick="sortRankingTable(0)">순위 ↕</th>
-                <th onclick="sortRankingTable(1)">병동 ↕</th>
-                <th onclick="sortRankingTable(2)">계획근무일 ↕</th>
-                <th onclick="sortRankingTable(3)">변동일수 ↕</th>
-                <th onclick="sortRankingTable(4)">준수율 ↕</th>
-                <th onclick="sortRankingTable(5)">결원일수 ↕</th>
-                <th onclick="sortRankingTable(6)">대체일수 ↕</th>
-                <th onclick="sortRankingTable(7)">결원대체율 ↕</th>
-            </tr></thead><tbody>`;
+            const rankingRows = [...rows].sort((a, b) => b.complianceRate !== a.complianceRate ? b.complianceRate - a.complianceRate : b.replacementRate - a.replacementRate);
             
-            rankingRows.forEach((row, index) => {
-                html += `<tr><td>${index + 1}</td><td><strong>${row.ward}</strong></td><td>${row.total}</td><td>${row.changed}</td><td>${row.complianceRate.toFixed(2)}%</td><td>${row.vacancy}</td><td>${row.replacement}</td><td>${row.replacementRate.toFixed(2)}%</td></tr>`;
-            });
-            html += '</tbody></table>';
-            document.getElementById('ranking-table-container').innerHTML = html;
+            let html = `<table><thead><tr><th onclick="sortRankingTable(0)">순위 ↕</th><th onclick="sortRankingTable(1)">병동 ↕</th><th onclick="sortRankingTable(2)">계획근무일 ↕</th><th onclick="sortRankingTable(3)">변동일수<br>(임신제외) ↕</th><th onclick="sortRankingTable(4)">변동일수<br>(임신변동) ↕</th><th onclick="sortRankingTable(5)">준수율 ↕</th><th onclick="sortRankingTable(6)">결원일수 ↕</th><th onclick="sortRankingTable(7)">대체일수<br>(임신대체) ↕</th><th onclick="sortRankingTable(8)">결원대체율 ↕</th></tr></thead><tbody>`;
+            rankingRows.forEach((row, index) => { html += `<tr><td>${index + 1}</td><td><strong>${row.ward}</strong></td><td>${row.total}</td><td>${row.nonPregChange}</td><td>${row.B}</td><td>${row.complianceRate.toFixed(2)}%</td><td>${row.vacancy}</td><td>${row.replacement} (${row.C})</td><td>${row.replacementRate.toFixed(2)}%</td></tr>`; });
+            html += '</tbody></table>'; document.getElementById('ranking-table-container').innerHTML = html;
         }
 
         async function runMetricsAnalysis(e) {
@@ -1264,24 +1191,23 @@
                     const evaluatedIds = new Set();
         
                     planData.slice(1).forEach(planRow => {
-                        const ward = cleanWard(planRow[planWardIndex]);
-                        const id = cleanId(planRow[planIdIndex]);
+                        const ward = cleanWard(planRow[planWardIndex]), id = cleanId(planRow[planIdIndex]);
                         if (!wardList.includes(ward) || !id || hnIds.has(id)) return;
-                        
                         const actualRow = actualRowsById.get(id);
-                        if (!actualRow) return;
         
                         planDateColumns.forEach(dateColumn => {
-                            const actualIndex = actualDateMap.get(`${dateColumn.month}-${dateColumn.day}`);
-                            if (actualIndex === undefined) return;
-        
                             const planDuty = String(planRow[dateColumn.index] || '').trim();
                             if (isEmptyDuty(planDuty)) return;
         
-                            const actualDuty = String(actualRow[actualIndex] || '').trim();
                             totDenom++; wardTotals[ward]++;
         
-                            if (planDuty === actualDuty) totA++; else wardChange[ward]++;
+                            let isChanged = true; 
+                            if (actualRow) {
+                                const actualIndex = actualDateMap.get(`${dateColumn.month}-${dateColumn.day}`);
+                                if (actualIndex !== undefined && planDuty === String(actualRow[actualIndex] || '').trim()) isChanged = false; // 완전히 일치할 때만 변동 아님
+                            }
+                            
+                            if (isChanged) wardChange[ward]++; else totA++;
                         });
                     });
         
@@ -1369,41 +1295,18 @@
             }
         }
         
-        let currentSortCol = -1;
-        let currentSortAsc = false;
-
+        let currentSortCol = -1, currentSortAsc = false;
         function sortRankingTable(colIdx) {
-            const table = document.querySelector('#ranking-table-container table');
-            if (!table) return;
-            const tbody = table.tBodies[0];
-            const rows = Array.from(tbody.querySelectorAll('tr'));
-            const headers = table.querySelectorAll('th');
-
-            if (currentSortCol === colIdx) {
-                currentSortAsc = !currentSortAsc;
-            } else {
-                currentSortCol = colIdx;
-                currentSortAsc = false; 
-            }
-
-            headers.forEach((th, idx) => {
-                let text = th.innerText.replace(' ▲', '').replace(' ▼', '').replace(' ↕', '');
-                th.innerText = text + (idx === colIdx ? (currentSortAsc ? ' ▲' : ' ▼') : ' ↕');
-            });
-
+            const table = document.querySelector('#ranking-table-container table'); if (!table) return;
+            const tbody = table.tBodies[0], rows = Array.from(tbody.querySelectorAll('tr')), headers = table.querySelectorAll('th');
+            if (currentSortCol === colIdx) currentSortAsc = !currentSortAsc; else { currentSortCol = colIdx; currentSortAsc = false; }
+            headers.forEach((th, idx) => { let text = th.innerText.replace(' ▲', '').replace(' ▼', '').replace(' ↕', ''); th.innerText = text + (idx === colIdx ? (currentSortAsc ? ' ▲' : ' ▼') : ' ↕'); });
+            
             rows.sort((trA, trB) => {
-                let valA = trA.cells[colIdx].innerText.replace(/[^0-9.-]/g, '');
-                let valB = trB.cells[colIdx].innerText.replace(/[^0-9.-]/g, '');
-
-                if (valA === '' || isNaN(valA)) {
-                    valA = trA.cells[colIdx].innerText;
-                    valB = trB.cells[colIdx].innerText;
-                    return currentSortAsc ? valA.localeCompare(valB) : valB.localeCompare(valA);
-                }
-
+                let valA = trA.cells[colIdx].innerText.split('(')[0].replace(/[^0-9.-]/g, ''), valB = trB.cells[colIdx].innerText.split('(')[0].replace(/[^0-9.-]/g, '');
+                if (valA === '' || isNaN(valA)) { valA = trA.cells[colIdx].innerText; valB = trB.cells[colIdx].innerText; return currentSortAsc ? valA.localeCompare(valB) : valB.localeCompare(valA); }
                 return currentSortAsc ? parseFloat(valA) - parseFloat(valB) : parseFloat(valB) - parseFloat(valA);
             });
-
             rows.forEach(row => tbody.appendChild(row));
         }
     </script>
