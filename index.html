@@ -282,6 +282,11 @@
                         <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
                             <input type="radio" name="analyze-mode" value="multi" style="margin: 0;"> 기간 통합 분석
                         </label>
+                        <select id="dashboard-year" class="form-control" style="width: 100px; padding: 4px;" onchange="initializeDashboardMonths()">
+                            <option value="2025">2025</option>
+                            <option value="2026" selected>2026</option>
+                            <option value="2027">2027</option>
+                        </select>
                     </div>
                     
                     <div id="single-month-area" style="display: flex; gap: 10px; align-items: center;">
@@ -361,15 +366,17 @@
             const singleSelect = document.getElementById('dashboard-single-month');
             const checkboxContainer = document.getElementById('dashboard-month-checkboxes');
             singleSelect.innerHTML = ''; checkboxContainer.innerHTML = '';
+
+            const yy = document.getElementById('dashboard-year').value.slice(-2);
             
             for (let month = 1; month <= 12; month++) {
-                const value = `26${String(month).padStart(2, '0')}`;
-                const label = `2026년 ${month}월`;
-                singleSelect.insertAdjacentHTML('beforeend', `<option value="${value}">${label}</option>`);
-                checkboxContainer.insertAdjacentHTML('beforeend', `<label style="display:flex; align-items:center; gap:8px; padding:10px 12px; border:1px solid #ddd; border-radius:7px; background:white; cursor:pointer;"><input type="checkbox" name="dashboard-month-check" value="${value}"><span>${month}월</span></label>`);
+                const value = `${yy}${String(month).padStart(2, '0')}`;
+                const label = `${month}월`;
+                singleSelect.insertAdjacentHTML('beforeend', `<option value="${value}">${month}월</option>`);
+                checkboxContainer.insertAdjacentHTML('beforeend', `<label style="display:flex; align-items:center; gap:8px; padding:8px 10px; border:1px solid #ddd; border-radius:7px; background:white; cursor:pointer;"><input type="checkbox" name="dashboard-month-check" value="${value}"><span>${label}</span></label>`);
             }
             const currentMonth = new Date().getMonth() + 1;
-            singleSelect.value = `26${String(currentMonth).padStart(2, '0')}`;
+            singleSelect.value = `${yy}${String(currentMonth).padStart(2, '0')}`;
         }
 
         function updateDashboardMode() {
