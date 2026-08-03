@@ -132,6 +132,10 @@
         .hira-btn { align-self: center; display: inline-flex; align-items: center; text-decoration: none; color: #666; font-size: 12px; font-weight: 600; background: #f8f9fa; padding: 0 12px; height: 30px; border-radius: 15px; border: 1px solid #ddd; transition: all 0.2s ease; white-space: nowrap; }
         .hira-btn:hover { color: var(--primary-color); border-color: var(--primary-color); background: #fff0f0; }
         @media (max-width: 768px) { .hira-btn { height: 26px !important; font-size: 11px !important; padding: 0 8px !important; margin-left: 5px; margin-right: 15px; } }
+        @media (max-width: 768px) {
+            #ranking-table-container { max-height: 400px; -webkit-overflow-scrolling: touch; }
+            #ranking-table-container th, #ranking-table-container td { font-size: 11px; padding: 6px 4px; }
+        }
     </style>
 </head>
 <body class="home-theme">
