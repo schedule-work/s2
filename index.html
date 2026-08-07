@@ -1055,10 +1055,17 @@
                 <div class="metric-card"><div>결원 대체율 최고</div><div class="metric-val" style="font-size: clamp(16px, 3vw, 28px); word-break: keep-all; line-height: 1.3;">${bestRepWards}</div><div>${repCands.length > 0 ? bestRepVal.toFixed(2) + '%' : '데이터 없음'}</div></div>`;
 
             const rankingRows = [...rows].sort((a, b) => b.complianceRate !== a.complianceRate ? b.complianceRate - a.complianceRate : b.replacementRate - a.replacementRate);
-            
             let html = `<table><thead><tr><th onclick="sortRankingTable(0)">순위 ↕</th><th onclick="sortRankingTable(1)">병동 ↕</th><th onclick="sortRankingTable(2)">계획근무일 ↕</th><th onclick="sortRankingTable(3)">변동일수<br>(임신제외) ↕</th><th onclick="sortRankingTable(4)">변동일수<br>(임신변동) ↕</th><th onclick="sortRankingTable(5)">준수율 ↕</th><th onclick="sortRankingTable(6)">결원일수 ↕</th><th onclick="sortRankingTable(7)">대체일수<br>(임신대체) ↕</th><th onclick="sortRankingTable(8)">결원대체율 ↕</th></tr></thead><tbody>`;
-            rankingRows.forEach((row, index) => { html += `<tr><td>${index + 1}</td><td><strong>${row.ward}</strong></td><td>${row.total}</td><td>${row.nonPregChange}</td><td>${row.B}</td><td>${row.complianceRate.toFixed(2)}%</td><td>${row.vacancy}</td><td>${row.replacement} (${row.C})</td><td>${row.replacementRate.toFixed(2)}%</td></tr>`; });
-            html += '</tbody></table>'; document.getElementById('ranking-table-container').innerHTML = html;
+            
+            rankingRows.forEach((row, index) => { 
+                // 결원일수가 0보다 크면 % 포맷 적용, 0이면 '-'
+                const repRateDisplay = row.vacancy > 0 ? `${row.replacementRate.toFixed(2)}%` : '-';
+                html += `<tr><td>${index + 1}</td><td><strong>${row.ward}</strong></td><td>${row.total}</td><td>${row.nonPregChange}</td><td>${row.B}</td><td>${row.complianceRate.toFixed(2)}%</td><td>${row.vacancy}</td><td>${row.replacement} (${row.C})</td><td>${repRateDisplay}</td></tr>`; 
+            });
+            
+            // 👇👇 여기서부터 누락되었던 3줄입니다 👇👇
+            html += '</tbody></table>'; 
+            document.getElementById('ranking-table-container').innerHTML = html;
         }
 
         async function runMetricsAnalysis(e) {
@@ -1130,13 +1137,32 @@
                         const ward = cleanWard(planRow[planWardIndex]), id = cleanId(planRow[planIdIndex]);
                         if (!wardList.includes(ward) || !id || hnIds.has(id)) return;
                         const actualRow = actualRowsById.get(id);
-        
+                    
+                        // --- 추가된 부분 1: 실제 근무가 입력된 마지막 날짜(day) 찾기 ---
+                        let lastValidDay = -1;
+                        if (actualRow) {
+                            planDateColumns.forEach(dc => {
+                                const aIdx = actualDateMap.get(`${dc.month}-${dc.day}`);
+                                if (aIdx !== undefined) {
+                                    const aDuty = String(actualRow[aIdx] || '').trim();
+                                    if (!isEmptyDuty(aDuty)) {
+                                        if (dc.day > lastValidDay) lastValidDay = dc.day;
+                                    }
+                                }
+                            });
+                        }
+                        // -------------------------------------------------------------
+                    
                         planDateColumns.forEach(dateColumn => {
                             const planDuty = String(planRow[dateColumn.index] || '').trim();
                             if (isEmptyDuty(planDuty)) return;
-        
+                    
+                            // --- 추가된 부분 2: 마지막 실제 근무일 이후의 계획 근무는 평가(분모, 변동)에서 아예 제외 ---
+                            if (dateColumn.day > lastValidDay) return;
+                            // -------------------------------------------------------------------------------------
+                    
                             totDenom++; wardTotals[ward]++;
-        
+                    
                             let isChanged = true; 
                             if (actualRow) {
                                 const actualIndex = actualDateMap.get(`${dateColumn.month}-${dateColumn.day}`);
@@ -1209,7 +1235,7 @@
         
                 document.getElementById('val-vac-days').innerText = `${totVacDays}일`;
                 document.getElementById('val-rep-days').innerText = `${totRepDays}일`;
-                document.getElementById('val-rep-rate').innerText = `${replacementRate.toFixed(2)}%`;
+                document.getElementById('val-rep-rate').innerText = totVacDays > 0 ? `${replacementRate.toFixed(2)}%` : '-';
                 document.getElementById('val-denom').innerText = `${totDenom}일`;
                 document.getElementById('val-numer').innerText = `${numerator}일`;
                 document.getElementById('val-comp-rate').innerText = `${complianceRate.toFixed(2)}%`;
